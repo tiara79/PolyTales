@@ -1,0 +1,9 @@
+.footer {
+  background-color: #FFFAC7; /* 연한 노랑 */
+  padding: 0.3rem 0;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #333;
+  margin-top: 2rem;
+  border-top: 1px solid #eee;
+}

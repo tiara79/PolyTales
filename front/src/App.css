@@ -1,0 +1,65 @@
+/* 기본 폰트 및 컬러 설정 */
+:root {
+  --main-bg: #ffffff;
+  --text-color: #333;
+  --sub-text-color: #666;
+  --highlight-color: #E41A8E;
+  --border-radius: 16px;
+  --font-main: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Helvetica', sans-serif;
+}
+
+/* 전체 초기화 */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--main-bg);
+  font-family: var(--font-main);
+  color: var(--text-color);
+  font-size: 16px;
+}
+
+/* 기본 링크 스타일 */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  color: var(--highlight-color);
+  font-weight: 600;
+}
+
+/* 공통 wrapper */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* 타이틀 기본 */
+h1, h2, h3 {
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+h2 {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+}
+
+/* 버튼 공통 */
+button {
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+button:focus {
+  outline: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  border-radius: var(--border-radius);
+}
