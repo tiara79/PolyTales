@@ -3,19 +3,18 @@
   --main-bg: #ffffff;
   --text-color: #333;
   --sub-text-color: #666;
-  --highlight-color: #E41A8E;
   --border-radius: 16px;
   --font-main: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Helvetica', sans-serif;
 }
 
 /* 전체 초기화 */
-body {
+/* index.css 또는 App.css */
+body, html, #root {
   margin: 0;
   padding: 0;
-  background-color: var(--main-bg);
-  font-family: var(--font-main);
-  color: var(--text-color);
-  font-size: 16px;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
 }
 
 /* 기본 링크 스타일 */
@@ -29,12 +28,6 @@ a:hover {
   font-weight: 600;
 }
 
-/* 공통 wrapper */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-}
 
 /* 타이틀 기본 */
 h1, h2, h3 {

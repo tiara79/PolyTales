@@ -34,7 +34,6 @@ cd front npm run start, cd back npx nodemon app.js , 루트 실행 npm run dev
 /c/Users/user/Documents/Nambu/FullStackWeb/React/BookLife$  npm install concurrently --save-dev
 
 # 생성 테이블 목록
-
 CREATE TABLE User (
 userId INTEGER PRIMARY KEY AUTOINCREMENT,
 oauthProvider IN (naver,kakao,google),
@@ -53,6 +52,7 @@ movie TEXT,
 description TEXT,
 langLevel TEXT NOT NULL CHECK (
 langLevel IN ('A1', 'A2', 'B1', 'B2', 'C1', 'C2')),
+langLevelKo IN ('초급','초중급','중급','중고급','고급','최고급'),
 nation TEXT NOT NULL CHECK (nation IN ('fr', 'ja', 'es', 'en', 'de', 'ko')),
 topic TEXT NOT NULL);
 

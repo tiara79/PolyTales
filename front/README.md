@@ -16,10 +16,10 @@ React + Express + SQLite 기반의  웹입니다.
 npm install
 
 # 프론트 실행 (http://localhost:3001)
-npm run start
+npm start
 
 # 백엔드 실행 (http://localhost:3000)
-npm run start
+npx nodemon app.js
 ```
 
 # 사용 기술
@@ -44,6 +44,8 @@ git push
 git clone https://github.com/tiara79/PolyTales.git
 
 # front 폴더 설치
+npm install react-scripts # init 후 설치
+
 npx create-react-app front #React 프로젝트 초기화
 npm install axios react-router-dom # React 관련 필수 패키지
 npm install react-dropzone # React 개발 환경에서 파일 업로드
