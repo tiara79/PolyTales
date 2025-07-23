@@ -1,0 +1,73 @@
+# node_modules
+node_modules/
+
+# build output
+dist/
+build/
+
+# env
+.env
+.env.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+
+# -----------------
+# macOS 자동 생성 파일
+# -----------------
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon files
+Icon?
+._*
+
+# Thumbnails
+Thumbs.db
+
+# Spotlight files
+.Spotlight-V100
+.Trashes
+
+# macOS Finder 정보
+.DS_Store
+.fseventsd
+.VolumeIcon.icns
+
+# macOS 파일 시스템 메타데이터
+._*
+
+# VS Code 설정 폴더
+.vscode/
+
+# -----------------
+# Windows 자동 생성 파일
+# -----------------
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Windows Git 충돌 시 생기는 파일
+*.orig
+
+# -----------------
+# Node.js/Web 관련
+# -----------------
+node_modules/
+dist/
+build/
+
+# 환경 변수 파일
+.env
+.env.*
+
+# 로그
+npm-debug.log*
+yarn-debug.log*
+
+# OS에 따른 임시 디렉토리
+tmp/
+temp/
