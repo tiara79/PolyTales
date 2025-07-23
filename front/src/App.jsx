@@ -26,12 +26,12 @@ function App() {
 
         {/*  헤더만 포함 */}
         <Route element={<DetailRouter />}>
-          <Route path="/story/1" element={<Detail />} />
+          <Route path="/detail" element={<Detail />} />
         </Route>
 
         {/* 헤더/푸터 없음 */}
         <Route element={<NoRoute />}>
-          <Route path="/story/1/read" element={<Learn />} />
+          <Route path="/learn" element={<Learn />} />
         </Route>
       </Routes>
     </BrowserRouter>

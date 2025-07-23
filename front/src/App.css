@@ -1,5 +1,9 @@
-/* 기본 폰트 및 컬러 설정 */
+/* src/App.css */
+
+/* 1. 전역 CSS 변수 선언 */
 :root {
+  --header-height: 70px;      /* 헤더 높이 */
+  --footer-height: 60px;      /* 푸터 높이 */
   --main-bg: #ffffff;
   --text-color: #333;
   --sub-text-color: #666;
@@ -7,50 +11,63 @@
   --font-main: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Helvetica', sans-serif;
 }
 
-/* 전체 초기화 */
-/* index.css 또는 App.css */
-body, html, #root {
+/* 2. 전체 초기화 */
+html,
+body,
+#root {
+  height: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  height: 100%;
-  width: 100%;
+  overflow: hidden;           /* 최상위 스크롤 제거 */
 }
 
-/* 기본 링크 스타일 */
+/* 3. 그리드 레이아웃 설정: 헤더 / 본문 / 푸터 */
+#root {
+  display: grid;
+  grid-template-rows: var(--header-height) 1fr var(--footer-height);
+}
+
+/* 4. 본문 영역만 스크롤 */
+.main-content {
+  overflow-y: auto;
+  padding: 2rem;              /* 필요에 따라 조정 */
+  background-color: var(--main-bg);
+}
+
+/* 5. 기본 링크 스타일 */
 a {
   text-decoration: none;
   color: inherit;
 }
-
 a:hover {
-  color: var(--highlight-color);
+  color: var(--sub-text-color);
   font-weight: 600;
 }
 
-
-/* 타이틀 기본 */
-h1, h2, h3 {
+/* 6. 타이틀 스타일 */
+h1,
+h2,
+h3 {
   font-weight: bold;
   color: var(--text-color);
 }
-
 h2 {
   font-size: 1.8rem;
   margin-bottom: 2rem;
 }
 
-/* 버튼 공통 */
+/* 7. 버튼 공통 스타일 */
 button {
   font-family: var(--font-main);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
-
 button:focus {
   outline: none;
 }
 
+/* 8. 이미지 기본 스타일 */
 img {
   max-width: 100%;
   display: block;

@@ -1,0 +1,233 @@
+/* learn.css */
+
+body {
+  background-color: #ffffff;
+  margin: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.learn-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.learn-header {
+  background-color: #fff8c6;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+/* 처음부터 읽기 버튼 */
+.read-start {
+  font-size: 0.95rem;
+  /* background-color: #ffbebe; */
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ff6f61;
+}
+
+.story-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.learn-main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.learn-left {
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.video-area {
+  flex: 2;
+  text-align: center;
+}
+
+.story-img {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.sentence-text {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 1rem 0;
+}
+
+.control-btns {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.btn {
+  background-color: #ffd8d8;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.pause {
+  background-color: #ffeaea;
+}
+
+.progress-bar {
+  height: 6px;
+  background-color: #eee;
+  width: 80%;
+  margin: 0 auto;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background-color: #ff6f61;
+  transition: width 0.3s ease;
+}
+
+.grammar-vocab {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-inline: 2rem;
+}
+
+.grammar,
+.vocab {
+  width: 48%;
+}
+
+.grammar h4,
+.vocab h4 {
+  color: #4caf50;
+  margin-bottom: 0.3rem;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.3rem;
+}
+
+.grammar p,
+.vocab p {
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.learn-right {
+  flex: 6;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.lang-select {
+  flex: 1;
+  background-color: #e0f2f1;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.memo-box {
+  flex: 2;
+  background-color: #e0f7e9;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-y: auto;
+}
+
+.memo-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.memo-input {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.memo-placeholder {
+  margin-top: 0.7rem;
+  text-align: center;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.tutor-box {
+  flex: 3;
+  background-color: #f1f8e9;
+  padding: 1rem;
+  border-radius: 8px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tutor-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
+}
+
+.tutor-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+.chat-placeholder {
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.chat-send {
+  align-self: flex-end;
+  background: transparent;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+}

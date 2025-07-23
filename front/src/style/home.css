@@ -1,107 +1,104 @@
-/* front/src/style/home.css */
+/* src/style/home.css */
 
-/* 선택되지 않은 상태 색상 (기본 상태) */
-.level-btn.A1 { background-color: #FFB7B7; }
-.level-btn.A2 { background-color: #FFD1A3; }
-.level-btn.B1 { background-color: #F0DF7E; }
-.level-btn.B2 { background-color: #C0E4A9; }
-.level-btn.C1 { background-color: #AFE1ED; }
-.level-btn.C2 { background-color: #DAB0EA; }
-
-/* 선택된 상태 - 강조 + 흰 글씨 */
-.level-btn.selected {
-  color: #fff;
-  font-weight: 700;
-  box-shadow: 0 0 0 3px #89837B inset;
-  border: none;
-}
-
-.level-btn.selected.A1 { background-color: #FF9999; }
-.level-btn.selected.A2 { background-color: #FFBB66; }
-.level-btn.selected.B1 { background-color: #E4C600; }
-.level-btn.selected.B2 { background-color: #9AD29A; }
-.level-btn.selected.C1 { background-color: #8FD3F2; }
-.level-btn.selected.C2 { background-color: #C387D4; }
-
+/* Home 페이지 주요 콘텐츠 영역: 헤더/푸터 제외한 전체 바디 스크롤 */
 .recommend-section {
+  position: absolute;
+  top: var(--header-height);
+  bottom: var(--footer-height);
+  left: 0;
+  right: 0;
+  overflow-y: auto;
   padding: 2rem;
+  background-color: var(--main-bg);
   text-align: center;
-  background-color: #FFFFFF;
 }
 
 .recommend-section h2 {
   font-size: 1.8rem;
-  margin-left: -550px;
-  color: #67B98A;
+  color: #67b98aeb;
   margin-bottom: 2rem;
 }
 
 .level-buttons {
-  margin-bottom: 3rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 3rem;
-  border: none;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-.level-buttons button {
+.level-btn {
   width: 120px;
   height: 55px;
-  border: none;
   border-radius: 40px;
   font-weight: bold;
   font-size: 0.8rem;
-  cursor: pointer;
-  color: #89837B;
   background-color: #eee;
-  transition: all 0.2s ease;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-  position: relative;
-  top: 0;
-}
-
-/* 마우스 오버 시 */
-.level-buttons button:hover {
-  opacity: 0.9;
-  transform: scale(1.05);
-  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+  color: #89837B;
   border: none;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  transform: translateY(0);
 }
 
-/* 마우스 클릭 시 */
-.level-buttons button:active {
-  top: 2px;
-  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.2);
+.level-btn:hover {
+  filter: brightness(0.95);
 }
 
-/* 포커스/선택 시 선 제거 */
-.level-btn,
-.level-btn:focus,
-.level-btn:focus-visible,
-.level-btn:active,
-.level-btn.selected,
-.level-btn.selected:focus,
-.level-btn.selected:focus-visible,
-.level-btn.selected:active {
-  outline: none;
-  border: none;
+/* 레벨별 색상 */
+.level-btn.A1 { background-color: #FFD9D9; }
+.level-btn.A2 { background-color: #FEE8D2; }
+.level-btn.B1 { background-color: #FFF5BA; }
+.level-btn.B2 { background-color: #DAF2CB; }
+.level-btn.C1 { background-color: #D3F7FF; }
+.level-btn.C2 { background-color: #E7CBF2; }
+
+.level-btn.selected {
+  color: #fff;
+  font-weight: 900;
 }
 
-/* 이미지 박스 */
+
+.level-btn:hover:not(.selected) {
+  transform: translateY(-0.5px) scale(1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  filter: brightness(1.02);  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  filter: brightness(1.02);
+  transition: all 0.3s ease;
+}
+
+/* 선택된 버튼은 hover 효과 중복 방지 */
+.level-btn.selected:hover {
+  transform: translateY(-0.5px) scale(1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  filter: brightness(1.02);
+}
+/* 선택된 상태 색상 */
+.level-btn.selected.A1 { background-color: #FFB7B7; }
+.level-btn.selected.A2 { background-color: #FFD1A3; }
+.level-btn.selected.B1 { background-color: #F0DF7E; }
+.level-btn.selected.B2 { background-color: #C0E4A9; }
+.level-btn.selected.C1 { background-color: #AFE1ED; }
+.level-btn.selected.C2 { background-color: #DAB0EA; }
+
+/* 이미지 그리드 레이아웃 */
 .image-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 1.5rem;
-  justify-items: center;
-  max-width: 1000px;
   margin: 0 auto;
+  max-width: 1200px;
+}
+
+.image-box {
+  position: relative;
+  text-align: center;
 }
 
 .image-box img {
   width: 100%;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
 }
 
@@ -113,3 +110,41 @@
   margin-top: 0.5rem;
   font-weight: 600;
 }
+
+/* 잠긴 이미지 처리 */
+.locked-image img {
+  filter: blur(2px);
+}
+
+.lock-icon,
+.lock-tooltip {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.lock-icon {
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+}
+
+.lock-tooltip {
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(51, 51, 51, 0.6);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.locked-image:hover .lock-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
