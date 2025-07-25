@@ -7,6 +7,9 @@ export default function Header() {
   const navigate = useNavigate(); // 페이지 이동용 훅
   const user = null; // 로그인 제거된 상태
 
+  const handleLogoClick = () => {
+    navigate('/'); //  "back to home" 
+  };
   const handleStartClick = () => {
     navigate('/login'); //  "시작하기"
   };
@@ -14,7 +17,7 @@ export default function Header() {
   return (
     <header className="header">
       <div className="header-left">
-        <img src={headerLogo} alt="logo" className="header-logo" />
+        <img src={headerLogo} alt="logo" className="header-logo" onClick={handleLogoClick}/>
       </div>
       <div className="header-right">
         {user ? (
