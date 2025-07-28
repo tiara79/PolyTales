@@ -1,7 +1,7 @@
 
-import { useSelector } from "react-redux";  // Redux의 상태를 읽기 위한 훅
+import { useSelector } from "react-redux"; // Redux의 상태를 읽기 위한 훅
 
-const UserProfile = () => {
+const UserprofImg = () => {
   // Redux 상태에서 로그인된 사용자 정보 가져오기
   const user = useSelector((state) => state.user);
 
@@ -16,4 +16,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default UserprofImg;

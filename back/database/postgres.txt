@@ -5,14 +5,14 @@ psql -U postgres -d polytales
 \dt
 
 -- 더미 데이터
-INSERT INTO "Users" (oauthProvider, oauthId, email, nickName, profile)
+INSERT INTO users (oauthProvider, oauthId, email, nickName, profImg)
 VALUES
-  ('kakao', 'kakao_001', 'eunjoo@example.com', 'Eunjoo', '/images/profile/eunjoo.png'),
-  ('naver', 'naver_002', 'jinyoung@example.com', 'jinyoung', '/images/profile/jinyoung.png'),
-  ('google', 'google_003', 'hong@example.com', 'hong', '/images/profile/hong.png');
+  ('kakao', 'kakao_001', 'eunjoo@example.com', 'Eunjoo', '/images/profImg/eunjoo.png'),
+  ('naver', 'naver_002', 'jinyoung@example.com', 'jinyoung', '/images/profImg/jinyoung.png'),
+  ('google', 'google_003', 'hong@example.com', 'hong', '/images/profImg/hong.png');
 
 -- 테이블 목록 확인
-SELECT * FROM "User";
+SELECT * FROM users;
 
 -- Express 백엔드용 PostgreSQL 연결 코드
 const { Pool } = require('pg');
@@ -35,7 +35,7 @@ module.exports = pool;
 
 -- 테이블 삭제
 -- 기존 테이블 삭제 (데이터 삭제됨 주의)
-DROP TABLE "User";
+DROP TABLE users;
 
 
 -- User 테이블
@@ -45,7 +45,7 @@ CREATE TABLE users (
   oauthId TEXT NOT NULL,
   email TEXT,
   nickName TEXT,
-  profile TEXT,
+  profImg TEXT,
   UNIQUE(oauthProvider, oauthId)
 );
 

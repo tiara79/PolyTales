@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     email: DataTypes.TEXT,
     nickName: DataTypes.TEXT,
-    profile: DataTypes.TEXT,
+    profImg: DataTypes.TEXT,
     oauthId: {
       type: DataTypes.TEXT,
       unique: true
