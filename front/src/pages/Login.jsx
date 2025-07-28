@@ -3,6 +3,7 @@ import logo from '../style/img/login/loginLogo.png';
 import googleIcon from '../style/img/login/google.png';
 import naverIcon from '../style/img/login/naver.png';
 import kakaoIcon from '../style/img/login/kakao.png';
+import React from 'react';
 
 export default function Login() {
   return (

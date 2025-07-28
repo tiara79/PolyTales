@@ -4,6 +4,8 @@ import '../style/Detail.css';
 import lilyMain from '../style/img/detail/lilyMain.png';
 import bookmarkPre from '../style/img/detail/bookmarkPre.png';
 import bookmarkNext from '../style/img/detail/bookmarkNext.png';
+import React from 'react';
+
 
 export default function Detail() {
   const navigate = useNavigate();

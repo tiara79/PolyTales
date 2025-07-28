@@ -1,4 +1,4 @@
-/* learn.css */
+/* learn.css - 메인 학습 페이지 스타일 */
 
 body {
   background-color: #ffffff;
@@ -21,70 +21,14 @@ body {
   margin-top: 0;
 }
 
+/* 헤더 */
 .div1 {
   grid-area: 1 / 1 / 2 / 4;
-  background: #FFFAC7;
-  border-radius: 12px;
-}
-
-.div2 {
-  grid-area: 1 / 4 / 2 / 13;
-  background: #FFFAC7;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80px;
-  border-radius: 12px;
-}
-
-.div3 {
-  grid-area: 2 / 1 / 4 / 6;
-  margin: 10px 20px 0 20px;
-  border-radius: 12px;
-}
-
-.div4 {
-  grid-area: 4 / 1 / 5 / 5;
-  background: #FEFBE0;
-  margin: 10px 20px 0 20px;
-  border-radius: 12px;
-}
-
-.div5 {
-  grid-area: 2 / 6 / 3 / 9;
-  background: #DBE9D3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  margin: 10px 20px 0 20px;
-  border-radius: 12px;
-}
-
-.div6 {
-  grid-area: 4 / 5 / 5 / 9;
-  background: #FEFBE0;
-  margin: 10px 20px 0 20px;
-  border-radius: 12px;
-}
-
-.div7 {
-  grid-area: 3 / 6 / 4 / 9;
-  background: #F6F6F6;
-  margin: 10px 20px 0 20px;
-  border-radius: 12px;
-}
-
-.div8 {
-  grid-area: 2 / 9 / 5 / 13;
-  background: #F6F6F6;
-  margin: 10px 20px 0 20px;
   border-radius: 12px;
 }
 
 .read-start {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: bold;
   color: #137DFE;
   padding: 0px 20px 9px 20px;
@@ -95,17 +39,47 @@ body {
   left: 5px;
 }
 
+/* 닫기 버튼 */
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.5rem;
+  color: #333;
+  width: 20px;
+}
+
+.div2 {
+  grid-area: 1 / 1 / 2 / 13;
+  background: #FFFAC7;
+  height: 70px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
 .story-title {
-  font-size: 2rem;
+  width: 100%;
+  font-size: 1.5em;
   font-weight: bold;
-  margin: 0;
+  margin-top: 10px;
   text-align: center;
+}
+
+/* 스토리 영역 */
+.div3 {
+  grid-area: 2 / 1 / 5 / 7;
+  margin: 10px 20px 20px 20px;
+  border-radius: 12px;
 }
 
 .story-img {
   width: 100%;
   height: auto;
-  max-width: 800px;
+  max-width: 1000px;
+  max-height: 330px;
   border-radius: 12px;
   object-fit: cover;
   display: block;
@@ -113,10 +87,9 @@ body {
 }
 
 .sentence-text {
-  text-align: center;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: bold;
-  margin: -4rem 0 0.5rem;
+  margin: -5rem 0 0.5rem 5px;
 }
 
 .control-btns {
@@ -132,6 +105,14 @@ body {
   cursor: pointer;
 }
 
+.Text {
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 8px;
+  padding: 0.3rem 0.6rem;
+  font-weight: bold;
+}
+
 .no-bg {
   background: none !important;
 }
@@ -141,18 +122,29 @@ body {
 }
 
 .pause {
-  font-size: 1rem;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   background-color: #5F5C5C;
+  color: white;
+}
+
+.pause img {
+  width: 18px;
+  height: 18px;
 }
 
 .progress-bar {
-  height: 6px;
+  height: 12px;
   background-color: #eee;
   width: 100%;
   margin: 0 auto;
   border-radius: 3px;
+  margin-top: 15px;
   overflow: hidden;
 }
 
@@ -162,69 +154,121 @@ body {
   transition: width 0.3s ease;
 }
 
-.grammar h4,
-.vocab h4 {
+/* 문법 영역 */
+.div4 h4,
+.div5 h4 {
   color: #4caf50;
-  margin-bottom: 0.3rem;
+  margin: 10px 10px 20px 20px;
   border-bottom: 1px solid #ccc;
-  padding-bottom: 0.3rem;
+  padding-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.div4 p,
+.div5 p {
+  font-size: 0.95rem;
+  color: #444;
+  margin-left: 20px;
+  font-weight: bold;
+}
+
+.div4 {
+  grid-area: 4 / 1 / 5 / 6;
+  margin-left: 20px;
+  border-radius: 12px 0px 0px 0px;
+  background-color: #FEFBE0;
+}
+
+.grammar h4,
+.voca h4 {
+  color: #4caf50;
+  margin: 10px 10px 20px 10px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.5rem;
+  margin-left: 20px;
+  font-weight: bold;
 }
 
 .grammar p,
-.vocab p {
+.voca p {
   font-size: 0.95rem;
   color: #444;
+  margin-left: 20px;
+  font-weight: bold;
+}
+
+/* 단어 영역 */
+.div5 {
+  grid-area: 4 / 6 / 5 / 10;
+  background: #FEFBE0;
+  margin: 10px 15px 0px 20px;
+  border-radius: 12px;
+}
+
+/* 언어 선택 */
+.div6 {
+  grid-area: 2 / 7 / 3 / 10;
+  background: #DBE9D3;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin: 10px 20px 20px 0px;
+  border-radius: 12px;
 }
 
 .lang-select {
   display: grid;
-  grid-template-columns: repeat(2, auto);
-  gap: 1.2rem;
+  grid-template-columns: repeat(3, auto);
+  gap: -0.05rem 1.5rem;
   justify-content: center;
 }
 
 .lang-select label {
-  font-size: 0.95rem;
-  white-space: nowrap;
+  font-size: 0.8rem; 
+  line-height: 1.2;
+  margin: 0.2em 0;
 }
 
-.tutor-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.8rem 1rem 0 1rem;
+.lang-select input[type="radio"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid White;
+  border-radius: 50%;
+  background-color: #DBE9D3;
+  cursor: pointer;
+  position: relative;
 }
 
-.pola-badge {
-  background-color: #fdd1b0;
-  padding: 0.4rem 1rem;
-  border-radius: 999px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-  color: #4d4d4d;
-  font-size: 0.95rem;
+.lang-select input[type="radio"]:checked {
+  background-color: #DBE9D3;
+  border-color: #ffffff;
 }
 
-.tutor-label {
-  margin-right: 0.4rem;
+.lang-select input[type="radio"]:checked::after {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-.tutor-icon {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
+/* 노트 영역 */
+.div7 {
+  grid-area: 3 / 7 / 5 / 10;
+  background-color: #fefef8;
+  margin: 10px 20px 0 20px;
+  border-radius: 12px;
 }
 
-.tutor-info-text {
-  font-size: 0.85rem;
-  color: #777;
-  white-space: nowrap;
-}
-
-/* 메모 */
-.memo-box {
+.note-box {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -232,14 +276,14 @@ body {
   border: 1px solid #cce5cc;
   border-radius: 12px;
   padding: 1rem;
-  height: 100%;
+  height: 45%;
+  width: 95%;
   box-sizing: border-box;
-  overflow: hidden;
   margin: 0;
   position: relative;
 }
 
-.memo-head {
+.note-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -254,20 +298,22 @@ body {
   border-bottom: 1px solid #76b187;
 }
 
-.memo-title {
+.note-title {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+  background-color: #fefef8;
 }
 
-.underline-label {
-  font-weight: bold;
+.underline-note {
+  font-size: 1rem;
   color: #333;
-  margin-bottom: -0.2rem;
+  margin-bottom: -2rem;
+  background-color: #fefef8;
 }
 
-.memo-input {
-  width: 100%;
+.note-input {
+  width: 80%;
   font-size: 1rem;
   border: none;
   border-bottom: 1px solid #ccc;
@@ -277,37 +323,43 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: bold;
   color: #333;
-  text-align: left;
+  margin-left: 50px;
 }
 
-.memo-input::placeholder {
+.note-input::placeholder {
+  background-color: #fefef8;
   color: #3F3F3F;
   font-weight: normal;
 }
 
-.memo-content {
+.note-content {
   width: 100%;
-  height: 180px;
+  height: 120px;
   resize: none;
   font-size: 0.9rem;
   border: none;
-  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background-color: #fefef8;
+  background-image: url('../style/img/learn/notePen.png');
+  background-size: 60px 60px;
+  background-repeat: no-repeat;
+  background-position: center center;
   font-family: 'Noto Sans KR', sans-serif;
   color: #444;
   box-sizing: border-box;
   outline: none;
-  text-align: center;
-  padding-top: 0;
+  text-align: left;
+  padding: 0.5rem;
   margin-top: 0.2rem;
+  overflow-y: auto; 
 }
 
-.memo-content::placeholder {
-  color: #aaa;
-  font-size: 0.85rem;
-  text-align: center;
+.note-content::placeholder {
+  color: transparent;
 }
 
-.save-memo {
+.save-note {
   background-color: transparent;
   color: white;
   font-size: 1.2rem;
@@ -322,47 +374,23 @@ body {
   transition: background-color 0.2s ease;
 }
 
-.save-memo:hover {
+.save-note:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
-
-.memo-placeholder-img {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-  display: block;
-  margin: 0.2rem auto 0.2rem;
+/* Note 스크롤바  */
+.note-content::-webkit-scrollbar {
+  width: 6px;
 }
 
-.chat-box {
-  position: relative;
-  height: 100%;
+.note-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
 }
 
-.chat-instruction {
-  display: block;
-  color: #666;
-  font-size: 0.95rem;
-  padding-bottom: 2rem;
+.note-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
 }
-
-.chat-send {
-  position: absolute;
-  bottom: 1rem;
-  right: 1rem;
-  background: transparent;
-  border: none;
-  font-size: 1.3rem;
-  cursor: pointer;
-}
-
-@media (max-width: 768px) {
-  .parent {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(9, auto);
-  }
-  .div1, .div2, .div3, .div4, .div5, .div6, .div7, .div8 {
-    grid-column: 1 / -1;
-    margin: 0 8px;
-  }
+.note-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }

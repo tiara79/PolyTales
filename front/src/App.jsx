@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+
 import MainRouter from "./routes/MainRouter";
 import DetailRouter from "./routes/DetailRouter";
 import NoRoute from "./routes/NoRoute";
@@ -10,6 +11,7 @@ import Login from "./pages/Login";
 import Mypage from "./pages/Mypage";
 import Bookmark from "./pages/Bookmark";
 import History from "./pages/History";
+
 
 function App() {
   return (

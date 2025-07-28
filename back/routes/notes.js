@@ -1,12 +1,8 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const noteController = require("../controllers/notes");
+const { createNote, getNotes } = require('../controllers/noteController');
 
-// http://localhost:3000/notes/notes
-router.post("/", noteController.createNote);
-router.get("/", noteController.getAllNotes);
-router.get("/:tag", noteController.getNotes);
-router.put("/:id", noteController.updateNote);
-router.delete("/:id", noteController.deleteNote);
+router.post('/', createNote);
+router.get('/:userId', getNotes); // userId별 조회
 
 module.exports = router;

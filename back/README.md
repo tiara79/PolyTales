@@ -6,7 +6,6 @@ npm outdated # 낮은 버전 찾음
 npm init -y # 프로젝트 생성
 npm i express  # 익스프레스 웹서버
 npm i nodemon  # 노드용 데몬 설치
-npm i sqlite3 # sqlite3 디비 용
 npm i multer  # 첨부파일용
 npm i bcryptjs # 패스워드 암호화
 npm i jsonwebtoken # jwt 토큰생성
@@ -24,76 +23,14 @@ npm i sequelize-cli  # 시퀄라이즈 ORM 커맨드라인 인터페이스
 npm i sequelize   # 시퀄라이즈 ORM
 
 # 실행 
-cd front npm run start, cd back npx nodemon app.js , 루트 실행 npm run dev
-// 루트 폴더 설치 npm install concurrently --save-dev
+cd front npm run start, cd back npx nodemon app.js , 루트 실행 npm start
 
-  "devDependencies": {
-    "concurrently": "^9.1.2",
-    "nodemon": "^3.1.10"
-  },
-/c/Users/user/Documents/Nambu/FullStackWeb/React/BookLife$  npm install concurrently --save-dev
+# 추가 설치
+- 초기화
+npm install
 
-# 생성 테이블 목록
-CREATE TABLE User (
-userId INTEGER PRIMARY KEY AUTOINCREMENT,
-oauthProvider IN (naver,kakao,google),
-email TEXT,
-nickName TEXT,
-profile TEXT,
-UNIQUE(oauthProvider, oauthId)
-);
+-  PostgreSQL v14.18 서버
+npm install sequelize@6 pg@8.7.3 pg-hstore@2.3.4
 
-CREATE TABLE Story (
-storyId INTEGER PRIMARY KEY AUTOINCREMENT,
-storyTitle TEXT NOT NULL,
-storyCoverPath TEXT,
-thumbnail TEXT ,
-movie TEXT,
-description TEXT,
-langLevel TEXT NOT NULL CHECK (
-langLevel IN ('A1', 'A2', 'B1', 'B2', 'C1', 'C2')),
-langLevelKo IN ('초급','초중급','중급','중고급','고급','최고급'),
-nation TEXT NOT NULL CHECK (nation IN ('fr', 'ja', 'es', 'en', 'de', 'ko')),
-topic TEXT NOT NULL);
-
-CREATE TABLE Language (
-vocaId INTEGER PRIMARY KEY AUTOINCREMENT,
-word TEXT,
-mean TEXT,
-partSpeech TEXT,
-vocaSentence TEXT,
-nation TEXT CHECK (
-nation IN ('ko', 'ja', 'en', 'de', 'es', 'fr')),
-storyId INTEGER, FOREIGN KEY (storyId) REFERENCES Story(storyId));
-
-CREATE TABLE Note (
-noteId INTEGER PRIMARY KEY AUTOINCREMENT,   
-userId INTEGER,                             
-storyId INTEGER,                         
-title TEXT,                             
-content TEXT,                          
-createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-FOREIGN KEY (userId) REFERENCES User(userId),
-FOREIGN KEY (storyId) REFERENCES Story(storyId)
-);
-
-CREATE TABLE Progress (
-progressId INTEGER PRIMARY KEY AUTOINCREMENT,
-userId INTEGER,
-storyId INTEGER,
-currentPage INTEGER,
-isFinished BOOLEAN,
-updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-FOREIGN KEY (userId) REFERENCES User(userId),
-FOREIGN KEY (storyId) REFERENCES Story(storyId)
-);
-
-CREATE TABLE  Tutor(
-chatId INTEGER PRIMARY KEY AUTOINCREMENT,
-userId INTEGER,
-storyId INTEGER,
-message TEXT,
-createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-FOREIGN KEY (userId) REFERENCES User(userId),
-FOREIGN KEY (storyId) REFERENCES Story(storyId)
-);
+-보안 취약점 자동 수정
+npm audit fix

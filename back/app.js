@@ -4,12 +4,18 @@ require('dotenv').config(); // .env 파일 로드
 const express = require('express');
 const cors = require("cors");
 const path = require("path");
+const db = require('./models');
 
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/postRouter");
+
+const noteRouter = require('./routes/note');
+app.use('/notes', noteRouter);
+
+
 
 const app = express();
 const uploadDir = `public/uploads`;
@@ -26,6 +32,19 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/auth", authRouter);
 app.use("/posts", postRouter);
+
+app.use(express.json());
+
+// 노트 라우터 등록
+const noteRouter = require('./routes/note');
+app.use('/notes', noteRouter);
+
+// DB 연결
+db.sequelize.sync().then(() => {
+  app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+  });
+});
 
 // Swagger 설정
 const swaggerDocument = YAML.load(path.join(__dirname, "swagger.yaml"));
