@@ -60,3 +60,15 @@ npm install react-kakao-maps-sdk
 Rest api 사용
 프록시 설정 (vite.config.js 또는 package.json)
 API 호출용 axios, fetch 코드
+
+
+| 요소   | 설명                                       |
+| ------- | -----------------------------------------|
+| `div1` | 왼쪽 상단: **처음부터 읽기** 버튼           |
+| `div2` | 제목 - Lily’s happy day**                  |
+| `div3` | 이미지 및 문장 / 컨트롤 버튼                 |
+| `div4` | 문법 박스                                   |
+| `div5` | 단어 박스                                   |
+| `div6` | **언어 선택 라디오 버튼**                   |
+| `div7` | 노트                                        |
+| `div8` | 채팅내역                                    |
