@@ -1,0 +1,6 @@
+const path = require('path');
+
+module.exports = {
+    'config': path.resolve('src', 'config', 'config.json'), // ✅ src 안으로 이동
+    'models-path': path.resolve('src', 'models'),
+};

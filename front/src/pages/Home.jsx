@@ -18,7 +18,7 @@ const levelLabelsKo = {
 
 const imageData = [
   { id: 1, title: "Lily's happy day", level: 'A1', available: true },
-  { id: 2, title: 'Red', level: 'A1', available: false },
+  { id: 2, title: 'Red Riding Hood', level: 'A1', available: false },
   { id: 3, title: 'Diary', level: 'A1', available: false },
   { id: 4, title: 'Friendship', level: 'A1', available: false },
   { id: 5, title: 'Prince', level: 'A1', available: false },

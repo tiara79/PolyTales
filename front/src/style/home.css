@@ -34,7 +34,7 @@
   font-weight: bold;
   font-size: 0.8rem;
   background-color: #eee;
-  color: #89837B;
+  color: #89837b;
   border: none;
   cursor: pointer;
   transition: all 0.25s ease-in-out;
@@ -47,23 +47,35 @@
 }
 
 /* 레벨별 색상 */
-.level-btn.A1 { background-color: #FFD9D9; }
-.level-btn.A2 { background-color: #FEE8D2; }
-.level-btn.B1 { background-color: #FFF5BA; }
-.level-btn.B2 { background-color: #DAF2CB; }
-.level-btn.C1 { background-color: #D3F7FF; }
-.level-btn.C2 { background-color: #E7CBF2; }
+.level-btn.A1 {
+  background-color: #ffd9d9;
+}
+.level-btn.A2 {
+  background-color: #fee8d2;
+}
+.level-btn.B1 {
+  background-color: #fff5ba;
+}
+.level-btn.B2 {
+  background-color: #daf2cb;
+}
+.level-btn.C1 {
+  background-color: #d3f7ff;
+}
+.level-btn.C2 {
+  background-color: #e7cbf2;
+}
 
 .level-btn.selected {
   color: #fff;
   font-weight: 900;
 }
 
-
 .level-btn:hover:not(.selected) {
   transform: translateY(-0.5px) scale(1);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  filter: brightness(1.02);  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  filter: brightness(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   filter: brightness(1.02);
   transition: all 0.3s ease;
 }
@@ -75,12 +87,24 @@
   filter: brightness(1.02);
 }
 /* 선택된 상태 색상 */
-.level-btn.selected.A1 { background-color: #FFB7B7; }
-.level-btn.selected.A2 { background-color: #FFD1A3; }
-.level-btn.selected.B1 { background-color: #F0DF7E; }
-.level-btn.selected.B2 { background-color: #C0E4A9; }
-.level-btn.selected.C1 { background-color: #AFE1ED; }
-.level-btn.selected.C2 { background-color: #DAB0EA; }
+.level-btn.selected.A1 {
+  background-color: #ffb7b7;
+}
+.level-btn.selected.A2 {
+  background-color: #ffd1a3;
+}
+.level-btn.selected.B1 {
+  background-color: #f0df7e;
+}
+.level-btn.selected.B2 {
+  background-color: #c0e4a9;
+}
+.level-btn.selected.C1 {
+  background-color: #afe1ed;
+}
+.level-btn.selected.C2 {
+  background-color: #dab0ea;
+}
 
 /* 이미지 그리드 레이아웃 */
 .image-grid {
@@ -109,6 +133,7 @@
 .image-title {
   margin-top: 0.5rem;
   font-weight: 600;
+  text-align: left;
 }
 
 /* 잠긴 이미지 처리 */
@@ -147,4 +172,3 @@
   visibility: visible;
   opacity: 1;
 }
-

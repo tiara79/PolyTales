@@ -17,7 +17,14 @@ npm install
 
 # 프론트 실행 (http://localhost:3001)
 npm start
-
+  # mac 의 경우 packgage.json start 수정 필요
+  # "scripts": {
+  #   "start": "set PORT=3001 && react-scripts start",
+  #   "build": "react-scripts build",
+  #   "test": "react-scripts test",
+  #   "eject": "react-scripts eject"
+  # },
+  
 # 백엔드 실행 (http://localhost:3000)
 npx nodemon app.js
 ```

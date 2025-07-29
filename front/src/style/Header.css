@@ -46,6 +46,13 @@ body, html {
   color: #333;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* 요소들 사이 간격 추가 */
+    
+}
+
 .header-right .start-button {
   background-color: #FEA270;
   color: #fff;

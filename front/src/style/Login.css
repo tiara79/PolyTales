@@ -49,6 +49,13 @@
   justify-content: center;
 }
 
+#googleSignInDiv > div,
+.g_id_signin {
+  transform: scale(1.5);
+  transform-origin: center;
+  margin: 20px; /* 크기가 커진 만큼 여백 추가 */
+}
+
 .social-btn {
   background: none;
   border: none;

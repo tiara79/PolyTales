@@ -1,0 +1,26 @@
+-- 접속
+psql -U postgres -d polytales
+
+-- 테이블 생성 확인
+\dt
+
+
+-- Express 백엔드용 PostgreSQL 연결 코드
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  user: 'justCoding',
+  host: 'localhost',
+  database: 'users',
+  password: 'admin1234',
+  port: 5432,
+  ssl: false, // 개발 환경에서는 보통 false
+  statement_timeout: 30000,         // 쿼리 실행 최대 시간 30초
+  query_timeout: 30000,             // query() 호출 자체의 제한 시간
+  connectionTimeoutMillis: 5000,    // 연결 제한 시간 5초
+  idleTimeoutMillis: 10000,         // 사용 안 하면 10초 뒤 제거
+  max: 20                           // 최대 클라이언트 수
+});
+
+module.exports = pool;
+
