@@ -4,11 +4,11 @@ const db = require("../models");
 const createNote = async (req, res) => {
     try {
         console.log(' createNote 함수 시작');
-        console.log(' 요청 데이터:', req.body);
+        console.log(' request data :', req.body);
         
         const { userid, storyid, title, content } = req.body;
 
-        // 필수 필드 검증
+        // 모든 필드 유효성 검사
         if (!userid || !storyid || !title || !content) {
             return res.status(400).json({ 
                 message: "모든 항목을 입력해주세요." 
