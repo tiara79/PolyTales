@@ -4,7 +4,9 @@ const express = require('express');
 const cors = require("cors");
 const { sequelize } = require('./src/models');
 
+// ──────────────── 라우터 설정 ────────────────
 const authRoutes = require('./src/routes/auth');
+const userRouter = require('./src/routes/users');
 const notesRouter = require("./src/routes/notes");
 const storiesRouter = require("./src/routes/story");
 
@@ -21,8 +23,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ──────────────── 라우터 ────────────────
+// ──────────────── 라우터 연결 ────────────────
 app.use('/auth', authRoutes);
+app.use('/users', userRouter);
 app.use("/notes", notesRouter);
 app.use("/stories", storiesRouter);
 

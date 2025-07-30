@@ -1,18 +1,16 @@
 //시퀄라이즈 컨벤션 : 엔터티: 대문자시작/테이블명: 복수형 소문자 카멜
 module.exports = (sequelize, DataTypes) => {
-    const User = sequelize.define(
-        "User",
-        {
-            userId: {
+    const User = sequelize.define( "users", {
+            userid: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
             },
-            oauthProvider: {
+            oauthprovider: {
                 type: DataTypes.ENUM("naver", "kakao", "google"),
                 allowNull: false
             },
-            oauthId: {
+            oauthid: {
                 type: DataTypes.TEXT,
                 allowNull: false
             },
@@ -20,14 +18,46 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.TEXT,
                 allowNull: true
             },
-            nickName: {
+            nickname: {
                 type: DataTypes.TEXT,
                 allowNull: true
             },
-            profImg: {
+            profimg: {
                 type: DataTypes.TEXT,
                 allowNull: true
+            },
+            // 새로 추가된 필드들
+            status: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 1,
+            validate: {
+                isIn: [[1, 2, 3]]  // 1:정상, 2:경고, 3:강제삭제
             }
+            },
+            role: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 2,
+            validate: {
+                isIn: [[1, 2]]  // 1:관리자, 2:회원
+            }
+            },
+            plan: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 1,
+            validate: {
+                isIn: [[1, 2, 3]]  // 1:무료, 2:스탠다드, 3:프리미엄
+            }
+            },
+            pay: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            validate: {
+                isIn: [[1, 2, 3]]
+            }
+            } // 1:카카오페이, 2:네이버페이, 3: 토스페이
         },
         {
             tableName: "users",
@@ -44,19 +74,19 @@ module.exports = (sequelize, DataTypes) => {
     User.associate = function (models) {
         // User has many Notes
         User.hasMany(models.Note, {
-            foreignKey: "userId",
+            foreignKey: "userid",
             as: "notes"
         });
 
         // User has many Progress records
         User.hasMany(models.Progress, {
-            foreignKey: "userId",
+            foreignKey: "userid",
             as: "progress"
         });
 
         // User has many Tutor chats
         User.hasMany(models.Tutor, {
-            foreignKey: "userId",
+            foreignKey: "userid",
             as: "tutorChats"
         });
     };
