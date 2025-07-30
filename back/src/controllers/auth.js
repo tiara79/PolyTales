@@ -2,19 +2,18 @@
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-// const { db } = require('../database/initDatabase'); // SQLite 연결
-const { User } = require('../models'); // 이 줄이 빠져있음
+const { User } = require('../models'); 
 
 //  JWT 토큰 발급 함수
 const generateAccessToken = (user) => {
   console.log("🔑 JWT_SECRET 값:", process.env.JWT_SECRET);
   return jwt.sign(
     {
-      userId: user.userId,        // id → userId로 변경
-      nickName: user.nickName,    // userName → nickName으로 변경
+      userId: user.userId,        
+      nickName: user.nickName,    
       email: user.email,
-      oauthProvider: user.oauthProvider,  // OAuth 제공자 정보 추가
-      oauthId: user.oauthId       // OAuth ID 추가
+      oauthProvider: user.oauthProvider,  
+      oauthId: user.oauthId       
     },
     process.env.JWT_SECRET,
     { expiresIn: '60d' }

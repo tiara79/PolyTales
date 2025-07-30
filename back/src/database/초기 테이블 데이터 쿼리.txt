@@ -1,0 +1,90 @@
+INSERT INTO users (userId, oauthProvider, oauthId, email, nickName, profImg) VALUES 
+(1, 'google', '108241781991361916322', 'agelin50@gmail.com', 'da da', 'https://randomuser.me/api/portraits/men/1.jpg'),
+(2, 'google', '108241781991361916323', 'poca.jeon@gmail.com', 'poca', 'https://randomuser.me/api/portraits/women/2.jpg'),
+(3, 'kakao', '108241781991361916324', 'kakaouser@kakao.com', 'pink', 'https://randomuser.me/api/portraits/men/3.jpg');
+
+
+INSERT INTO story (storyTitle, storyCoverPath, thumbnail, movie, description, langLevel, langLevelKo, nation, topic) VALUES
+('Lily''s happy day', '/style/img/contents/lilys_happy_day.jpg', 'lilys_happy_day.jpg', 'lilys_happy_day.mp4', 'Lily''s happy day에 대한 이야기입니다.', 'A1', '초급', 'ko', '일상'),
+('Red Riding Hood', '/style/img/contents/red_riding_hood.jpg', 'red_riding_hood.jpg', 'red_riding_hood.mp4', 'Red Riding Hood에 대한 이야기입니다.', 'A1', '초급', 'ko', '동화'),
+('My Diary', '/style/img/contents/my_diary.jpg', 'my_diary.jpg', 'my_diary.mp4', 'My Diary에 대한 이야기입니다.', 'A1', '초급', 'ko', '일상'),
+('Our Friendship', '/style/img/contents/our_friendship.jpg', 'our_friendship.jpg', 'our_friendship.mp4', 'Our Friendship에 대한 이야기입니다.', 'A1', '초급', 'ko', '우정'),
+('The Little Prince', '/style/img/contents/the_little_prince.jpg', 'the_little_prince.jpg', 'the_little_prince.mp4', 'The Little Prince에 대한 이야기입니다.', 'A1', '초급', 'ko', '동화'),
+('Fighters', '/style/img/contents/fighters.jpg', 'fighters.jpg', 'fighters.mp4', 'Fighters에 대한 이야기입니다.', 'A1', '초급', 'ko', '코미디'),
+('The Pizzaria', '/style/img/contents/the_pizzaria.jpg', 'the_pizzaria.jpg', 'the_pizzaria.mp4', 'The Pizzaria에 대한 이야기입니다.', 'A1', '초급', 'ko', '음식'),
+('Oh..Autumn', '/style/img/contents/oh_autumn.jpg', 'oh_autumn.jpg', 'oh_autumn.mp4', 'Oh..Autumn에 대한 이야기입니다.', 'A2', '초중급', 'ko', '로맨스'),
+('Alpha male', '/style/img/contents/alpha_male.jpg', 'alpha_male.jpg', 'alpha_male.mp4', 'Alpha male에 대한 이야기입니다.', 'A2', '초중급', 'ko', '로맨스'),
+('Jack and the beanstalk', '/style/img/contents/jack_and_the_beanstalk.jpg', 'jack_and_the_beanstalk.jpg', 'jack_and_the_beanstalk.mp4', 'Jack and the beanstalk에 대한 이야기입니다.', 'A2', '초중급', 'ko', '동화');
+
+-- 시퀀스 현재 값을 마지막 값으로 리셋
+SELECT setval(pg_get_serial_sequence('story', 'storyId'), MAX(storyId)) FROM story;
+
+
+INSERT INTO story (storyTitle, storyCoverPath, thumbnail, movie, description, langLevel, langLevelKo, nation, topic) VALUES
+('Onooi', '/style/img/contents/onooi.jpg', 'onooi.jpg', 'onooi.mp4', 'Onooi에 대한 이야기입니다.', 'A2', '초중급', 'ko', '동화'),
+('Shopping mall', '/style/img/contents/shopping_mall.jpg', 'shopping_mall.jpg', 'shopping_mall.mp4', 'Shopping mall에 대한 이야기입니다.', 'A2', '초중급', 'ko', '일상'),
+('Cinderella', '/style/img/contents/cinderella.jpg', 'cinderella.jpg', 'cinderella.mp4', 'Cinderella에 대한 이야기입니다.', 'A2', '초중급', 'ko', '동화'),
+('Cute Wolf reads fairy tales', '/style/img/contents/cute_wolf_reads_fairy_tales.jpg', 'cute_wolf_reads_fairy_tales.jpg', 'cute_wolf_reads_fairy_tales.mp4', 'Cute Wolf reads fairy tales에 대한 이야기입니다.', 'B1', '중급', 'ko', '동화'),
+('Red hair Anny', '/style/img/contents/red_hair_anny.jpg', 'red_hair_anny.jpg', 'red_hair_anny.mp4', 'Red hair Anny에 대한 이야기입니다.', 'B1', '중급', 'ko', '서사'),
+('Pleasure of Reading', '/style/img/contents/pleasure_of_reading.jpg', 'pleasure_of_reading.jpg', 'pleasure_of_reading.mp4', 'Pleasure of Reading에 대한 이야기입니다.', 'B1', '중급', 'ko', '인문'),
+('Happy Poptta''s Adventure', '/style/img/contents/happy_popttas_adventure.jpg', 'happy_popttas_adventure.jpg', 'happy_popttas_adventure.mp4', 'Happy Poptta''s Adventure에 대한 이야기입니다.', 'B1', '중급', 'ko', '판타지'),
+('Books swap', '/style/img/contents/books_swap.jpg', 'books_swap.jpg', 'books_swap.mp4', 'Books swap에 대한 이야기입니다.', 'B1', '중급', 'ko', '인문'),
+('five glassballs', '/style/img/contents/five_glassballs.jpg', 'five_glassballs.jpg', 'five_glassballs.mp4', 'five glassballs에 대한 이야기입니다.', 'B2', '중고급', 'ko', '동화'),
+('Gran Book Festival vol.1', '/style/img/contents/gran_book_festival_vol1.jpg', 'gran_book_festival_vol1.jpg', 'gran_book_festival_vol1.mp4', 'Gran Book Festival vol.1에 대한 이야기입니다.', 'B2', '중고급', 'ko', '소설'),
+('Popssy Club', '/style/img/contents/popssy_club.jpg', 'popssy_club.jpg', 'popssy_club.mp4', 'Popssy Club에 대한 이야기입니다.', 'B2', '중고급', 'ko', '우정'),
+('The Picture of Dorian Gray', '/style/img/contents/the_picture_of_dorian_gray.jpg', 'the_picture_of_dorian_gray.jpg', 'the_picture_of_dorian_gray.mp4', 'The Picture of Dorian Gray에 대한 이야기입니다.', 'B2', '중고급', 'ko', '동화'),
+('Prince and me', '/style/img/contents/prince_and_me.jpg', 'prince_and_me.jpg', 'prince_and_me.mp4', 'Prince and me에 대한 이야기입니다.', 'B2', '중고급', 'ko', '판타지'),
+('Christmas Surprise!', '/style/img/contents/christmas_surprise.jpg', 'christmas_surprise.jpg', 'christmas_surprise.mp4', 'Christmas Surprise!에 대한 이야기입니다.', 'B2', '중고급', 'ko', '일상'),
+('Fairy Kingdom', '/style/img/contents/fairy_kingdom.jpg', 'fairy_kingdom.jpg', 'fairy_kingdom.mp4', 'Fairy Kingdom에 대한 이야기입니다.', 'C1', '고급', 'ko', '판타지'),
+('Story of Shakespeare', '/style/img/contents/story_of_shakespeare.jpg', 'story_of_shakespeare.jpg', 'story_of_shakespeare.mp4', 'Story of Shakespeare에 대한 이야기입니다.', 'C1', '고급', 'ko', '위인'),
+('The Receiver', '/style/img/contents/pleasure_of_reading.jpg', 'pleasure_of_reading.jpg', 'pleasure_of_reading.mp4', 'The Receiver에 대한 이야기입니다.', 'C1', '고급', 'ko', '인문'),
+('watch dog  watch out!!!', '/style/img/contents/watch_dog_watch_out.jpg', 'watch_dog_watch_out.jpg', 'watch_dog_watch_out.mp4', 'watch dog  watch out!!!에 대한 이야기입니다.', 'C1', '고급', 'ko', '판타지'),
+('Fantasy destination', '/style/img/contents/fantasy_destination.jpg', 'fantasy_destination.jpg', 'fantasy_destination.mp4', 'Fantasy destination에 대한 이야기입니다.', 'C1', '고급', 'ko', '판타지'),
+('Girls Girls', '/style/img/contents/girls_girls.jpg', 'girls_girls.jpg', 'girls_girls.mp4', 'Girls Girls에 대한 이야기입니다.', 'C1', '고급', 'ko', '우정'),
+('The Holes and the iguanas', '/style/img/contents/the_holes_and_the_iguanas.jpg', 'the_holes_and_the_iguanas.jpg', 'the_holes_and_the_iguanas.mp4', 'The Holes and the iguanas에 대한 이야기입니다.', 'C1', '고급', 'ko', '동화'),
+('Easter', '/style/img/contents/easter.jpg', 'easter.jpg', 'easter.mp4', 'Easter에 대한 이야기입니다.', 'C2', '최고급', 'ko', '인문'),
+('Beauty and the Beast', '/style/img/contents/beauty_and_the_beast.jpg', 'beauty_and_the_beast.jpg', 'beauty_and_the_beast.mp4', 'Beauty and the Beast에 대한 이야기입니다.', 'C2', '최고급', 'ko', '동화'),
+('welcome to my birthday party', '/style/img/contents/welcome_to_my_birthday_party.jpg', 'welcome_to_my_birthday_party.jpg', 'welcome_to_my_birthday_party.mp4', 'welcome to my birthday party에 대한 이야기입니다.', 'C2', '최고급', 'ko', '일상'),
+('Lovely Unicorn Mary', '/style/img/contents/lovely_unicorn_mary.jpg', 'lovely_unicorn_mary.jpg', 'lovely_unicorn_mary.mp4', 'Lovely Unicorn Mary에 대한 이야기입니다.', 'C2', '최고급', 'ko', '동화'),
+('Another me...', '/style/img/contents/another_me.jpg', 'another_me.jpg', 'another_me.mp4', 'Another me...에 대한 이야기입니다.', 'C2', '최고급', 'ko', '인문'),
+('The galaxy', '/style/img/contents/the_galaxy.jpg', 'the_galaxy.jpg', 'the_galaxy.mp4', 'The galaxy에 대한 이야기입니다.', 'C2', '최고급', 'ko', 'SF'),
+('on Safari', '/style/img/contents/on_safari.jpg', 'on_safari.jpg', 'on_safari.mp4', 'on Safari에 대한 이야기입니다.', 'C2', '최고급', 'ko', '소설'),
+('School life', '/style/img/contents/school_life.jpg', 'school_life.jpg', 'school_life.mp4', 'School life에 대한 이야기입니다.', 'C2', '최고급', 'ko', '일상'),
+('Space Snoopy', '/style/img/contents/space_snoopy.jpg', 'space_snoopy.jpg', 'space_snoopy.mp4', 'Space Snoopy에 대한 이야기입니다.', 'C2', '최고급', 'ko', 'SF');
+
+INSERT INTO language (storyId, nation, grammar, word, mean, partSpeech, vocaSentence) VALUES
+(1, 'en', '주어 + be동사: ~이다', 'girl', '소녀', '(명사)', 'Lily is a little girl.'),
+(1, 'en', NULL, 'little', '작은', '(형용사)', 'She is little.'),
+(1, 'fr', 'Sujet + verbe être : ~est', 'fille', '소녀', '(명사)', 'Lily est une petite fille.'),
+(1, 'fr', NULL, 'petite', '작은', '(형용사)', 'Elle est petite.');
+
+
+INSERT INTO note (userId, storyId, title, content) VALUES
+(2, 1, '문장 구조 요약', '주어 + be동사 구조는 영어에서 매우 기본적인 형식입니다.'),
+(1, 1, '새 단어 정리', 'comes up은 "발생하다"는 뜻으로 자주 등장합니다.'),
+(3, 1, '튜터와의 대화 요약', 'Lily is a little girl. 문장에서 girl은 명사입니다.'),
+(3, 1, '의문문 예제 정리', '의문문은 주어 + 동사의 순서를 바꿔서 표현합니다.'),
+(1, 1, '중요 표현 모음', 'little은 형용사이며, 크기를 표현할 때 사용합니다.');
+
+
+INSERT INTO tutor (userId, storyId, sender, message) VALUES
+(1, 1, 'user', 'comes up이란 뜻이 뭐야?'),
+(1, 1, 'tutor', '"comes up"은 발생하다라는 뜻이에요');
+
+INSERT INTO progress (userId, storyId, currentPage, isFinished) VALUES
+(1, 1, 6, FALSE),
+(1, 1, 1, TRUE),
+(3, 1, 3, FALSE),
+(2, 1, 9, TRUE),
+(3, 1, 1, FALSE);
+
+-- 테이블 삭제  : 의존성 주의
+- DROP TABLE (의존성 역순으로)
+DROP TABLE IF EXISTS tutor;
+DROP TABLE IF EXISTS progress;
+DROP TABLE IF EXISTS note;
+DROP TABLE IF EXISTS language;
+DROP TABLE IF EXISTS story;
+DROP TABLE IF EXISTS users;
+
+

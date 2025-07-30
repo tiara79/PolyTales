@@ -1,32 +1,42 @@
 module.exports = (sequelize, DataTypes) => {
-  const Note = sequelize.define('Note', {
-    noteId: {
+  const Note = sequelize.define('note', {
+    noteid: { 
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
+      autoIncrement: true
     },
-    userId: {
+    userid: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: 'users',
+        key: 'userid'
+      }
     },
-    storyId: {
+    storyid: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: 'story',
+        key: 'storyid'
+      }
     },
     title: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
+      allowNull: false
     },
     content: {
       type: DataTypes.TEXT,
+      allowNull: false
     },
-    createdAt: {
+    createdat: {  // createdAt -> createdat
       type: DataTypes.DATE,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
-    },
-  }, 
-  {
+      defaultValue: DataTypes.NOW
+    }
+  }, {
     tableName: 'note',
-    timestamps: false,
+    timestamps: false,  // Sequelize 자동 timestamp 비활성화
+    freezeTableName: true
   });
 
   return Note;

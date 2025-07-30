@@ -2,9 +2,7 @@ import "../style/Login.css";
 import logo from "../style/img/login/loginLogo.png";
 
 // import googleIcon from "../style/img/login/google.png";
-import naverIcon from "../style/img/login/naver.png";
-import kakaoIcon from "../style/img/login/kakao.png";
-import { useEffect, useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 

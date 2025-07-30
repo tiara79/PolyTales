@@ -1,41 +1,27 @@
-'use strict';
-
-const fs = require('fs');
-const path = require('path');
 const { Sequelize } = require('sequelize');
-const Note = require('./Note')(sequelize, Sequelize.DataTypes);
-db.Note = Note;
-
-require('dotenv').config();
+const config = require('../config/config.js')['development'];
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: 'postgres',
-    logging: false,
-  }
+  config.database,
+  config.username,
+  config.password,
+  config
 );
 
 const db = {};
-
-fs.readdirSync(__dirname)
-  .filter(file => file.endsWith('.js') && file !== 'index.js')
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize);
-    db[model.name] = model;
-  });
-
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
-
-db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+db.sequelize = sequelize;
+
+// 필요한 모델만 import
+db.User = require('./user')(sequelize, Sequelize.DataTypes);
+db.Story = require('./Story')(sequelize, Sequelize.DataTypes);
+db.Note = require('./Note')(sequelize, Sequelize.DataTypes);
+
+// 관계 설정
+db.User.hasMany(db.Note, { foreignKey: 'userId' });
+db.Note.belongsTo(db.User, { foreignKey: 'userId' });
+
+db.Story.hasMany(db.Note, { foreignKey: 'storyId' });
+db.Note.belongsTo(db.Story, { foreignKey: 'storyId' });
 
 module.exports = db;
