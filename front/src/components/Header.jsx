@@ -7,15 +7,22 @@ import ProfileMenu from "./ProfileMenu";
 
 export default function Header() {
   const { pathname } = useLocation();
-  const navigate = useNavigate(); // 페이지 이동용 훅
+  const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
-  // const user = null; // 로그인 제거된 상태
+
+  // 디버깅 로그 추가
+  console.log("🎨 Header 렌더링 - 받은 user 데이터:", user);
+  console.log("🎨 필드별 확인:");
+  console.log("- user.nickname:", user?.nickname);
+  console.log("- user.userid:", user?.userid);
+  console.log("- user.profimg:", user?.profimg);
 
   const handleLogoClick = () => {
-    navigate("/"); //  "back to home"
+    navigate("/");
   };
+
   const handleStartClick = () => {
-    navigate("/login"); //  "시작하기"
+    navigate("/login");
   };
 
   return (
@@ -28,12 +35,13 @@ export default function Header() {
           onClick={handleLogoClick}
         />
       </div>
+      
       <div className="header-right">
         {user ? (
           <ProfileMenu
-            username={user.nickName}
-            userId={user.userId}
-            userProfileImg={user.profImg}
+            username={user.nickname}        
+            userId={user.userid}             
+            userProfileImg={user.profimg}   
             onLogout={logout}
           />
         ) : (

@@ -1,4 +1,4 @@
-//시퀄라이즈 컨벤션 : 엔터티: 대문자시작/테이블명: 복수형 소문자 카멜
+
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define( "users", {
             userid: {
@@ -62,12 +62,12 @@ module.exports = (sequelize, DataTypes) => {
         {
             tableName: "users",
             timestamps: false,
-            // indexes: [
-            //     {
-            //         unique: true,
-            //         fields: ['oauthProvider', 'oauthId']
-            //     }
-            // ]
+            indexes: [
+                {
+                    unique: true,
+                    fields: ['oauthprovider', 'oauthid']
+                }
+            ]
         }
     );
 
