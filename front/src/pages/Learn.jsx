@@ -1,8 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // toast (alert 대체용)
-import { toast } from 'react-toastify'; 
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import close from '../style/img/learn/button/close.png';
@@ -10,11 +10,10 @@ import pause from '../style/img/learn/button/pause.png';
 import send from '../style/img/learn/button/send.png';
 import pola from '../style/img/learn/pola.png';
 
-import '../style/Learn.css';
 import '../style/storylearn.css';
+import '../style/Learn.css';
 import '../style/note.css';
 import '../style/Chat.css';
-
 
 
 function Learn() {
@@ -24,18 +23,29 @@ function Learn() {
   const [pages, setPages] = useState([]);
   const [pageNum, setPageNum] = useState(1);
   const [caption, setCaption] = useState('');
-  const lang = 'en';
+  const [lang, setLang] = useState('ko');
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [languageData, setLanguageData] = useState([]);
+
 
   const goPrev = () => setPageNum(p => Math.max(p - 1, 1));
   const goNext = () => setPageNum(prev => Math.min(prev + 1, pages.length));
 
+  const langLabel = {ko: '한국어', fr: '프랑스어',ja: '일본어', en: '영어', es: '스페인어', de: '독일어',};
+
+  // 데이터 로딩을 useEffect로 이동
   useEffect(() => {
     fetch(`http://localhost:3000/learn/1?lang=${lang}`)
       .then(res => res.json())
-      .then(data => setPages(data));
-  }, []);
+      .then(result => {
+        setPages(result.pages);
+        setLanguageData(result.language);
+      })
+      .catch(error => {
+        console.error('데이터 로딩 오류:', error);
+      });
+  }, [lang]); // lang이 변경될 때마다 실행
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -56,16 +66,27 @@ function Learn() {
   useEffect(() => {
     if (pages.length === 0) return;
     const current = pages[pageNum - 1];
-    if (!current || !current.captionpath) return;
-    fetch(current.captionpath)
-      .then(res => res.text())
-      .then(data => setCaption(data))
-      .catch(err => console.error('자막 로딩 실패:', err));
+    if (!current || !current.caption) return;
+
+    setCaption(current.caption);
   }, [pageNum, pages]);
 
+  useEffect(() => {
+  if (pages.length === 0) return;
+
+  const current = pages[pageNum - 1];
+  if (!current || !current.caption) return;
+
+  // \n 처리
+  const cleanCaption = current.caption.replace(/\\n/g, '\n');
+  setCaption(cleanCaption);
+  }, [pageNum, pages]);
+
+
+  // 자막 줄바꿈 포맷 함수 
   const formatCaption = text => {
     return text
-      .split(/(?<=\.)\s+/)
+      .split('\n')
       .filter(Boolean)
       .map((line, i) => <p key={i}>{line.trim()}</p>);
   };
@@ -155,15 +176,36 @@ function Learn() {
       {/* 문법 영역 */}
       <div className="div4 grammar">
         <h4>문법</h4>
-        <p>주어 + be동사 : ~이다</p>
+        <p>{languageData[0]?.grammar || '로딩 중...'}</p>
       </div>
+
       <div className="div5 voca">
         <h4>단어</h4>
-        <p>Lily : 주인공 이름<br />little (형) 작은<br />girl (명) 소녀</p>
+        <p>
+          {languageData[0] ? (
+            <>
+              {languageData[0].word} ({languageData[0].partspeech}) - {languageData[0].mean}<br />
+              예문: {languageData[0].vocasentence}
+            </>
+          ) : (
+            '로딩 중...'
+          )}
+        </p>
       </div>
+
+      {/* 언어 선택 영역 */}
       <div className="div6 lang-select">
-        {['한국어', '프랑스어', '일본어', '영어', '스페인어', '독일어'].map((lang, idx) => (
-          <label key={idx}><input type="radio" name="option" defaultChecked={idx === 0} />{lang}</label>
+        {Object.entries(langLabel).map(([code, label]) => (
+          <label key={code}>
+            <input
+              type="radio"
+              name="option"
+              value={code}
+              checked={lang === code}
+              onChange={() => setLang(code)}
+            />
+            {label}
+          </label>
         ))}
       </div>
 

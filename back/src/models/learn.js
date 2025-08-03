@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    captionpath: {
+    caption: {
       type: DataTypes.TEXT,
       allowNull: false,
     },

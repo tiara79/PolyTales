@@ -34,14 +34,15 @@
   left: 0;
   right: 0;
   color: #333;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   line-height: 1.4;
   font-weight: bold;
   opacity: 1;
   transition: opacity 0.3s ease;
   pointer-events: none;
   margin-left: 20px;
-  text-align: left;
+  text-align: center;
+  gap: 10px;
 }
 
 /* 자막 호버시 숨김 */

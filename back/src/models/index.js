@@ -18,6 +18,7 @@ db.User = require('./user')(sequelize, Sequelize.DataTypes);
 db.Story = require('./story')(sequelize, Sequelize.DataTypes);
 db.Note = require('./note')(sequelize, Sequelize.DataTypes);
 db.learn = require('./learn')(sequelize, Sequelize.DataTypes);
+db.storylearn = require('./learn')(sequelize, Sequelize.DataTypes); // storylearn 별칭 추가
 db.Language = require('./language')(sequelize, Sequelize.DataTypes);
 
 // 관계 설정
