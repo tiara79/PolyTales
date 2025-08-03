@@ -91,3 +91,16 @@ INSERT INTO storylearn (storyid, pagenumber, nation, imagepath, captionpath, aud
 (1, 9, 'de', '/img/A1/lily/lily_9.png', '/caption/A1/lily/lily_9_de.txt', '/audio/A1/lily/lily_9_de.mp3'),
 (1, 10, 'de', '/img/A1/lily/lily_10.png', '/caption/A1/lily/lily_10_de.txt', '/audio/A1/lily/lily_10_de.mp3');
 
+-- 문법/단어 테이블 생성
+CREATE TABLE language (
+vocaId SERIAL PRIMARY KEY,
+grammar TEXT,
+word TEXT,
+mean TEXT,
+partSpeech TEXT,
+vocaSentence TEXT,
+nation TEXT CHECK (
+nation IN ('ko', 'ja', 'en', 'de', 'es', 'fr')
+),
+storyId INTEGER REFERENCES story(storyid)
+);

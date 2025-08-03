@@ -1,6 +1,6 @@
 import "../style/Login.css";
 import logo from "../style/img/login/loginLogo.png";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
@@ -24,7 +24,7 @@ export default function Login() {
   }
 
   // Google Sign-In 콜백 함수
-  async function handleCredentialResponse(response) {
+  const handleCredentialResponse = useCallback(async (response) => {
     try {
       console.log("🔍 Google 원본 응답:", response);
       
@@ -92,21 +92,7 @@ export default function Login() {
       console.error("🚨 Google 로그인 처리 오류:", error);
       alert("로그인 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
-  }
-
-  // Google 로그인 버튼 클릭 핸들러
-  const handleGoogleLogin = () => {
-    if (window.google) {
-      window.google.accounts.id.prompt();
-    }
-  };
-
-  // 임시 로그아웃 함수
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.reload();
-  };
+  }, [login, navigate]);
 
   // Google Sign-In 초기화
   useEffect(() => {
@@ -131,7 +117,7 @@ export default function Login() {
         }
       );
     }
-  }, []);
+  }, [handleCredentialResponse]);
 
   return (
     <div className="login-page">

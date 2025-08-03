@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import "../style/Mypage.css";
@@ -8,16 +8,6 @@ import ProfImg from "../style/img/login/ProfImg.png";
 export default function Mypage() {
   const navigate = useNavigate();
   const { user, onLogout } = useContext(AuthContext);
-
-  // 예시 데이터
-  const readBooks = [
-    { id: 1, title: "Lily's happy dayLily's happy day", img: Lilyshappyday },
-    { id: 2, title: "Red Ridinghood", img: Lilyshappyday },
-    { id: 3, title: "My diary", img: Lilyshappyday },
-    { id: 4, title: "The Little Prince", img: Lilyshappyday },
-    { id: 5, title: "Fighters", img: Lilyshappyday },
-    { id: 6, title: "Another Book", img: Lilyshappyday },
-  ];
 
   const likedBooks = [
     { id: 4, title: "Lily's happy dayLily's happy day", img: Lilyshappyday },

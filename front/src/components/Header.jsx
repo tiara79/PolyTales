@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import "../style/Header.css";
@@ -6,7 +6,6 @@ import headerLogo from "../style/img/home/headerLogo.png";
 import ProfileMenu from "./ProfileMenu";
 
 export default function Header() {
-  const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
 

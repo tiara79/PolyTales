@@ -13,7 +13,7 @@ import Bookmark from "./pages/Bookmark";
 import History from "./pages/History";
 import Plan from "./pages/Plan";
 import Report from "./pages/Report";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 
 

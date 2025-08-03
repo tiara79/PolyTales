@@ -18,6 +18,7 @@ db.User = require('./user')(sequelize, Sequelize.DataTypes);
 db.Story = require('./story')(sequelize, Sequelize.DataTypes);
 db.Note = require('./note')(sequelize, Sequelize.DataTypes);
 db.learn = require('./learn')(sequelize, Sequelize.DataTypes);
+db.Language = require('./language')(sequelize, Sequelize.DataTypes);
 
 // 관계 설정
 db.User.hasMany(db.Note, { foreignKey: 'userid' })
@@ -25,5 +26,8 @@ db.Note.belongsTo(db.User, { foreignKey: 'userid' });
 
 db.Story.hasMany(db.Note, { foreignKey: 'storyid' });
 db.Note.belongsTo(db.Story, { foreignKey: 'storyid' });
+
+db.Story.hasMany(db.Language, { foreignKey: 'storyid' });
+db.Language.belongsTo(db.Story, { foreignKey: 'storyid' });
 
 module.exports = db;

@@ -10,7 +10,7 @@ const userRouter = require('./src/routes/users');
 const notesRouter = require("./src/routes/notes");
 const storiesRouter = require("./src/routes/story");
 const learnRouter = require('./src/routes/learn');
-
+const languageRouter = require('./src/routes/language');
 
 
 const app = express();
@@ -32,6 +32,7 @@ app.use('/users', userRouter);
 app.use("/notes", notesRouter);
 app.use("/stories", storiesRouter);
 app.use('/learn', learnRouter);
+app.use('/language', languageRouter);
 
 // ──────────────── 에러 처리 ────────────────
 app.use((req, res) => {
