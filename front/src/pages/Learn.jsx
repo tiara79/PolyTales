@@ -1,6 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// toast (alert 대체용)
+import { toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css';
+
 import close from '../style/img/learn/button/close.png';
 import pause from '../style/img/learn/button/pause.png';
 import send from '../style/img/learn/button/send.png';
@@ -10,6 +14,8 @@ import '../style/Learn.css';
 import '../style/storylearn.css';
 import '../style/note.css';
 import '../style/Chat.css';
+
+
 
 function Learn() {
   const navigate = useNavigate();
@@ -66,29 +72,50 @@ function Learn() {
 
   const handleCloseClick = () => navigate('/detail');
 
-  const handleSaveNote = async () => {
-    const title = noteTitleRef.current?.value.trim();
-    const content = noteContentRef.current?.value.trim();
-    if (!title || !content) {
-      alert('제목과 내용을 모두 입력하세요.');
-      return;
-    }
-    const noteData = { userId: 4, storyId: 1, title, content };
-    try {
-      const response = await fetch('http://localhost:3000/notes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(noteData)
-      });
-      if (!response.ok) throw new Error('노트 저장 실패');
-      const result = await response.json();
-      console.log('노트 저장됨:', result);
-      if (noteTitleRef.current) noteTitleRef.current.value = '';
-      if (noteContentRef.current) noteContentRef.current.value = '';
-    } catch (err) {
-      console.error('노트 저장 중 오류:', err);
-    }
-  };
+  // 노트 저장 함수
+    const handleSaveNote = async () => {
+      const titleEl = noteTitleRef.current;
+      const contentEl = noteContentRef.current;
+      const title = titleEl?.value.trim();
+      const content = contentEl?.value.trim();
+
+      if (!title || !content) {
+        toast.warn('제목과 내용을 모두 입력하세요.');
+        return;
+      }
+
+      const noteData = {
+        userid: 2, // 실제 로그인 상태면 여기 값을 useContext 또는 props 등에서 받아와야 함
+        storyid: 1,
+        title,
+        content
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000/notes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(noteData)
+        });
+
+        if (!response.ok) {
+          throw new Error(`노트 저장 실패 (status ${response.status})`);
+        }
+
+        const result = await response.json();
+        console.log('노트 저장됨:', result);
+        toast.success('노트가 저장되었습니다!');
+
+        // 입력 필드 초기화
+        if (titleEl) titleEl.value = '';
+        if (contentEl) contentEl.value = '';
+
+      } catch (error) {
+        console.error('노트 저장 중 오류:', error.message);
+        toast.error('노트 저장에 실패했습니다.');
+      }
+    };
+
 
   return (
     <div className="parent">
@@ -97,6 +124,8 @@ function Learn() {
         <h2 className="story-title">Lily's happy day</h2>
         <button className="close-button" onClick={handleCloseClick}><img src={close} alt="close" /></button>
       </div>
+
+      {/* 이미지 및 자막 영역 */}
       <div className="div3">
         <div className="story-image-container">
           {pages.length > 0 && (<>
@@ -122,6 +151,8 @@ function Learn() {
           </>)}
         </div>
       </div>
+
+      {/* 문법 영역 */}
       <div className="div4 grammar">
         <h4>문법</h4>
         <p>주어 + be동사 : ~이다</p>
@@ -135,6 +166,8 @@ function Learn() {
           <label key={idx}><input type="radio" name="option" defaultChecked={idx === 0} />{lang}</label>
         ))}
       </div>
+
+      {/* 노트 영역 */}
       <div className="div7 note-box">
         <div className="note-head">
           <strong>Note</strong>
@@ -146,6 +179,8 @@ function Learn() {
         </div>
         <textarea className="note-content" placeholder="" ref={noteContentRef} defaultValue="" />
       </div>
+
+      {/* 채팅 영역 */}
       <div className="div8">
         <div className="tutor-info">채팅 내역은 저장되지 않습니다.</div>
         <div className="chat-header">

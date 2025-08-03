@@ -63,6 +63,10 @@ npm i axios # 설치 후, 간단하게 HTTP 요청
 fetch/axios # 프론트에서 api 호출할때 사용 ,js 라이브러리 
 npm install react-kakao-maps-sdk
 
+# 추가 설치
+npm install react-toastify # React에서 알림 메시지를 예쁘고 쉽게 띄워주는 라이브러리
+
+
 # 프론트에서 필요한 서버 관련 코드는:
 Rest api 사용
 프록시 설정 (vite.config.js 또는 package.json)

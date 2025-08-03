@@ -34,7 +34,7 @@ cd front npm run start, cd back npx nodemon app.js , 루트 실행 npm run dev
 "devDependencies": {
 "concurrently": "^9.1.2",
 "nodemon": "^3.1.10"
-},
+}
 /c/Users/user/Documents/Nambu/FullStackWeb/React/BookLife$ npm install concurrently --save-dev
 
 # 간편 sns 토큰 헤더 증량

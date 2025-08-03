@@ -27,7 +27,7 @@
     "react-kakao-maps-sdk": "^1.2.0",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7",
-    "winston": "^3.17.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "concurrently": "^9.2.0",
