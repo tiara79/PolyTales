@@ -10,13 +10,14 @@ const sequelize = new Sequelize(
 );
 
 const db = {};
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
+db.Sequelize = Sequelize; // Sequelize 클래스
+db.sequelize = sequelize; // Sequelize 연결 인스턴스 ← 반드시 있어야 app.js에서 sync 가능
 
 // 필요한 모델만 import
 db.User = require('./user')(sequelize, Sequelize.DataTypes);
 db.Story = require('./story')(sequelize, Sequelize.DataTypes);
 db.Note = require('./note')(sequelize, Sequelize.DataTypes);
+db.learn = require('./learn')(sequelize, Sequelize.DataTypes);
 
 // 관계 설정
 db.User.hasMany(db.Note, { foreignKey: 'userid' })

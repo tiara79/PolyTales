@@ -9,6 +9,9 @@ const authRoutes = require('./src/routes/auth');
 const userRouter = require('./src/routes/users');
 const notesRouter = require("./src/routes/notes");
 const storiesRouter = require("./src/routes/story");
+const learnRouter = require('./src/routes/learn');
+
+
 
 const app = express();
 
@@ -28,6 +31,7 @@ app.use('/auth', authRoutes);
 app.use('/users', userRouter);
 app.use("/notes", notesRouter);
 app.use("/stories", storiesRouter);
+app.use('/learn', learnRouter);
 
 // ──────────────── 에러 처리 ────────────────
 app.use((req, res) => {

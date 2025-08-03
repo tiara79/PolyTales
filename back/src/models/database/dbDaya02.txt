@@ -1,0 +1,93 @@
+CREATE TABLE storylearn (
+  pageid SERIAL PRIMARY KEY,
+  storyid INTEGER REFERENCES story(storyId),
+  pagenumber INTEGER NOT NULL,
+  nation TEXT CHECK (
+    nation IN ('ko', 'ja', 'en', 'de', 'es', 'fr')
+  ),
+  imagepath TEXT NOT NULL,
+  captionpath TEXT NOT NULL,
+  audiopath TEXT NOT NULL
+);
+
+select * from storylearn;
+
+--KO
+INSERT INTO storylearn (storyid, pagenumber, nation, imagepath, captionpath, audiopath) VALUES
+(1, 1, 'ko', '/img/A1/lily/lily_1.png', '/caption/A1/lily/lily_1.txt', '/audio/A1/lily/lily_1.mp3'),
+(1, 2, 'ko', '/img/A1/lily/lily_2.png', '/caption/A1/lily/lily_2.txt', '/audio/A1/lily/lily_2.mp3'),
+(1, 3, 'ko', '/img/A1/lily/lily_3.png', '/caption/A1/lily/lily_3.txt', '/audio/A1/lily/lily_3.mp3'),
+(1, 4, 'ko', '/img/A1/lily/lily_4.png', '/caption/A1/lily/lily_4.txt', '/audio/A1/lily/lily_4.mp3'),
+(1, 5, 'ko', '/img/A1/lily/lily_5.png', '/caption/A1/lily/lily_5.txt', '/audio/A1/lily/lily_5.mp3'),
+(1, 6, 'ko', '/img/A1/lily/lily_6.png', '/caption/A1/lily/lily_6.txt', '/audio/A1/lily/lily_6.mp3'),
+(1, 7, 'ko', '/img/A1/lily/lily_7.png', '/caption/A1/lily/lily_7.txt', '/audio/A1/lily/lily_7.mp3'),
+(1, 8, 'ko', '/img/A1/lily/lily_8.png', '/caption/A1/lily/lily_8.txt', '/audio/A1/lily/lily_8.mp3'),
+(1, 9, 'ko', '/img/A1/lily/lily_9.png', '/caption/A1/lily/lily_9.txt', '/audio/A1/lily/lily_9.mp3'),
+(1, 10, 'ko', '/img/A1/lily/lily_10.png', '/caption/A1/lily/lily_10.txt', '/audio/A1/lily/lily_10.mp3');
+
+-- EN
+INSERT INTO storylearn (storyId, pageNumber, nation, imagePath, captionPath, audioPath) VALUES
+(1, 1, 'en', '/img/A1/lily/lily_1.png', '/caption/A1/lily/lily_1_en.txt', '/audio/A1/lily/lily_1_en.mp3'),
+(1, 2, 'en', '/img/A1/lily/lily_2.png', '/caption/A1/lily/lily_2_en.txt', '/audio/A1/lily/lily_2_en.mp3'),
+(1, 3, 'en', '/img/A1/lily/lily_3.png', '/caption/A1/lily/lily_3_en.txt', '/audio/A1/lily/lily_3_en.mp3'),
+(1, 4, 'en', '/img/A1/lily/lily_4.png', '/caption/A1/lily/lily_4_en.txt', '/audio/A1/lily/lily_4_en.mp3'),
+(1, 5, 'en', '/img/A1/lily/lily_5.png', '/caption/A1/lily/lily_5_en.txt', '/audio/A1/lily/lily_5_en.mp3'),
+(1, 6, 'en', '/img/A1/lily/lily_6.png', '/caption/A1/lily/lily_6_en.txt', '/audio/A1/lily/lily_6_en.mp3'),
+(1, 7, 'en', '/img/A1/lily/lily_7.png', '/caption/A1/lily/lily_7_en.txt', '/audio/A1/lily/lily_7_en.mp3'),
+(1, 8, 'en', '/img/A1/lily/lily_8.png', '/caption/A1/lily/lily_8_en.txt', '/audio/A1/lily/lily_8_en.mp3'),
+(1, 9, 'en', '/img/A1/lily/lily_9.png', '/caption/A1/lily/lily_9_en.txt', '/audio/A1/lily/lily_9_en.mp3'),
+(1, 10, 'en', '/img/A1/lily/lily_10.png', '/caption/A1/lily/lily_10_en.txt', '/audio/A1/lily/lily_10_en.mp3');
+
+
+-- FR
+INSERT INTO storylearn (storyid, pagenumber, nation, imagepath, captionpath, audiopath) VALUES
+(1, 1, 'fr', '/img/A1/lily/lily_1.png', '/caption/A1/lily/lily_1_fr.txt', '/audio/A1/lily/lily_1_fr.mp3'),
+(1, 2, 'fr', '/img/A1/lily/lily_2.png', '/caption/A1/lily/lily_2_fr.txt', '/audio/A1/lily/lily_2_fr.mp3'),
+(1, 3, 'fr', '/img/A1/lily/lily_3.png', '/caption/A1/lily/lily_3_fr.txt', '/audio/A1/lily/lily_3_fr.mp3'),
+(1, 4, 'fr', '/img/A1/lily/lily_4.png', '/caption/A1/lily/lily_4_fr.txt', '/audio/A1/lily/lily_4_fr.mp3'),
+(1, 5, 'fr', '/img/A1/lily/lily_5.png', '/caption/A1/lily/lily_5_fr.txt', '/audio/A1/lily/lily_5_fr.mp3'),
+(1, 6, 'fr', '/img/A1/lily/lily_6.png', '/caption/A1/lily/lily_6_fr.txt', '/audio/A1/lily/lily_6_fr.mp3'),
+(1, 7, 'fr', '/img/A1/lily/lily_7.png', '/caption/A1/lily/lily_7_fr.txt', '/audio/A1/lily/lily_7_fr.mp3'),
+(1, 8, 'fr', '/img/A1/lily/lily_8.png', '/caption/A1/lily/lily_8_fr.txt', '/audio/A1/lily/lily_8_fr.mp3'),
+(1, 9, 'fr', '/img/A1/lily/lily_9.png', '/caption/A1/lily/lily_9_fr.txt', '/audio/A1/lily/lily_9_fr.mp3'),
+(1, 10, 'fr', '/img/A1/lily/lily_10.png', '/caption/A1/lily/lily_10_fr.txt', '/audio/A1/lily/lily_10_fr.mp3');
+
+-- JA
+INSERT INTO storylearn (storyid, pagenumber, nation, imagepath, captionpath, audiopath) VALUES
+(1, 1, 'ja', '/img/A1/lily/lily_1.png', '/caption/A1/lily/lily_1_ja.txt', '/audio/A1/lily/lily_1_ja.mp3'),
+(1, 2, 'ja', '/img/A1/lily/lily_2.png', '/caption/A1/lily/lily_2_ja.txt', '/audio/A1/lily/lily_2_ja.mp3'),
+(1, 3, 'ja', '/img/A1/lily/lily_3.png', '/caption/A1/lily/lily_3_ja.txt', '/audio/A1/lily/lily_3_ja.mp3'),
+(1, 4, 'ja', '/img/A1/lily/lily_4.png', '/caption/A1/lily/lily_4_ja.txt', '/audio/A1/lily/lily_4_ja.mp3'),
+(1, 5, 'ja', '/img/A1/lily/lily_5.png', '/caption/A1/lily/lily_5_ja.txt', '/audio/A1/lily/lily_5_ja.mp3'),
+(1, 6, 'ja', '/img/A1/lily/lily_6.png', '/caption/A1/lily/lily_6_ja.txt', '/audio/A1/lily/lily_6_ja.mp3'),
+(1, 7, 'ja', '/img/A1/lily/lily_7.png', '/caption/A1/lily/lily_7_ja.txt', '/audio/A1/lily/lily_7_ja.mp3'),
+(1, 8, 'ja', '/img/A1/lily/lily_8.png', '/caption/A1/lily/lily_8_ja.txt', '/audio/A1/lily/lily_8_ja.mp3'),
+(1, 9, 'ja', '/img/A1/lily/lily_9.png', '/caption/A1/lily/lily_9_ja.txt', '/audio/A1/lily/lily_9_ja.mp3'),
+(1, 10, 'ja', '/img/A1/lily/lily_10.png', '/caption/A1/lily/lily_10_ja.txt', '/audio/A1/lily/lily_10_ja.mp3');
+
+-- ES
+INSERT INTO storylearn (storyid, pagenumber, nation, imagepath, captionpath, audiopath) VALUES
+(1, 1, 'es', '/img/A1/lily/lily_1.png', '/caption/A1/lily/lily_1_es.txt', '/audio/A1/lily/lily_1_es.mp3'),
+(1, 2, 'es', '/img/A1/lily/lily_2.png', '/caption/A1/lily/lily_2_es.txt', '/audio/A1/lily/lily_2_es.mp3'),
+(1, 3, 'es', '/img/A1/lily/lily_3.png', '/caption/A1/lily/lily_3_es.txt', '/audio/A1/lily/lily_3_es.mp3'),
+(1, 4, 'es', '/img/A1/lily/lily_4.png', '/caption/A1/lily/lily_4_es.txt', '/audio/A1/lily/lily_4_es.mp3'),
+(1, 5, 'es', '/img/A1/lily/lily_5.png', '/caption/A1/lily/lily_5_es.txt', '/audio/A1/lily/lily_5_es.mp3'),
+(1, 6, 'es', '/img/A1/lily/lily_6.png', '/caption/A1/lily/lily_6_es.txt', '/audio/A1/lily/lily_6_es.mp3'),
+(1, 7, 'es', '/img/A1/lily/lily_7.png', '/caption/A1/lily/lily_7_es.txt', '/audio/A1/lily/lily_7_es.mp3'),
+(1, 8, 'es', '/img/A1/lily/lily_8.png', '/caption/A1/lily/lily_8_es.txt', '/audio/A1/lily/lily_8_es.mp3'),
+(1, 9, 'es', '/img/A1/lily/lily_9.png', '/caption/A1/lily/lily_9_es.txt', '/audio/A1/lily/lily_9_es.mp3'),
+(1, 10, 'es', '/img/A1/lily/lily_10.png', '/caption/A1/lily/lily_10_es.txt', '/audio/A1/lily/lily_10_es.mp3');
+
+-- DE
+INSERT INTO storylearn (storyid, pagenumber, nation, imagepath, captionpath, audiopath) VALUES
+(1, 1, 'de', '/img/A1/lily/lily_1.png', '/caption/A1/lily/lily_1_de.txt', '/audio/A1/lily/lily_1_de.mp3'),
+(1, 2, 'de', '/img/A1/lily/lily_2.png', '/caption/A1/lily/lily_2_de.txt', '/audio/A1/lily/lily_2_de.mp3'),
+(1, 3, 'de', '/img/A1/lily/lily_3.png', '/caption/A1/lily/lily_3_de.txt', '/audio/A1/lily/lily_3_de.mp3'),
+(1, 4, 'de', '/img/A1/lily/lily_4.png', '/caption/A1/lily/lily_4_de.txt', '/audio/A1/lily/lily_4_de.mp3'),
+(1, 5, 'de', '/img/A1/lily/lily_5.png', '/caption/A1/lily/lily_5_de.txt', '/audio/A1/lily/lily_5_de.mp3'),
+(1, 6, 'de', '/img/A1/lily/lily_6.png', '/caption/A1/lily/lily_6_de.txt', '/audio/A1/lily/lily_6_de.mp3'),
+(1, 7, 'de', '/img/A1/lily/lily_7.png', '/caption/A1/lily/lily_7_de.txt', '/audio/A1/lily/lily_7_de.mp3'),
+(1, 8, 'de', '/img/A1/lily/lily_8.png', '/caption/A1/lily/lily_8_de.txt', '/audio/A1/lily/lily_8_de.mp3'),
+(1, 9, 'de', '/img/A1/lily/lily_9.png', '/caption/A1/lily/lily_9_de.txt', '/audio/A1/lily/lily_9_de.mp3'),
+(1, 10, 'de', '/img/A1/lily/lily_10.png', '/caption/A1/lily/lily_10_de.txt', '/audio/A1/lily/lily_10_de.mp3');
+

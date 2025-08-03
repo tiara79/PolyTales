@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import close from '../style/img/learn/button/close.png';
 import pause from '../style/img/learn/button/pause.png';
 import send from '../style/img/learn/button/send.png';
-import learn from '../style/img/learn/learn.png';
 import pola from '../style/img/learn/pola.png';
 
 import '../style/Learn.css';
@@ -69,7 +68,7 @@ function Learn() {
       </div>
 
       <div className="div3 image-box">
-        <img src={learn} alt="Lily smiling in bed" className="story-img" />
+        <img src="/img/A1/lily/lily_1.png" alt="lily image" className="story-img" />
         <p className="sentence-text">Lily is a little girl.</p>
         <div className="control-btns">
           <button className="btn no-bg no-border Text">이전문장</button>
