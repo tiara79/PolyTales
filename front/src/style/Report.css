@@ -1,0 +1,176 @@
+/*백버튼*/
+.back-button-wrapper {
+  display: flex;
+  gap: 1rem;
+  margin-top: 7px;
+  margin-left: 0.2rem;
+  margin-bottom: 1rem;
+
+  align-items: center;
+  /* 추가 */
+  height: auto;
+  /* 필요시 추가 */
+}
+
+.back-button {
+  background-color: #fea270ad;
+  color: white;
+  border: none;
+  width: 48px;
+  height: 48px;
+  margin-top: 10px;
+  margin-right: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 3px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* min-width: none;
+  min-height: ; */
+}
+
+/* 전체 배경 및 여백 */
+.main-content {
+
+  overflow-y: auto;
+  /* padding: 2rem; */
+  background-color: var(--main-bg);
+  height: 100vh;
+}
+
+/* 컨텐츠 영역 전체 */
+.report-container {
+  position: fixed;
+  top: var(--header-height);
+  bottom: var(--footer-height);
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  padding: 1rem 8rem;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+/* 컨텐츠 영역 전체 레이아웃 */
+.report-wrapper {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/*프로필박스 영역*/
+.date-box {
+  /* background-color: #faf5d0; */
+  border-radius: 20px;
+  flex: 0.7;
+  /* 프로필 영역을 1배로 */
+  max-width: 400px;
+  /* 더 넓게, 필요시 제거 */
+  min-width: 300px;
+  /* 최소 너비 지정 */
+  margin-top: 0;
+  height: 520px;
+  padding: 20px 40px;
+  text-align: center;
+}
+
+.img {
+  width: 150px;
+  margin: 60px auto 15px auto;
+}
+
+.img-text {
+  color: #696969;
+  font-size: 20px;
+}
+
+b {
+  color: #67b98a;
+}
+
+.contents-list-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+}
+
+.interest-header,
+.level-header {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  padding-left: 0;
+  margin-left: 0;
+  /* gap: 39rem;  <= 이 줄을 삭제 */
+  justify-content: space-between;
+  /* 이 줄 추가 */
+  color: #3a3a3aad;
+}
+
+hr {
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+.interest-category {
+  min-height: 100px;
+  margin-bottom: 50px;
+  padding: 30px 40px 0 40px;
+  border: #d4d4d4 1px solid;
+  border-radius: 20px;
+}
+
+.study-level {
+  min-height: 300px;
+  margin-bottom: 50px;
+  padding: 30px 50px 100px 50px;
+  border: #d4d4d4 1px solid;
+  border-radius: 20px;
+}
+
+/* 해시태그 */
+.hash-img {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.hashtag {
+  display: inline-block;
+  padding: 0.4rem 1.2rem;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #696969;
+  background: #FFD484;
+}
+
+.hashtag.romance {
+  background: #f9d6d6;
+}
+
+
+.hashtag.sf {
+  background: #d7b6fa;
+}
+
+/* 차트 */
+.pie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.Piechart {
+  width: 220px;
+  height: 220px;
+  margin: 0 auto;
+}

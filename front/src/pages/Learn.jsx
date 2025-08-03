@@ -7,8 +7,8 @@ import send from '../style/img/learn/button/send.png';
 import learn from '../style/img/learn/learn.png';
 import pola from '../style/img/learn/pola.png';
 
-import '../style/learn.css';
-import '../style/chat.css';
+import '../style/Learn.css';
+import '../style/Chat.css';
 
 function Learn() {
   const navigate = useNavigate();

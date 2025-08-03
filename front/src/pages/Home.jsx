@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../style/home.css';
+import '../style/Home.css';
 import Lilyshappyday from '../style/img/home/Lilyshappyday.png';
 import sampleImg from '../style/img/home/sample.png';
 
@@ -63,7 +63,7 @@ export default function Home() {
         })}
       </div>
 
-      <div className="image-grid">
+      <div className="image-grid" >
         {filteredImages.map(({ id, title, available }) => (
           <div key={id} className="image-box">
             {available ? (

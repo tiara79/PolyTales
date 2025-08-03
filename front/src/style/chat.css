@@ -4,7 +4,7 @@
 .div8 {
   grid-area: 2 / 10 / 5 / 13;
   background: #F6F6F6;
-  margin: 10px 20px 0 20px;
+  margin: 10px 20px 0 0px;
   border-radius: 12px;
   display: flex;
   flex-direction: column;

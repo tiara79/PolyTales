@@ -1,10 +1,9 @@
-INSERT INTO users (userId, oauthProvider, oauthId, email, nickName, profImg) VALUES 
+INSERT INTO users (userId, oauthProvider, oauthid, email, nickname, profimg) VALUES 
 (1, 'google', '108241781991361916322', 'agelin50@gmail.com', 'da da', 'https://randomuser.me/api/portraits/men/1.jpg'),
 (2, 'google', '108241781991361916323', 'poca.jeon@gmail.com', 'poca', 'https://randomuser.me/api/portraits/women/2.jpg'),
 (3, 'kakao', '108241781991361916324', 'kakaouser@kakao.com', 'pink', 'https://randomuser.me/api/portraits/men/3.jpg');
 
-
-INSERT INTO story (storyTitle, storyCoverPath, thumbnail, movie, description, langLevel, langLevelKo, nation, topic) VALUES
+INSERT INTO story (storytitle, storycoverPath, thumbnail, movie, description, langlevel, langlevelKo, nation, topic) VALUES
 ('Lily''s happy day', '/style/img/contents/lilys_happy_day.jpg', 'lilys_happy_day.jpg', 'lilys_happy_day.mp4', 'Lily''s happy day에 대한 이야기입니다.', 'A1', '초급', 'ko', '일상'),
 ('Red Riding Hood', '/style/img/contents/red_riding_hood.jpg', 'red_riding_hood.jpg', 'red_riding_hood.mp4', 'Red Riding Hood에 대한 이야기입니다.', 'A1', '초급', 'ko', '동화'),
 ('My Diary', '/style/img/contents/my_diary.jpg', 'my_diary.jpg', 'my_diary.mp4', 'My Diary에 대한 이야기입니다.', 'A1', '초급', 'ko', '일상'),
@@ -17,10 +16,10 @@ INSERT INTO story (storyTitle, storyCoverPath, thumbnail, movie, description, la
 ('Jack and the beanstalk', '/style/img/contents/jack_and_the_beanstalk.jpg', 'jack_and_the_beanstalk.jpg', 'jack_and_the_beanstalk.mp4', 'Jack and the beanstalk에 대한 이야기입니다.', 'A2', '초중급', 'ko', '동화');
 
 -- 시퀀스 현재 값을 마지막 값으로 리셋
-SELECT setval(pg_get_serial_sequence('story', 'storyId'), MAX(storyId)) FROM story;
+SELECT setval(pg_get_serial_sequence('story', 'storyid'), MAX(storyid)) FROM story;
 
 
-INSERT INTO story (storyTitle, storyCoverPath, thumbnail, movie, description, langLevel, langLevelKo, nation, topic) VALUES
+INSERT INTO story (storytitle, storycoverPath, thumbnail, movie, description, langlevel, langLevelko, nation, topic) VALUES
 ('Onooi', '/style/img/contents/onooi.jpg', 'onooi.jpg', 'onooi.mp4', 'Onooi에 대한 이야기입니다.', 'A2', '초중급', 'ko', '동화'),
 ('Shopping mall', '/style/img/contents/shopping_mall.jpg', 'shopping_mall.jpg', 'shopping_mall.mp4', 'Shopping mall에 대한 이야기입니다.', 'A2', '초중급', 'ko', '일상'),
 ('Cinderella', '/style/img/contents/cinderella.jpg', 'cinderella.jpg', 'cinderella.mp4', 'Cinderella에 대한 이야기입니다.', 'A2', '초중급', 'ko', '동화'),
@@ -52,14 +51,14 @@ INSERT INTO story (storyTitle, storyCoverPath, thumbnail, movie, description, la
 ('School life', '/style/img/contents/school_life.jpg', 'school_life.jpg', 'school_life.mp4', 'School life에 대한 이야기입니다.', 'C2', '최고급', 'ko', '일상'),
 ('Space Snoopy', '/style/img/contents/space_snoopy.jpg', 'space_snoopy.jpg', 'space_snoopy.mp4', 'Space Snoopy에 대한 이야기입니다.', 'C2', '최고급', 'ko', 'SF');
 
-INSERT INTO language (storyId, nation, grammar, word, mean, partSpeech, vocaSentence) VALUES
+INSERT INTO language (storyid, nation, grammar, word, mean, partspeech, vocasentence) VALUES
 (1, 'en', '주어 + be동사: ~이다', 'girl', '소녀', '(명사)', 'Lily is a little girl.'),
 (1, 'en', NULL, 'little', '작은', '(형용사)', 'She is little.'),
 (1, 'fr', 'Sujet + verbe être : ~est', 'fille', '소녀', '(명사)', 'Lily est une petite fille.'),
 (1, 'fr', NULL, 'petite', '작은', '(형용사)', 'Elle est petite.');
 
 
-INSERT INTO note (userId, storyId, title, content) VALUES
+INSERT INTO note (userid, storyid, title, content) VALUES
 (2, 1, '문장 구조 요약', '주어 + be동사 구조는 영어에서 매우 기본적인 형식입니다.'),
 (1, 1, '새 단어 정리', 'comes up은 "발생하다"는 뜻으로 자주 등장합니다.'),
 (3, 1, '튜터와의 대화 요약', 'Lily is a little girl. 문장에서 girl은 명사입니다.'),
@@ -67,11 +66,11 @@ INSERT INTO note (userId, storyId, title, content) VALUES
 (1, 1, '중요 표현 모음', 'little은 형용사이며, 크기를 표현할 때 사용합니다.');
 
 
-INSERT INTO tutor (userId, storyId, sender, message) VALUES
+INSERT INTO tutor (userid, storyid, sender, message) VALUES
 (1, 1, 'user', 'comes up이란 뜻이 뭐야?'),
 (1, 1, 'tutor', '"comes up"은 발생하다라는 뜻이에요');
 
-INSERT INTO progress (userId, storyId, currentPage, isFinished) VALUES
+INSERT INTO progress (userid, storyid, currentpage, isFinished) VALUES
 (1, 1, 6, FALSE),
 (1, 1, 1, TRUE),
 (3, 1, 3, FALSE),
@@ -88,3 +87,10 @@ DROP TABLE IF EXISTS story;
 DROP TABLE IF EXISTS users;
 
 
+# 테이블에 status, role, plan,pay 컬럼 추가
+
+ALTER TABLE users
+ADD COLUMN status INTEGER CHECK (status IN (1, 2, 3)) DEFAULT 1,  -- 1:정상, 2:경고, 3:강제삭제
+ADD COLUMN role INTEGER CHECK (role IN (1, 2)) DEFAULT 2,        -- 1:관리자, 2:회원
+ADD COLUMN plan INTEGER CHECK (plan IN (1, 2, 3)) DEFAULT 1,     -- 1:무료, 2:스탠다드, 3:프리미엄
+ADD COLUMN pay INTEGER CHECK (pay IN (1, 2, 3));

@@ -11,6 +11,9 @@ import Login from "./pages/Login";
 import Mypage from "./pages/Mypage";
 import Bookmark from "./pages/Bookmark";
 import History from "./pages/History";
+import Plan from "./pages/Plan";
+import Report from "./pages/Report";
+
 
 function App() {
   return (
@@ -24,6 +27,9 @@ function App() {
             <Route path="/mypage" element={<Mypage />} />
             <Route path="/bookmark" element={<Bookmark />} />
             <Route path="/history" element={<History />} />
+        
+            <Route path="/plan" element={<Plan />} />
+            <Route path="/report" element={<Report />} />
           </Route>
 
           {/*  헤더만 포함 */}

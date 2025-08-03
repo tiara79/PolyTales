@@ -1,5 +1,5 @@
 // src/components/layout/Footer.jsx
-import '../style/footer.css';
+import '../style/Footer.css';
 
 export default function Footer() {
   return (
