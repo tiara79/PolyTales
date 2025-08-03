@@ -21,7 +21,7 @@ body {
   margin-top: 0;
 }
 
-/* 헤더 */
+/* 헤더- 처음부터 읽기 */
 .div1 {
   grid-area: 1 / 1 / 2 / 4;
   border-radius: 12px;
@@ -51,7 +51,7 @@ body {
   color: #333;
   width: 20px;
 }
-
+/* 헤더 -  lily's happy day */
 .div2 {
   grid-area: 1 / 1 / 2 / 13;
   background: #FFFAC7;
@@ -68,97 +68,13 @@ body {
   text-align: center;
 }
 
-/* 스토리 영역 */
-.div3 {
-  grid-area: 2 / 1 / 5 / 7;
-  margin: 10px 20px 20px 20px;
-  border-radius: 12px;
-}
-
-.story-img {
-  width: 100%;
-  height: auto;
-  max-width: 1000px;
-  max-height: 330px;
-  border-radius: 12px;
-  object-fit: cover;
-  display: block;
-  margin: 0 auto;
-}
-
-.sentence-text {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: -5rem 0 0.5rem 5px;
-}
-
-.control-btns {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.btn {
-  padding: 0.3rem 0.3rem;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.Text {
-  background-color: #f0f0f0;
-  color: #333;
-  border-radius: 8px;
-  padding: 0.3rem 0.6rem;
-  font-weight: bold;
-}
-
-.no-bg {
-  background: none !important;
-}
-
-.no-border {
-  border: none !important;
-}
-
-.pause {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  background-color: #5F5C5C;
-  color: white;
-}
-
-.pause img {
-  width: 18px;
-  height: 18px;
-}
-
-.progress-bar {
-  height: 12px;
-  background-color: #eee;
-  width: 100%;
-  margin: 0 auto;
-  border-radius: 3px;
-  margin-top: 15px;
-  overflow: hidden;
-}
-
-.progress {
-  height: 100%;
-  background-color: #ff6f61;
-  transition: width 0.3s ease;
-}
+/* div 3-> 분리 */
 
 /* 문법 영역 */
 .div4 h4,
 .div5 h4 {
   color: #4caf50;
-  margin: 10px 10px 20px 20px;
+  margin: 10px 20px 20px 20px;
   border-bottom: 1px solid #ccc;
   padding-bottom: 0.5rem;
   font-weight: bold;
@@ -173,7 +89,7 @@ body {
 }
 
 .div4 {
-  grid-area: 4 / 1 / 4 / 4;
+  grid-area: 4 / 1 / 5 / 4;
   margin-left: 20px;
   border-radius: 12px 0px 0px 0px;
   background-color: #FEFBE0;
@@ -207,7 +123,7 @@ body {
 
 /* 언어 선택 */
 .div6 {
-  grid-area: 2 / 7 / 3 / 10;
+  grid-area: 2 / 7 / 2 / 10;
   background: #DBE9D3;
   height: 120px;
   display: flex;
@@ -215,7 +131,7 @@ body {
   align-items: center;
   gap: 0.7rem;
   flex-wrap: wrap;
-  margin: 10px 20px 20px 0px;
+  margin: 0px 20px 20px 0px;
   border-radius: 12px;
 }
 
@@ -230,7 +146,7 @@ body {
   font-size: 1rem; 
   line-height: 1.5rem;
   margin: 0.5em 0;
-  /* 라디오 버튼과 글자 사이 gap */
+  /* 라디오 버튼과 글자 사이- 가로 gap */
   display: flex;      
   align-items: center;  
   gap: 0.5rem;
@@ -264,139 +180,3 @@ body {
   transform: translate(-50%, -50%);
 }
 
-/* 노트 영역 */
-.div7 {
-  grid-area: 3 / 7 / 9 / 10;
-  background-color: #fefef8;
-  margin: 10px 20px 0 20px;
-  border-radius: 12px;
-  margin-top: 20px;
-}
-
-.note-box {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  background-color: #fefef8;
-  border: 1px solid #cce5cc;
-  border-radius: 12px;
-  padding: 1rem;
-  height: 100%;
-  width: 95%;
-  box-sizing: border-box;
-  margin: 0;
-  position: relative;
-}
-
-.note-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-  padding: 0.5rem 1rem;
-  background-color: #67B98A;
-  color: #4D4D4D;
-  font-size: 1rem;
-  border-radius: 12px 12px 0 0;
-  box-sizing: border-box;
-  margin: -2rem -1rem 1rem -1rem;
-  border-bottom: 1px solid #76b187;
-}
-
-.note-title {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  background-color: #fefef8;
-}
-
-.underline-note {
-  font-size: 1rem;
-  color: #333;
-  margin-bottom: -2rem;
-  background-color: #fefef8;
-}
-
-.note-input {
-  width: 80%;
-  font-size: 1rem;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  background: transparent;
-  padding: 0.2rem 0;
-  outline: none;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-weight: bold;
-  color: #333;
-  margin-left: 50px;
-}
-
-.note-input::placeholder {
-  background-color: #fefef8;
-  color: #3F3F3F;
-  font-weight: normal;
-}
-
-.note-content {
-  width: 100%;
-  height: 120px;
-  resize: none;
-  font-size: 0.9rem;
-  border: none;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  background-color: #fefef8;
-  background-image: url('../style/img/learn/notePen.png');
-  opacity: 0.5;
-  background-size: 150px 110px;
-  background-repeat: no-repeat;
-  background-position: center center;
-  font-family: 'Noto Sans KR', sans-serif;
-  color: #444;
-  box-sizing: border-box;
-  outline: none;
-  text-align: left;
-  padding: 0.5rem;
-  margin-top: 6rem;
-  overflow-y: auto; 
-}
-
-.note-content::placeholder {
-  color: transparent;
-}
-
-.save-note {
-  background-color: transparent;
-  color: white;
-  font-size: 1.2rem;
-  border: none;
-  width: 28px;
-  height: 28px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  transition: background-color 0.2s ease;
-}
-
-.save-note:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-/* Note 스크롤바  */
-.note-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.note-content::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
-
-.note-content::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
-}
-.note-content::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
