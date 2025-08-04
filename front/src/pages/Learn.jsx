@@ -24,6 +24,7 @@ function Learn() {
   const [pageNum, setPageNum] = useState(1);
   const [caption, setCaption] = useState('');
   const [lang, setLang] = useState('ko');
+  const [audioElement, setAudioElement] = useState(null);
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [languageData, setLanguageData] = useState([]);
@@ -32,6 +33,11 @@ function Learn() {
   const goPrev = () => setPageNum(p => Math.max(p - 1, 1));
   const goNext = () => setPageNum(prev => Math.min(prev + 1, pages.length));
 
+  // 처음부터 읽기 함수
+  const handleReadFromStart = () => {
+    setPageNum(1);
+  };
+
   const langLabel = {ko: '한국어', fr: '프랑스어',ja: '일본어', en: '영어', es: '스페인어', de: '독일어',};
 
   // 데이터 로딩을 useEffect로 이동
@@ -39,48 +45,127 @@ function Learn() {
     fetch(`http://localhost:3000/learn/1?lang=${lang}`)
       .then(res => res.json())
       .then(result => {
+        console.log('백엔드에서 받은 데이터:', result);
+        console.log('페이지 데이터:', result.pages);
         setPages(result.pages);
         setLanguageData(result.language);
+        
+        // 첫 번째 페이지의 오디오 경로 확인
+        if (result.pages && result.pages.length > 0) {
+          console.log('첫 번째 페이지 오디오 경로:', result.pages[0].audiopath);
+        }
       })
       .catch(error => {
         console.error('데이터 로딩 오류:', error);
       });
-  }, [lang]); // lang이 변경될 때마다 실행
+  }, [lang]); // 언어가 변경될 때마다 실행
 
-  const togglePlay = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
+  const togglePlay = async () => {
+    if (!audioRef.current) {
+      console.error('오디오 요소가 없습니다');
+      return;
     }
-    setIsPlaying(!isPlaying);
+    
+    const currentAudioPath = pages[pageNum - 1]?.audiopath;
+    console.log('재생하려는 오디오 경로:', currentAudioPath);
+    console.log('현재 페이지 번호:', pageNum);
+    console.log('오디오 요소 src:', audioRef.current.src);
+    console.log('오디오 요소 readyState:', audioRef.current.readyState);
+    
+    try {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        // 오디오가 로드되지 않았다면 다시 로드
+        if (audioRef.current.readyState === 0) {
+          console.log('오디오를 다시 로드합니다');
+          audioRef.current.load();
+          
+          // 로드 완료까지 기다림
+          await new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => reject(new Error('오디오 로드 타임아웃')), 5000);
+            audioRef.current.addEventListener('canplay', () => {
+              clearTimeout(timeout);
+              resolve();
+            }, { once: true });
+            audioRef.current.addEventListener('error', () => {
+              clearTimeout(timeout);
+              reject(new Error('오디오 로드 실패'));
+            }, { once: true });
+          });
+        }
+        
+        await audioRef.current.play();
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      console.error('오디오 재생 오류:', error);
+      console.error('오디오 재생 오류 세부사항:', {
+        name: error.name,
+        message: error.message,
+        code: error.code
+      });
+      toast.error(`오디오 파일을 재생할 수 없습니다: ${error.message}`);
+      setIsPlaying(false);
+    }
   };
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.onended = () => setIsPlaying(false);
-  }, []);
-
+  // 오디오 요소 생성 및 관리
   useEffect(() => {
     if (pages.length === 0) return;
     const current = pages[pageNum - 1];
-    if (!current || !current.caption) return;
+    if (!current?.audiopath) return;
 
-    setCaption(current.caption);
-  }, [pageNum, pages]);
+    // 기존 오디오 정리
+    if (audioElement) {
+      audioElement.pause();
+      audioElement.src = '';
+    }
 
-  useEffect(() => {
-  if (pages.length === 0) return;
+    // 새 오디오 요소 생성
+    const audio = new Audio();
+    audio.crossOrigin = 'anonymous';
+    audio.preload = 'metadata';
+    
+    // 이벤트 리스너 추가
+    const handleLoadStart = () => console.log('오디오 로딩 시작:', current.audiopath);
+    const handleCanPlay = () => console.log('오디오 재생 가능:', current.audiopath);
+    const handleError = (e) => {
+      console.error('오디오 로딩 오류:', e);
+      console.error('오디오 경로:', current.audiopath);
+    };
+    const handleEnded = () => setIsPlaying(false);
 
-  const current = pages[pageNum - 1];
-  if (!current || !current.caption) return;
+    audio.addEventListener('loadstart', handleLoadStart);
+    audio.addEventListener('canplay', handleCanPlay);
+    audio.addEventListener('error', handleError);
+    audio.addEventListener('ended', handleEnded);
 
-  // \n 처리
-  const cleanCaption = current.caption.replace(/\\n/g, '\n');
-  setCaption(cleanCaption);
-  }, [pageNum, pages]);
+    // 오디오 소스 설정
+    audio.src = current.audiopath;
+    
+    // ref와 state 설정
+    audioRef.current = audio;
+    setAudioElement(audio);
+    setIsPlaying(false);
+
+    // \n 처리해서 캡션 설정
+    if (current.caption) {
+      const cleanCaption = current.caption.replace(/\\n/g, '\n');
+      setCaption(cleanCaption);
+    }
+
+    // 정리 함수
+    return () => {
+      audio.removeEventListener('loadstart', handleLoadStart);
+      audio.removeEventListener('canplay', handleCanPlay);
+      audio.removeEventListener('error', handleError);
+      audio.removeEventListener('ended', handleEnded);
+      audio.pause();
+      audio.src = '';
+    };
+  }, [pageNum, pages]); // audioElement 의존성 제거
 
 
   // 자막 줄바꿈 포맷 함수 
@@ -140,7 +225,9 @@ function Learn() {
 
   return (
     <div className="parent">
-      <div className="div1"><span className="read-start">처음부터 읽기</span></div>
+      <div className="div1" onClick={handleReadFromStart}><span className="read-start">처음부터 읽기</span></div>
+     
+     
       <div className="div2">
         <h2 className="story-title">Lily's happy day</h2>
         <button className="close-button" onClick={handleCloseClick}><img src={close} alt="close" /></button>
@@ -168,7 +255,6 @@ function Learn() {
               </div>
             </div>
             <div className="progress-bar"><div className="progress" style={{ width: `${(pageNum / pages.length) * 100}%` }} /></div>
-            {pages[pageNum - 1]?.audiopath && <audio ref={audioRef} src={pages[pageNum - 1].audiopath} />}
           </>)}
         </div>
       </div>

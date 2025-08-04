@@ -93,6 +93,8 @@ body {
   margin-left: 20px;
   border-radius: 12px 0px 0px 0px;
   background-color: #FEFBE0;
+  border: 2px solid #fdf5a9;
+  margin-bottom: 10px;
 }
 
 .grammar h4,
@@ -119,6 +121,8 @@ body {
   background: #FEFBE0;
   margin: 10px 15px 0px 20px;
   border-radius: 12px;
+    border: 2px solid #fdf5a9;
+  margin-bottom: 10px;
 }
 
 /* 언어 선택 */
@@ -133,6 +137,8 @@ body {
   flex-wrap: wrap;
   margin: 0px 20px 20px 0px;
   border-radius: 12px;
+  margin-bottom: 30px;
+  border: #b7df9f 2px solid;
 }
 
 .lang-select {

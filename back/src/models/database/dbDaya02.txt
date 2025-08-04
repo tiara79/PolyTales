@@ -3,7 +3,7 @@ CREATE TABLE storylearn (
   storyid INTEGER REFERENCES story(storyId),
   pagenumber INTEGER NOT NULL,
   nation TEXT CHECK (
-    nation IN ('ko', 'ja', 'en', 'de', 'es', 'fr')
+    nation IN ('ko', 'jp', 'en', 'de', 'es', 'fr')
   ),
   imagepath TEXT NOT NULL,
   caption TEXT NOT NULL,
@@ -54,16 +54,16 @@ INSERT INTO storylearn (storyid, pagenumber, nation, imagepath, caption, audiopa
 
 -- JA
 INSERT INTO storylearn (storyid, pagenumber, nation, imagepath, caption, audiopath) VALUES
-(1, 1, 'ja', '/img/A1/lily/lily_1.png', '/caption/A1/lily/lily_1_ja.txt', '/audio/A1/lily/lily_1_ja.mp3'),
-(1, 2, 'ja', '/img/A1/lily/lily_2.png', '/caption/A1/lily/lily_2_ja.txt', '/audio/A1/lily/lily_2_ja.mp3'),
-(1, 3, 'ja', '/img/A1/lily/lily_3.png', '/caption/A1/lily/lily_3_ja.txt', '/audio/A1/lily/lily_3_ja.mp3'),
-(1, 4, 'ja', '/img/A1/lily/lily_4.png', '/caption/A1/lily/lily_4_ja.txt', '/audio/A1/lily/lily_4_ja.mp3'),
-(1, 5, 'ja', '/img/A1/lily/lily_5.png', '/caption/A1/lily/lily_5_ja.txt', '/audio/A1/lily/lily_5_ja.mp3'),
-(1, 6, 'ja', '/img/A1/lily/lily_6.png', '/caption/A1/lily/lily_6_ja.txt', '/audio/A1/lily/lily_6_ja.mp3'),
-(1, 7, 'ja', '/img/A1/lily/lily_7.png', '/caption/A1/lily/lily_7_ja.txt', '/audio/A1/lily/lily_7_ja.mp3'),
-(1, 8, 'ja', '/img/A1/lily/lily_8.png', '/caption/A1/lily/lily_8_ja.txt', '/audio/A1/lily/lily_8_ja.mp3'),
-(1, 9, 'ja', '/img/A1/lily/lily_9.png', '/caption/A1/lily/lily_9_ja.txt', '/audio/A1/lily/lily_9_ja.mp3'),
-(1, 10, 'ja', '/img/A1/lily/lily_10.png', '/caption/A1/lily/lily_10_ja.txt', '/audio/A1/lily/lily_10_ja.mp3');
+(1, 1, 'jp', '/img/A1/lily/lily_1.png', '/caption/A1/lily/lily_1_ja.txt', '/audio/A1/lily/lily_1_ja.mp3'),
+(1, 2, 'jp', '/img/A1/lily/lily_2.png', '/caption/A1/lily/lily_2_ja.txt', '/audio/A1/lily/lily_2_ja.mp3'),
+(1, 3, 'jp', '/img/A1/lily/lily_3.png', '/caption/A1/lily/lily_3_ja.txt', '/audio/A1/lily/lily_3_ja.mp3'),
+(1, 4, 'jp', '/img/A1/lily/lily_4.png', '/caption/A1/lily/lily_4_ja.txt', '/audio/A1/lily/lily_4_ja.mp3'),
+(1, 5, 'jp', '/img/A1/lily/lily_5.png', '/caption/A1/lily/lily_5_ja.txt', '/audio/A1/lily/lily_5_ja.mp3'),
+(1, 6, 'jp', '/img/A1/lily/lily_6.png', '/caption/A1/lily/lily_6_ja.txt', '/audio/A1/lily/lily_6_ja.mp3'),
+(1, 7, 'jp', '/img/A1/lily/lily_7.png', '/caption/A1/lily/lily_7_ja.txt', '/audio/A1/lily/lily_7_ja.mp3'),
+(1, 8, 'jp', '/img/A1/lily/lily_8.png', '/caption/A1/lily/lily_8_ja.txt', '/audio/A1/lily/lily_8_ja.mp3'),
+(1, 9, 'jp', '/img/A1/lily/lily_9.png', '/caption/A1/lily/lily_9_ja.txt', '/audio/A1/lily/lily_9_ja.mp3'),
+(1, 10, 'jp', '/img/A1/lily/lily_10.png', '/caption/A1/lily/lily_10_ja.txt', '/audio/A1/lily/lily_10_ja.mp3');
 
 -- ES
 INSERT INTO storylearn (storyid, pagenumber, nation, imagepath, caption, audiopath) VALUES
@@ -119,16 +119,16 @@ UPDATE storylearn SET caption = 'À la maison, Lily aide sa maman.\nElle met la 
 UPDATE storylearn SET caption = 'C’est l’heure du coucher.\nLily met son pyjama doux.\nElle lit un petit livre avec Maman.\nElle donne un câlin du soir.\n"Bonne nuit, monde", dit Lily.' WHERE storyid = 1 AND pagenumber = 10 AND nation = 'fr';
 
 -- 일본어
-UPDATE storylearn SET caption = 'リリーは小さな女の子です。\n太陽が昇ると目を覚まします。\n目を開けて微笑みます。\n「おはよう！」と彼女は言います。\n今日は幸せな一日になりそうです。' WHERE storyid = 1 AND pagenumber = 1 AND nation = 'ja';
-UPDATE storylearn SET caption = 'リリーはベッドから起きます。\nバスルームに行きます。\n青い歯ブラシで歯を磨きます。\nその後、顔を洗います。\nさっぱりして準備万端です。' WHERE storyid = 1 AND pagenumber = 2 AND nation = 'ja';
-UPDATE storylearn SET caption = 'リリーはキッチンへ行きます。\nお母さんが美味しい朝ごはんを作ります。\nリリーは卵とバナナを食べます。\n牛乳を一杯飲みます。\n「ありがとう、ママ！」と彼女は言います。' WHERE storyid = 1 AND pagenumber = 3 AND nation = 'ja';
-UPDATE storylearn SET caption = '朝ごはんの後、リリーは服を着ます。\n黄色いTシャツと青いズボンを履きます。\n学校のかばんを準備します。\n「行こう！」とリリーは言います。\n彼女は学校の準備ができています。' WHERE storyid = 1 AND pagenumber = 4 AND nation = 'ja';
-UPDATE storylearn SET caption = 'リリーはお父さんと一緒に学校へ歩いて行きます。\n木の中に鳥を見ます。\n犬の鳴き声が聞こえます。\n晴れていて楽しい朝です。\nリリーはお父さんの手を握っています。' WHERE storyid = 1 AND pagenumber = 5 AND nation = 'ja';
-UPDATE storylearn SET caption = '学校でリリーは友達に会います。\n「こんにちは、アナ！こんにちは、トム！」と彼女は言います。\n授業の前に遊んで笑います。\nベルが鳴ります—チンチン！\n勉強の時間です。' WHERE storyid = 1 AND pagenumber = 6 AND nation = 'ja';
-UPDATE storylearn SET caption = '授業でリリーは数字を学びます。\n1から10まで数えます。\n鉛筆で猫を描きます。\n先生は「よくできました、リリー！」と言います。\nリリーは誇らしく感じます。' WHERE storyid = 1 AND pagenumber = 7 AND nation = 'ja';
-UPDATE storylearn SET caption = '学校の後、リリーは公園に行きます。\nブランコで遊びます。\n友達と走って笑います。\nきれいな花を見つけます。\nママのために1本摘みます。' WHERE storyid = 1 AND pagenumber = 8 AND nation = 'ja';
-UPDATE storylearn SET caption = '家でリリーはお母さんを手伝います。\n夕食のテーブルを準備します。\nご飯、魚、野菜を食べます。\nそしてお風呂の時間です。\nリリーは温かいお湯が大好きです。' WHERE storyid = 1 AND pagenumber = 9 AND nation = 'ja';
-UPDATE storylearn SET caption = '今は寝る時間です。\nリリーは柔らかいパジャマを着ます。\nお母さんと一緒に短い本を読みます。\nおやすみのハグをします。\n「おやすみ、世界」とリリーは言います。' WHERE storyid = 1 AND pagenumber = 10 AND nation = 'ja';
+UPDATE storylearn SET caption = 'リリーは小さな女の子です。\n太陽が昇ると目を覚まします。\n目を開けて微笑みます。\n「おはよう！」と彼女は言います。\n今日は幸せな一日になりそうです。' WHERE storyid = 1 AND pagenumber = 1 AND nation = 'jp';
+UPDATE storylearn SET caption = 'リリーはベッドから起きます。\nバスルームに行きます。\n青い歯ブラシで歯を磨きます。\nその後、顔を洗います。\nさっぱりして準備万端です。' WHERE storyid = 1 AND pagenumber = 2 AND nation = 'jp';
+UPDATE storylearn SET caption = 'リリーはキッチンへ行きます。\nお母さんが美味しい朝ごはんを作ります。\nリリーは卵とバナナを食べます。\n牛乳を一杯飲みます。\n「ありがとう、ママ！」と彼女は言います。' WHERE storyid = 1 AND pagenumber = 3 AND nation = 'jp';
+UPDATE storylearn SET caption = '朝ごはんの後、リリーは服を着ます。\n黄色いTシャツと青いズボンを履きます。\n学校のかばんを準備します。\n「行こう！」とリリーは言います。\n彼女は学校の準備ができています。' WHERE storyid = 1 AND pagenumber = 4 AND nation = 'jp';
+UPDATE storylearn SET caption = 'リリーはお父さんと一緒に学校へ歩いて行きます。\n木の中に鳥を見ます。\n犬の鳴き声が聞こえます。\n晴れていて楽しい朝です。\nリリーはお父さんの手を握っています。' WHERE storyid = 1 AND pagenumber = 5 AND nation = 'jp';
+UPDATE storylearn SET caption = '学校でリリーは友達に会います。\n「こんにちは、アナ！こんにちは、トム！」と彼女は言います。\n授業の前に遊んで笑います。\nベルが鳴ります—チンチン！\n勉強の時間です。' WHERE storyid = 1 AND pagenumber = 6 AND nation = 'jp';
+UPDATE storylearn SET caption = '授業でリリーは数字を学びます。\n1から10まで数えます。\n鉛筆で猫を描きます。\n先生は「よくできました、リリー！」と言います。\nリリーは誇らしく感じます。' WHERE storyid = 1 AND pagenumber = 7 AND nation = 'jp';
+UPDATE storylearn SET caption = '学校の後、リリーは公園に行きます。\nブランコで遊びます。\n友達と走って笑います。\nきれいな花を見つけます。\nママのために1本摘みます。' WHERE storyid = 1 AND pagenumber = 8 AND nation = 'jp';
+UPDATE storylearn SET caption = '家でリリーはお母さんを手伝います。\n夕食のテーブルを準備します。\nご飯、魚、野菜を食べます。\nそしてお風呂の時間です。\nリリーは温かいお湯が大好きです。' WHERE storyid = 1 AND pagenumber = 9 AND nation = 'jp';
+UPDATE storylearn SET caption = '今は寝る時間です。\nリリーは柔らかいパジャマを着ます。\nお母さんと一緒に短い本を読みます。\nおやすみのハグをします。\n「おやすみ、世界」とリリーは言います。' WHERE storyid = 1 AND pagenumber = 10 AND nation = 'jp';
 
 -- 영어
 UPDATE storylearn SET caption = 'Lily is a little girl.\nShe wakes up when the sun comes up.\nShe opens her eyes and smiles.\n"Good morning!" she says.\nToday will be a happy day!' WHERE storyid = 1 AND pagenumber = 1 AND nation = 'en';
@@ -176,7 +176,7 @@ mean TEXT,
 partSpeech TEXT,
 vocaSentence TEXT,
 nation TEXT CHECK (
-nation IN ('ko', 'ja', 'en', 'de', 'es', 'fr')
+nation IN ('ko', 'jp', 'en', 'de', 'es', 'fr')
 ),
 storyId INTEGER REFERENCES story(storyid)
 );
@@ -191,7 +191,7 @@ INSERT INTO language (grammar, word, mean, partspeech, vocasentence, nation, sto
 
 -- 🇯🇵 일본어
 INSERT INTO language (grammar, word, mean, partspeech, vocasentence, nation, storyid) VALUES
-('助動詞 + 動詞の原形', 'できる', '할 수 있다', '助動詞', 'リリーは自転車に乗ることができる。', 'ja', 1);
+('助動詞 + 動詞の原形', 'できる', '할 수 있다', '助動詞', 'リリーは自転車に乗ることができる。', 'jp', 1);
 
 -- 🇫🇷 프랑스어
 INSERT INTO language (grammar, word, mean, partspeech, vocasentence, nation, storyid) VALUES

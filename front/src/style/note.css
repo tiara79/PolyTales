@@ -1,9 +1,29 @@
 /* 노트 영역 */
 .div7 {
   grid-area: 3 / 7 / 9 / 10;
+}
+
+.note-input {
+  flex: 1;
+  font-size: 1rem;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: transparent;
+  padding: 0.2rem 0;
+  outline: none;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.note-textarea {
   background-color: #fefef8;
-  /* margin: 10px 20px 0 20px; */
+  margin: 10px 20px 0 20px;
   border-radius: 12px;
+  border: #b7df9f 2px solid;
 }
 
 .note-box {
@@ -14,7 +34,7 @@
   border: 1px solid #cce5cc;
   border-radius: 12px;
   padding: 1rem;
-  height: 100%;
+  height: 98%;
   width: 95%;
   box-sizing: border-box;
   margin: 0;
@@ -38,30 +58,18 @@
 
 .note-title {
   display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
   background-color: #fefef8;
 }
 
 .underline-note {
   font-size: 1rem;
   color: #333;
-  margin-bottom: -2rem;
+  margin-bottom: 0;
   background-color: #fefef8;
-}
-
-.note-input {
-  width: 80%;
-  font-size: 1rem;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  background: transparent;
-  padding: 0.2rem 0;
-  outline: none;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-weight: bold;
-  color: #333;
-  margin-left: 50px;
+  white-space: nowrap;
 }
 
 .note-input::placeholder {
@@ -89,8 +97,9 @@
   box-sizing: border-box;
   outline: none;
   text-align: left;
-  padding: 0.5rem;
-  margin-top: 6rem;
+  vertical-align: top;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  margin-top: 0.5rem;
   overflow-y: auto; 
 }
 

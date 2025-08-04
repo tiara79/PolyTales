@@ -11,6 +11,8 @@
   position: relative;
   min-height: 400px; 
   max-height: 1000px; 
+  border: #33333313 2px solid;
+  margin-bottom: 10px;
 }
 
 /* 튜터 정보 텍스트 */

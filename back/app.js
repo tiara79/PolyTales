@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require("cors");
+const path = require('path');
 const { sequelize } = require('./src/models');
 
 // ──────────────── 라우터 설정 ────────────────
@@ -25,6 +26,12 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// ──────────────── 정적 파일 서빙 ────────────────
+app.use('/audio', express.static(path.join(__dirname, '../front/public/audio')));
+app.use('/img', express.static(path.join(__dirname, '../front/public/img')));
+app.use('/img/contents', express.static(path.join(__dirname, '../front/src/style/img/contents')));
+app.use('/caption', express.static(path.join(__dirname, '../front/public/caption')));
 
 // ──────────────── 라우터 연결 ────────────────
 app.use('/auth', authRoutes);

@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     partSpeech: DataTypes.TEXT,
     vocaSentence: DataTypes.TEXT,
     nation: {
-      type: DataTypes.ENUM('ko', 'ja', 'en', 'de', 'es', 'fr')
+      type: DataTypes.ENUM('ko', 'a', 'en', 'de', 'es', 'fr')
     },
     storyId: {
       type: DataTypes.INTEGER,
