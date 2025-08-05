@@ -1,7 +1,7 @@
 const db = require('../models');
 const Language = db.Language;
 
-// 단어 추가
+// 문법/단어 추가
 exports.createLanguage = async (req, res) => {
   try {
     const newItem = await Language.create(req.body);
@@ -11,7 +11,7 @@ exports.createLanguage = async (req, res) => {
   }
 };
 
-// 특정 스토리의 단어 전체 조회
+// 특정 스토리의 문법/단어 전체 조회
 exports.getLanguages = async (req, res) => {
   try {
     const result = await Language.findAll({ where: { storyid: req.params.storyid } });
@@ -21,7 +21,7 @@ exports.getLanguages = async (req, res) => {
   }
 };
 
-// 단어 수정
+// 문법/단어 수정
 exports.updateLanguage = async (req, res) => {
   try {
     const updated = await Language.update(req.body, { where: { vocaid: req.params.vocaid } });
@@ -31,7 +31,7 @@ exports.updateLanguage = async (req, res) => {
   }
 };
 
-// 단어 삭제
+// 문법/단어 삭제
 exports.deleteLanguage = async (req, res) => {
   try {
     await Language.destroy({ where: { vocaid: req.params.vocaid } });

@@ -26,7 +26,7 @@ npx sequelize-cli init # 시퀄라이즈 초기화
 npm i sequelize-cli # 시퀄라이즈 ORM 커맨드라인 인터페이스
 npm i sequelize # 시퀄라이즈 ORM
 
-# 실행
+# 실행 : npm run dev
 
 cd front npm run start, cd back npx nodemon app.js , 루트 실행 npm run dev
 // 루트 폴더 설치 npm install concurrently --save-dev

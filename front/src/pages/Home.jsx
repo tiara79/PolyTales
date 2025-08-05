@@ -46,11 +46,6 @@ export default function Home() {
       const result = await response.json();
       
       if (response.ok) {
-        console.log(`${level} 레벨 스토리:`, result.data);
-        console.log('첫 번째 스토리 데이터:', result.data[0]);
-        if (result.data[0]) {
-          console.log('썸네일 경로:', result.data[0].thumbnail);
-        }
         setStories(result.data);
       } else {
         console.error('스토리 조회 실패:', result.message);
@@ -116,11 +111,6 @@ export default function Home() {
               fallbackImage = sampleImg;
             }
             
-            console.log(`스토리 ID ${story.storyid} (${story.storytitle})`);
-            console.log('DB thumbnail 값:', story.thumbnail);
-            console.log('서버 이미지 URL:', imageUrl);
-            console.log('Fallback 이미지:', fallbackImage === Lilyshappyday ? 'Lilyshappyday' : 'sampleImg');
-            
             return (
               <div key={story.storyid} className="image-box">
                 {story.storyid === 1 ? (
@@ -130,8 +120,7 @@ export default function Home() {
                       src={imageUrl || fallbackImage} 
                       alt={story.storytitle}
                       onError={(e) => {
-                        console.error('서버 이미지 로딩 실패:', imageUrl);
-                        e.target.src = fallbackImage; // 스토리별 fallback 이미지로 대체
+                        e.target.src = fallbackImage;
                       }}
                     />
                   </Link>
@@ -142,8 +131,7 @@ export default function Home() {
                       src={imageUrl || fallbackImage} // 서버 이미지 또는 스토리별 fallback 이미지
                       alt={story.storytitle}
                       onError={(e) => {
-                        console.error('서버 이미지 로딩 실패:', imageUrl);
-                        e.target.src = fallbackImage; // 스토리별 fallback 이미지로 대체
+                        e.target.src = fallbackImage;
                       }}
                     />
                     <div className="lock-icon">🔒</div>

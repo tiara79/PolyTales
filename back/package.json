@@ -2,11 +2,17 @@
   "name": "back",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "npx nodemon app.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "start": "node app.js",
+    "dev": "nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "nodemonConfig": {
+    "exec": "node --max-http-header-size=32768 app.js",
+    "watch": ["src", "app.js"],
+    "ext": "js,json",
+    "ignore": ["node_modules", "logs", "public/uploads"]
   },
   "keywords": [],
   "author": "",
@@ -14,23 +20,15 @@
   "type": "commonjs",
   "dependencies": {
     "bcryptjs": "^3.0.2",
-    "better-sqlite3": "^12.2.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^4.21.2",
-    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^2.0.1",
-    "mysql2": "^3.14.1",
     "pg": "^8.16.3",
     "pg-hstore": "^2.3.4",
-    "react-kakao-maps-sdk": "^1.2.0",
-    "sequelize": "^6.37.7",
-    "sqlite3": "^5.1.7",
-    "winston": "^3.17.0"
+    "sequelize": "^6.37.7"
   },
   "devDependencies": {
-    "concurrently": "^9.2.0",
     "nodemon": "^3.1.10",
     "sequelize-cli": "^6.6.3"
   }

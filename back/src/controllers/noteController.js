@@ -4,8 +4,8 @@ const Note = db.Note;
 // POST /notes - 노트 생성
 const createNote = async (req, res) => {
     try {
-        console.log(' createNote 함수 시작');
-        console.log(' request data :', req.body);
+        // console.log(' Start the createNote function');
+        // console.log(' request data :', req.body);
         
         const { userid, storyid, title, content } = req.body;
 
@@ -23,16 +23,16 @@ const createNote = async (req, res) => {
             content: content
         });
 
-        console.log(' 노트 생성 성공:', newNote.noteid);
+        console.log(' Note creation successful:', newNote.noteid);
 
         res.status(201).json({
-            message: "노트가 성공적으로 생성되었습니다.",
+            message: "Note has been successfully created.",
             data: newNote
         });
     } catch (error) {
-        console.error(" 노트 생성 실패:", error);
+        console.error(" Note creation failed:", error);
         res.status(500).json({ 
-            message: "서버 오류", 
+            message: "Internal server error", 
             error: error.message 
         });
     }
@@ -44,22 +44,22 @@ const getAllNotes = async (req, res) => {
     res.json({ message: 'ok', count: notes.length, data: notes });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: '노트 전체 조회 실패' });
+    res.status(500).json({ message: 'Failed to retrieve all notes' });
   }
 };
 
 // GET /notes/:userid - 사용자별 노트 조회
 const getNotes = async (req, res) => {
     try {
-        console.log(' getNotes 함수 시작');
-        
+        console.log(' Start the getNotes function');
+
         const { userid } = req.params;
-        console.log(' 조회할 userid:', userid);
+        console.log(' User ID to retrieve:', userid);
 
         // userid 유효성 검사
         if (!userid) {
             return res.status(400).json({ 
-                message: "사용자 ID가 필요합니다." 
+                message: "User ID is required." 
             });
         }
 
@@ -68,7 +68,7 @@ const getNotes = async (req, res) => {
             order: [['noteid', 'DESC']]  // 최신순 정렬
         });
 
-        console.log(' 조회된 노트 개수:', notes.length);
+        console.log(' Number of retrieved notes:', notes.length);
 
         res.status(200).json({
             message: "ok",
@@ -76,9 +76,9 @@ const getNotes = async (req, res) => {
             data: notes
         });
     } catch (error) {
-        console.error("노트 조회 실패:", error);
+        console.error("Failed to retrieve notes:", error);
         res.status(500).json({ 
-            message: "서버 오류", 
+            message: "Internal server error", 
             error: error.message 
         });
     }
@@ -91,7 +91,7 @@ const updateNote = async (req, res) => {
     const { title, content } = req.body;
 
     if (!title || !content) {
-      return res.status(400).json({ message: "제목과 내용을 모두 입력하세요." });
+      return res.status(400).json({ message: "Both title and content are required." });
     }
 
     const updated = await db.Note.update(
@@ -100,13 +100,13 @@ const updateNote = async (req, res) => {
     );
 
     if (updated[0] === 0) {
-      return res.status(404).json({ message: "노트를 찾을 수 없습니다." });
+      return res.status(404).json({ message: "Note not found." });
     }
 
-    res.json({ message: "노트가 성공적으로 수정되었습니다." });
+    res.json({ message: "Note has been successfully updated." });
   } catch (err) {
-    console.error("노트 수정 오류:", err);
-    res.status(500).json({ message: "서버 오류", error: err.message });
+    console.error("Failed to update note:", err);
+    res.status(500).json({ message: "Internal server error", error: err.message });
   }
 };
 
@@ -118,13 +118,13 @@ const deleteNote = async (req, res) => {
     const deleted = await db.Note.destroy({ where: { noteid: noteId } });
 
     if (deleted === 0) {
-      return res.status(404).json({ message: "노트를 찾을 수 없습니다." });
+      return res.status(404).json({ message: "Note not found." });
     }
 
-    res.json({ message: "노트가 성공적으로 삭제되었습니다." });
+    res.json({ message: "Note has been successfully deleted." });
   } catch (err) {
-    console.error("노트 삭제 오류:", err);
-    res.status(500).json({ message: "서버 오류", error: err.message });
+    console.error("Failed to delete note:", err);
+    res.status(500).json({ message: "Internal server error", error: err.message });
   }
 };
 

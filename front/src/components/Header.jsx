@@ -10,11 +10,11 @@ export default function Header() {
   const { user, logout } = useContext(AuthContext);
 
   // 디버깅 로그 추가
-  console.log("🎨 Header 렌더링 - 받은 user 데이터:", user);
-  console.log("🎨 필드별 확인:");
-  console.log("- user.nickname:", user?.nickname);
-  console.log("- user.userid:", user?.userid);
-  console.log("- user.profimg:", user?.profimg);
+  // console.log("Header rendering - user data received:", user);
+  // console.log("Field-by-field check:");
+  // console.log("- user.nickname:", user?.nickname);
+  // console.log("- user.userid:", user?.userid);
+  // console.log("- user.profimg:", user?.profimg);
 
   const handleLogoClick = () => {
     navigate("/");

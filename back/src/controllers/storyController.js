@@ -4,31 +4,31 @@ const db = require("../models");
 // GET /stories - 전체 스토리 목록 조회
 const getStories = async (req, res) => {
     try {
-        console.log('getStories 함수 시작');
+        // console.log('Start the getStories function');
         
         const { level, topic } = req.query;
         let whereCondition = {};
         if (level) whereCondition.langlevel = level;      
         if (topic) whereCondition.topic = topic;
         
-        console.log('조건:', whereCondition);
+        // console.log('condition:', whereCondition);
         
         const stories = await db.Story.findAll({
             where: whereCondition,
             order: [['storyid', 'ASC']]                    
         });
 
-        console.log('조회된 스토리 개수:', stories.length);
+        // console.log('Number of retrieved stories:', stories.length);
 
         res.status(200).json({
-            message: "전체 스토리 조회 성공",
+            message: "Full Story View Success",
             count: stories.length,
             data: stories,
         });
     } catch (error) {
-        console.error("전체 스토리 조회 오류:", error);
+        console.error("Failed to retrieve all stories:", error);
         res.status(500).json({ 
-            message: "서버 오류", 
+            message: "Internal server error", 
             error: error.message 
         });
     }
@@ -37,7 +37,7 @@ const getStories = async (req, res) => {
 // GET /stories/levels - 레벨 목록 조회
 const getAllLevels = async (req, res) => {
     try {
-        console.log('getAllLevels 함수 시작');
+        // console.log('Start the getAllLevels function');
 
         const levels = await db.Story.findAll({
             attributes: [
@@ -48,17 +48,17 @@ const getAllLevels = async (req, res) => {
         });
 
         const levelList = levels.map(item => item.langlevel);
-        console.log('조회된 레벨 목록:', levelList);
+        // console.log('Retrieved language levels:', levelList);
 
         res.status(200).json({
-            message: "레벨 목록 조회 성공",
+            message: "Level list retrieved successfully",
             count: levelList.length,
             data: levelList
         });
     } catch (error) {
-        console.error("레벨 목록 조회 오류:", error);
+        // console.error("Failed to retrieve language levels:", error);
         res.status(500).json({ 
-            message: "서버 오류",
+            message: "Internal server error",
             error: error.message 
         });
     }
@@ -67,34 +67,34 @@ const getAllLevels = async (req, res) => {
 // GET /stories/level/:level - 특정 레벨의 모든 스토리 조회
 const getStoryByLevel = async (req, res) => {
     try {
-        console.log('getStoryByLevel 함수 시작');
+        // console.log('Start the getStoryByLevel function');
         const { level } = req.params;
-        console.log('요청된 레벨:', level);
+        // console.log('Requested level:', level);
 
         const stories = await db.Story.findAll({
             where: { langlevel: level },
             order: [['storyid', 'ASC']]
         });
 
-        console.log(`${level} 레벨 스토리 개수:`, stories.length);
+        // console.log(`${level} Number of level stories:`, stories.length);
 
         if (stories.length === 0) {
             return res.status(404).json({
-                message: `${level} 레벨의 스토리를 찾을 수 없습니다.`,
+                message: `${level} Level stories not found.`,
                 count: 0,
                 data: []
             });
         }
 
         res.status(200).json({
-            message: `${level} 레벨 스토리 조회 성공`,
+            message: `${level} Level stories retrieved successfully`,
             count: stories.length,
             data: stories
         });
     } catch (error) {
-        console.error("레벨별 스토리 조회 오류:", error);
+        console.error("Failed to retrieve level stories:", error);
         res.status(500).json({ 
-            message: "서버 오류",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -103,9 +103,9 @@ const getStoryByLevel = async (req, res) => {
 // GET /stories/:level/detail/:id - 특정 레벨의 특정 스토리 상세 조회
 const getStoryById = async (req, res) => {
     try {
-        console.log('getStoryById 함수 시작');
+        console.log('Start the getStoryById function');
         const { level, id } = req.params;
-        console.log(`${level} 레벨의 ${id}번 스토리 조회`);
+        // console.log(`Look up the ${id} story at the ${level} level`);
 
         const story = await db.Story.findOne({
             where: { 
@@ -116,20 +116,20 @@ const getStoryById = async (req, res) => {
 
         if (!story) {
             return res.status(404).json({ 
-                message: `${level} 레벨에서 ID ${id} 스토리를 찾을 수 없습니다.` 
+                message: `${level} Level story not found.` 
             });
         }
 
-        console.log('스토리 조회 성공:', story.storytitle);
+        console.log('Story retrieval successful:', story.storytitle);
 
         res.status(200).json({
-            message: "스토리 상세 조회 성공",
+            message: "Story detail retrieval successful",
             data: story
         });
     } catch (error) {
-        console.error("스토리 상세 조회 오류:", error);
+        console.error("Failed to retrieve story details:", error);
         res.status(500).json({ 
-            message: "서버 오류",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -140,8 +140,8 @@ const getStoryById = async (req, res) => {
 // POST /stories - 새 스토리 생성
 const createStory = async (req, res) => {
     try {
-        console.log('createStory 함수 시작');
-        console.log('요청 데이터:', req.body);
+        // console.log('Start the createStory function');
+        // console.log('Requested data:', req.body);
 
         const { 
             storytitle, 
@@ -158,7 +158,7 @@ const createStory = async (req, res) => {
         // 필수 필드 검증
         if (!storytitle || !langlevel) {
             return res.status(400).json({
-                message: "제목과 언어 레벨은 필수입니다."
+                message: "Title and language level are required."
             });
         }
 
@@ -174,10 +174,10 @@ const createStory = async (req, res) => {
             topic: topic || null
         });
 
-        console.log('스토리 생성 성공:', newStory.storyid);
+        // console.log('Story creation successful:', newStory.storyid);
 
         res.status(201).json({
-            message: "스토리 생성 성공",
+            message: "Story creation successful",
             data: {
                 storyid: newStory.storyid,
                 storytitle: newStory.storytitle,
@@ -186,9 +186,9 @@ const createStory = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error("스토리 생성 오류:", error);
+        console.error("Failed to create story:", error);
         res.status(500).json({
-            message: "서버 오류",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -197,13 +197,13 @@ const createStory = async (req, res) => {
 // PUT /stories/:level/detail/:id - 특정 스토리 수정
 const updateStory = async (req, res) => {
     try {
-        console.log('updateStory 함수 시작');
+        // console.log('Start the updateStory function');
         const { level, id } = req.params;
-        console.log(`요청: ${level} 레벨의 ${id}번 스토리 수정`);
-        
-        // 디버깅: 요청 데이터 확인
-        console.log('req.body:', JSON.stringify(req.body, null, 2));
-        console.log('req.body가 비어있나?', Object.keys(req.body).length === 0);
+        // console.log(`Request: Update story ${id} at level ${level}`);
+
+        // Debugging: Check request data
+        // console.log('req.body:', JSON.stringify(req.body, null, 2));
+        // console.log('Is req.body empty?', Object.keys(req.body).length === 0);
 
         // 기존 스토리 존재 확인 (ID 체크)
         const existingStory = await db.Story.findOne({
@@ -212,31 +212,31 @@ const updateStory = async (req, res) => {
 
         if (!existingStory) {
             return res.status(404).json({
-                message: `ID ${id} 스토리를 찾을 수 없습니다.`
+                message: `The story ID ${id} was not found.`
             });
         }
 
-        console.log(`실제 스토리: ${existingStory.langlevel} 레벨의 "${existingStory.storytitle}"`);
+        // console.log(`Actual story: ${existingStory.langlevel} level "${existingStory.storytitle}"`);
 
         // 업데이트할 데이터가 있는지 확인
         if (!req.body || Object.keys(req.body).length === 0) {
             return res.status(400).json({
-                message: "업데이트할 데이터가 없습니다."
+                message: "No data provided for update."
             });
         }
 
-        console.log('업데이트 시작...');
+        // console.log('Update started...');
         
         // 스토리 업데이트 (ID로 업데이트)
         const [updatedCount] = await db.Story.update(req.body, {
             where: { storyid: id }
         });
 
-        console.log('업데이트 결과:', updatedCount);
+        // console.log('Update result:', updatedCount);
 
         if (updatedCount === 0) {
             return res.status(400).json({
-                message: "스토리 수정에 실패했습니다."
+                message: "Failed to update story."
             });
         }
 
@@ -245,16 +245,17 @@ const updateStory = async (req, res) => {
             where: { storyid: id }
         });
 
-        console.log('스토리 수정 성공');
+        // console.log('스토리 수정 성공');
+        // console.log('Story update successful');
 
         res.status(200).json({
-            message: "스토리 수정 성공",
+            message: "Successful story modification",
             data: updatedStory
         });
     } catch (error) {
-        console.error("스토리 수정 오류:", error);
+        console.error("Failed to update story:", error);
         res.status(500).json({
-            message: "서버 오류",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -263,9 +264,9 @@ const updateStory = async (req, res) => {
 // DELETE /stories/:level/detail/:id - 스토리 삭제
 const deleteStory = async (req, res) => {
     try {
-        console.log('deleteStory 함수 시작');
+        // console.log('deleteStory function started');
         const { level, id } = req.params;
-        console.log(`${level} 레벨의 ${id}번 스토리 삭제`);
+        // console.log(`Delete Story ${id} at ${level} level`);
 
         // 기존 스토리 존재 확인
         const existingStory = await db.Story.findOne({
@@ -277,7 +278,7 @@ const deleteStory = async (req, res) => {
 
         if (!existingStory) {
             return res.status(404).json({
-                message: `${level} 레벨에서 ID ${id} 스토리를 찾을 수 없습니다.`
+                message: `The story ID ${id} at level ${level} was not found.`
             });
         }
 
@@ -291,14 +292,14 @@ const deleteStory = async (req, res) => {
 
         if (deletedCount === 0) {
             return res.status(400).json({
-                message: "스토리 삭제에 실패했습니다."
+                message: "Failed to delete story."
             });
         }
 
-        console.log('스토리 삭제 성공');
+        // console.log('Story deletion successful.');
 
         res.status(200).json({
-            message: "스토리 삭제 성공",
+            message: "Successful story deletion",
             data: {
                 deletedStoryId: id,
                 deletedLevel: level,
@@ -306,9 +307,9 @@ const deleteStory = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error("스토리 삭제 오류:", error);
+        console.error("Failed to delete story:", error);
         res.status(500).json({
-            message: "서버 오류",
+            message: "Internal server error",
             error: error.message
         });
     }

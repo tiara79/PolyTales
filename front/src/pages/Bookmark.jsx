@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import "../style/Bookmark.css";
-import React from "react";
 
 export default function Bookmark() {
   const navigate = useNavigate();

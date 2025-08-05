@@ -19,14 +19,14 @@ const getAllUsers = async (req, res) => {
         });
 
         res.status(200).json({
-            message: "전체 사용자 조회 성공",
+            message: "Full User Lookup Success",
             count: users.length,
             data: users
         });
     } catch (error) {
-        console.error("전체 사용자 조회 실패:", error);
+        console.error("Failed to retrieve all users:", error);
         res.status(500).json({ 
-            message: "서버 오류", 
+            message: "Internal server error", 
             error: error.message 
         });
     }

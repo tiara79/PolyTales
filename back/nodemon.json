@@ -1,6 +1,0 @@
-{
-  "exec": "node --max-http-header-size=32768 app.js",
-  "watch": ["src", "app.js"],
-  "ext": "js,json",
-  "ignore": ["node_modules", "logs", "public/uploads"]
-}
