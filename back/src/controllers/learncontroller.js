@@ -4,9 +4,9 @@ const { learn } = require('../models');
 const getLearnPages = async (req, res) => {
   const { storyid } = req.params;
   const { lang } = req.query;
-  console.log('storyid:', storyid);
-  console.log('lang:', lang);
-  console.log('learn:', learn);
+  // console.log('storyid:', storyid);
+  // console.log('lang:', lang);
+  // console.log('learn:', learn);
 
   try {
     const pages = await learn.findAll({

@@ -20,6 +20,7 @@ db.Note = require('./note')(sequelize, Sequelize.DataTypes);
 db.learn = require('./learn')(sequelize, Sequelize.DataTypes);
 db.storylearn = require('./learn')(sequelize, Sequelize.DataTypes); // storylearn 별칭 추가
 db.Language = require('./language')(sequelize, Sequelize.DataTypes);
+db.Tutor = require('./tutor')(sequelize, Sequelize.DataTypes);
 
 // 관계 설정
 db.User.hasMany(db.Note, { foreignKey: 'userid' })

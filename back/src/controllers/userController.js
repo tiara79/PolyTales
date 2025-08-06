@@ -24,7 +24,7 @@ const getAllUsers = async (req, res) => {
             data: users
         });
     } catch (error) {
-        console.error("Failed to retrieve all users:", error);
+        // console.error("Failed to retrieve all users:", error);
         res.status(500).json({ 
             message: "Internal server error", 
             error: error.message 
@@ -59,7 +59,7 @@ const getUserById = async (req, res) => {
             data: user
         });
     } catch (error) {
-        console.error("사용자 조회 실패:", error);
+        // console.error("사용자 조회 실패:", error);
         res.status(500).json({ 
             message: "서버 오류", 
             error: error.message 
@@ -70,8 +70,8 @@ const getUserById = async (req, res) => {
 // 사용자 생성
 const createUser = async (req, res) => {
     try {
-        console.log('createUser 함수 시작');
-        console.log('요청 데이터:', req.body);
+        // console.log('createUser 함수 시작');
+        // console.log('요청 데이터:', req.body);
         
         const { oauthprovider, oauthid, email, nickname, profimg } = req.body;
 
@@ -112,13 +112,13 @@ const createUser = async (req, res) => {
             pay: null
         });
 
-        console.log('사용자 생성 성공:', newUser.userid);
+        // console.log('사용자 생성 성공:', newUser.userid);
 
       // 추가: 생성 후 DB 저장 유무 확인
       const verifyUser = await db.User.findOne({
           where: { userid: newUser.userid }
       });
-      console.log('DB 저장 확인:', verifyUser ? '성공' : '실패');
+    //   console.log('DB 저장 확인:', verifyUser ? '성공' : '실패');
 
         res.status(201).json({
             message: "사용자 생성 성공",
@@ -133,7 +133,7 @@ const createUser = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error("사용자 생성 실패:", error);
+        // console.error("사용자 생성 실패:", error);
         
         if (error.name === 'SequelizeUniqueConstraintError') {
             return res.status(409).json({ 
@@ -203,7 +203,7 @@ const updateUserStatus = async (req, res) => {
             data: updatedUser
         });
     } catch (error) {
-        console.error("사용자 업데이트 실패:", error);
+        // console.error("사용자 업데이트 실패:", error);
         res.status(500).json({ 
             message: "서버 오류", 
             error: error.message 

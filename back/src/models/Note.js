@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
   },{
     tableName:'note',
     timestamps: false,
-    freezeTableName: true
+    freezeTableName: true,
   });
   return Note;
 };

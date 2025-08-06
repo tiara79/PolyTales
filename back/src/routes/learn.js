@@ -32,7 +32,7 @@ router.get('/:storyid', async (req, res) => {
         }
         
         pageData.audiopath = `http://localhost:3000/${cleanPath}`;
-        console.log('modified audio path:', pageData.audiopath);
+        // console.log('modified audio path:', pageData.audiopath);
       }
       return pageData;
     });

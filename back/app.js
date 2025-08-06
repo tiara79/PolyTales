@@ -12,7 +12,7 @@ const notesRouter = require("./src/routes/notes");
 const storiesRouter = require("./src/routes/story");
 const learnRouter = require('./src/routes/learn');
 const languageRouter = require('./src/routes/language');
-
+const tutorRouter = require('./src/routes/tutor');
 
 const app = express();
 
@@ -40,6 +40,7 @@ app.use("/notes", notesRouter);
 app.use("/stories", storiesRouter);
 app.use('/learn', learnRouter);
 app.use('/language', languageRouter);
+app.use('/tutor', tutorRouter);
 
 // ──────────────── 에러 처리 ────────────────
 app.use((req, res) => {
@@ -65,13 +66,13 @@ async function startServer() {
     // await models.sequelize.sync({ force: true  }); // 데이터 삭제됨
     // 테이블이 없으면 생성, 있으면 그대로 유지 → 데이터 보존
     await sequelize.sync();
-    console.log("DB connected successfully");
+    // console.log("DB connected successfully");
 
     app.listen(PORT, () => {
       console.log(` 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
     });
   } catch (error) {
-    console.error(" 서버 시작 실패:", error);
+    // console.error(" 서버 시작 실패:", error);
     process.exit(1);
   }
 }

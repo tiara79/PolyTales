@@ -23,7 +23,7 @@ const generateAccessToken = (user) => {
 // Google OAuth 로그인/회원가입 
 const googleAuth = async (req, res) => {
   try {
-    console.log("Google Login Request:", JSON.stringify(req.body, null, 2));
+    // console.log("Google Login Request:", JSON.stringify(req.body, null, 2));
     
     const { oauthprovider, oauthid, email, nickname, profimg } = req.body;
 
@@ -36,7 +36,7 @@ const googleAuth = async (req, res) => {
       });
     }
 
-    console.log("Verified data:", { oauthprovider, oauthid, email, nickname, profimg });
+    // console.log("Verified data:", { oauthprovider, oauthid, email, nickname, profimg });
 
     // 1차: OAuth ID로 정확한 사용자 확인
     let user = await User.findOne({
@@ -47,7 +47,7 @@ const googleAuth = async (req, res) => {
     });
 
     if (user) {
-      console.log("Find existing users with OAuth ID:", user.email);
+      // console.log("Find existing users with OAuth ID:", user.email);
       const accessToken = generateAccessToken(user);
       
       return res.status(200).json({
@@ -71,8 +71,8 @@ const googleAuth = async (req, res) => {
     });
 
     if (existingGoogleUser) {
-      console.log("Account already subscribed to Google by same email:", existingGoogleUser.email);
-      console.log("Updating OAuth ID for existing account");
+      // console.log("Account already subscribed to Google by same email:", existingGoogleUser.email);
+      // console.log("Updating OAuth ID for existing account");
       
       // 기존 사용자 정보 업데이트 (OAuth ID 변경)
       await existingGoogleUser.update({
@@ -126,7 +126,7 @@ const googleAuth = async (req, res) => {
       plan: 1
     });
 
-    console.log("Successfully created new user:", newUser.email);
+    // console.log("Successfully created new user:", newUser.email);
     const accessToken = generateAccessToken(newUser);
 
     return res.status(201).json({

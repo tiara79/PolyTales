@@ -16,14 +16,15 @@ const createNote = async (req, res) => {
             });
         }
 
-        const newNote = await notes.create({
-            userid: userid,
-            storyid: storyid,
-            title: title,
-            content: content
-        });
+        const newNote = await Note.create({
+                          userid,
+                          storyid,
+                          title,
+                          content
+                        });
 
-        console.log(' Note creation successful:', newNote.noteid);
+
+        // console.log(' Note creation successful:', newNote.noteid);
 
         res.status(201).json({
             message: "Note has been successfully created.",
@@ -51,10 +52,10 @@ const getAllNotes = async (req, res) => {
 // GET /notes/:userid - 사용자별 노트 조회
 const getNotes = async (req, res) => {
     try {
-        console.log(' Start the getNotes function');
+        // console.log(' Start the getNotes function');
 
         const { userid } = req.params;
-        console.log(' User ID to retrieve:', userid);
+        // console.log(' User ID to retrieve:', userid);
 
         // userid 유효성 검사
         if (!userid) {
