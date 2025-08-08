@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../style/Home.css';
 import Lilyshappyday from '../style/img/home/Lilyshappyday.png';
-import sampleImg from '../style/img/home/sample.png';
+import noimage from '../style/img/home/no_image.png';
 
 // 개발환경: http://localhost:3000/img/contents/lilys_happy_day.png
 // 배포환경: https://polytales-api.azurewebsites.net/img/contents/lilys_happy_day.png
@@ -107,8 +107,8 @@ export default function Home() {
             if (story.storyid === 1) {
               fallbackImage = Lilyshappyday; // Lily's happy day는 전용 이미지
             } else {
-              // 다른 스토리들은 이미지가 없는 경우 sample.png 사용
-              fallbackImage = sampleImg;
+              // 다른 스토리들은 이미지가 없는 경우 noimage.png 사용
+              fallbackImage = noimage;
             }
             
             return (

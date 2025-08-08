@@ -6,7 +6,7 @@ require('dotenv').config({ debug: false });
 module.exports = {
   development: {
     username: process.env.DB_USERNAME || "postgres",
-    password: process.env.DB_PASSWORD || null,
+    password: process.env.DB_password || null,
     database: process.env.DB_DATABASE || "polytale",
     host: process.env.DB_HOST || "127.0.0.1",
     port: process.env.DB_PORT || 5432,
@@ -15,7 +15,7 @@ module.exports = {
   },
   test: {
     username: process.env.DB_USERNAME || "postgres", // 로컬 PostgreSQL 사용자명
-    password: process.env.DB_PASSWORD || null, // 로컬 PostgreSQL 비밀번호
+    password: process.env.DB_password || null, // 로컬 PostgreSQL 비밀번호
     database: process.env.DB_DATABASE || "database_test", // 테스트 DB 이름
     host: process.env.DB_HOST || "127.0.0.1", // 로컬 호스트
     port: process.env.DB_PORT || 5432, // PostgreSQL 기본 포트

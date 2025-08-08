@@ -26,12 +26,12 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 // ──────────────── 정적 파일 서빙 ────────────────
 app.use('/audio', express.static(path.join(__dirname, '../front/public/audio')));
 app.use('/img', express.static(path.join(__dirname, '../front/public/img')));
 app.use('/img/contents', express.static(path.join(__dirname, '../front/src/style/img/contents')));
 app.use('/caption', express.static(path.join(__dirname, '../front/public/caption')));
+
 
 // ──────────────── 라우터 연결 ────────────────
 app.use('/auth', authRoutes);
@@ -40,7 +40,6 @@ app.use("/notes", notesRouter);
 app.use("/stories", storiesRouter);
 app.use('/learn', learnRouter);
 app.use('/language', languageRouter);
-app.use('/tutor', tutorRouter);
 
 // ──────────────── 에러 처리 ────────────────
 app.use((req, res) => {
@@ -66,13 +65,13 @@ async function startServer() {
     // await models.sequelize.sync({ force: true  }); // 데이터 삭제됨
     // 테이블이 없으면 생성, 있으면 그대로 유지 → 데이터 보존
     await sequelize.sync();
-    // console.log("DB connected successfully");
+    console.log("DB connected successfully");
 
     app.listen(PORT, () => {
       console.log(` 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
     });
   } catch (error) {
-    // console.error(" 서버 시작 실패:", error);
+    console.error(" 서버 시작 실패:", error);
     process.exit(1);
   }
 }

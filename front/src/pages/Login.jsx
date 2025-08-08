@@ -26,18 +26,18 @@ export default function Login() {
   // Google Sign-In 콜백 함수
   const handleCredentialResponse = useCallback(async (response) => {
     try {
-      console.log("🔍 Google 원본 응답:", response);
+      // console.log(" Google 원본 응답:", response);
       
       // Google ID 토큰 디코딩
       const responsePayload = decodeJwtResponse(response.credential);
-      console.log("🔍 디코딩된 Google 사용자 정보:", responsePayload);
+      // console.log(" 디코딩된 Google 사용자 정보:", responsePayload);
 
       // 필드별 상세 정보 확인
-      console.log("🔍 필드별 상세 정보:");
-      console.log("- sub (ID):", responsePayload.sub, "타입:", typeof responsePayload.sub);
-      console.log("- email:", responsePayload.email, "타입:", typeof responsePayload.email);
-      console.log("- name:", responsePayload.name, "타입:", typeof responsePayload.name);
-      console.log("- picture:", responsePayload.picture, "타입:", typeof responsePayload.picture);
+      // console.log(" 필드별 상세 정보:");
+      // console.log("- sub (ID):", responsePayload.sub, "타입:", typeof responsePayload.sub);
+      // console.log("- email:", responsePayload.email, "타입:", typeof responsePayload.email);
+      // console.log("- name:", responsePayload.name, "타입:", typeof responsePayload.name);
+      // console.log("- picture:", responsePayload.picture, "타입:", typeof responsePayload.picture);
 
       // Backend로 전송할 데이터 준비
       const loginData = {
@@ -48,8 +48,8 @@ export default function Login() {
         profimg: responsePayload.picture || null,
       };
 
-      console.log("📤 Backend로 전송할 최종 데이터:", loginData);
-      console.log("📤 JSON 직렬화 테스트:", JSON.stringify(loginData, null, 2));
+      // console.log(" Backend로 전송할 최종 데이터:", loginData);
+      // console.log(" JSON 직렬화 테스트:", JSON.stringify(loginData, null, 2));
 
       // Backend API 호출
       const apiResponse = await fetch("http://localhost:3000/auth/google", {
@@ -60,18 +60,18 @@ export default function Login() {
         body: JSON.stringify(loginData),
       });
 
-      console.log("📡 API 응답 상태:", apiResponse.status);
+      // console.log(" API 응답 상태:", apiResponse.status);
       
       const result = await apiResponse.json();
 
       if (apiResponse.ok) {
-        console.log("✅ 로그인 성공!");
+        console.log(" 로그인 성공!");
         
         // AuthContext로 전달할 데이터 확인
-        console.log("🔄 AuthContext로 전달할 데이터:", {
-          user: result.user,
-          token: result.token
-        });
+        // console.log(" AuthContext로 전달할 데이터:", {
+        //   user: result.user,
+        //   token: result.token
+        // });
         
         // AuthContext login 호출
         login(result.user, result.token);
@@ -80,16 +80,16 @@ export default function Login() {
         localStorage.setItem("token", result.token);
         localStorage.setItem("user", JSON.stringify(result.user));
         
-        console.log("💾 localStorage 저장된 user:", JSON.parse(localStorage.getItem("user")));
+        // console.log(" localStorage 저장된 user:", JSON.parse(localStorage.getItem("user")));
         
         // 홈페이지로 이동
         navigate("/");
       } else {
-        console.error("❌ 로그인 실패:", result.message);
+        // console.error(" 로그인 실패:", result.message);
         alert(`로그인 실패: ${result.message}`);
       }
     } catch (error) {
-      console.error("🚨 Google 로그인 처리 오류:", error);
+      // console.error(" Google 로그인 처리 오류:", error);
       alert("로그인 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   }, [login, navigate]);

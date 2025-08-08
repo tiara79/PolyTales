@@ -1,31 +1,13 @@
-/* 노트 영역 */
+/* General Note Box Styling */
 .div7 {
   grid-area: 3 / 7 / 9 / 10;
-}
-
-.note-input {
-  flex: 1;
-  font-size: 1rem;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  background: transparent;
-  padding: 0.2rem 0;
-  outline: none;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-weight: bold;
-  color: #333;
-  margin: 0;
-  text-align: left;
-  vertical-align: top;
-}
-
-.note-textarea {
   background-color: #fefef8;
   margin: 10px 20px 0 20px;
   border-radius: 12px;
   border: #b7df9f 2px solid;
 }
 
+/* Note Container */
 .note-box {
   display: flex;
   flex-direction: column;
@@ -41,6 +23,7 @@
   position: relative;
 }
 
+/* Note Header */
 .note-head {
   display: flex;
   justify-content: space-between;
@@ -56,31 +39,51 @@
   border-bottom: 1px solid #76b187;
 }
 
+/* Title Area */
 .note-title {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.4rem;
   background-color: #fefef8;
 }
 
+/* Title Label Styling */
 .underline-note {
   font-size: 1rem;
   color: #333;
-  margin-bottom: 0;
+  margin-bottom: -2rem;
   background-color: #fefef8;
-  white-space: nowrap;
 }
 
+/* Input Field for Title */
+.note-input {
+  width: 80%;
+  font-size: 1rem;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: transparent;
+  padding: 0.2rem 0;
+  outline: none;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: bold;
+  color: #333;
+  margin-left: 50px;
+  position: relative;
+  z-index: 1;
+  cursor: text;
+}
+
+/* Placeholder Styling */
 .note-input::placeholder {
   background-color: #fefef8;
   color: #3F3F3F;
   font-weight: normal;
 }
 
+/* Textarea for Note Content */
 .note-content {
   width: 100%;
-  height: 120px;
+  height: 100%;
   resize: none;
   font-size: 0.9rem;
   border: none;
@@ -97,16 +100,19 @@
   box-sizing: border-box;
   outline: none;
   text-align: left;
-  vertical-align: top;
-  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-  margin-top: 0.5rem;
-  overflow-y: auto; 
+  padding: 0.5rem;
+  margin-top: 6rem;
+  overflow-y: auto;
+  position: relative;
+  z-index: 0;
 }
 
+/* Placeholder Transparency */
 .note-content::placeholder {
   color: transparent;
 }
 
+/* Save Button */
 .save-note {
   background-color: transparent;
   color: white;
@@ -120,10 +126,58 @@
   justify-content: center;
   padding: 0;
   transition: background-color 0.2s ease;
+  filter: drop-shadow(0 0 0 transparent);
+  border-radius: 4px;
 }
+
+/* Save Button Hover */
+.save-note:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  outline: none;
+  box-shadow: none;
+}
+
+/* Scrollbar for Note Content */
+.note-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.note-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.note-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.note-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Ensure the scroll bar covers content area */
+.note-content {
+  overflow-y: scroll; /* Ensure it scrolls fully within the content area */
+}
+
+/* Fix Title Input Cursor */
+.note-input:focus {
+  cursor: text;
+  outline: none;
+}
+
+/* Make the background image always centered */
+.note-content {
+  background-position: center center;
+}
+
 
 .save-note:hover {
   background-color: rgba(255, 255, 255, 0.2);
+  /* 호버 시에도 테두리 제거 */
+  outline: none;
+  box-shadow: none;
 }
 /* Note 스크롤바  */
 .note-content::-webkit-scrollbar {

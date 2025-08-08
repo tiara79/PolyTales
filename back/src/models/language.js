@@ -6,10 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     grammar: DataTypes.TEXT,
-    word: DataTypes.TEXT,
-    mean: DataTypes.TEXT,
-    partspeech: DataTypes.TEXT,
-    vocasentence: DataTypes.TEXT,
+    voca: DataTypes.TEXT,
     nation: {
       type: DataTypes.ENUM('ko', 'ja', 'en', 'de', 'es', 'fr')
     },

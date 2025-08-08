@@ -1,5 +1,3 @@
-/* learn.css - 메인 학습 페이지 스타일 */
-
 body {
   background-color: #ffffff;
   margin: 0;
@@ -21,10 +19,9 @@ body {
   margin-top: 0;
 }
 
-/* 헤더- 처음부터 읽기 */
+/* 처음부터 읽기 */
 .div1 {
   grid-area: 1 / 1 / 2 / 4;
-  border-radius: 12px;
 }
 
 .read-start {
@@ -33,13 +30,26 @@ body {
   color: #137DFE;
   padding: 0px 20px 9px 20px;
   cursor: pointer;
-  border: none;
   position: relative;
   top: 30px;
   left: 5px;
 }
 
-/* 닫기 버튼 */
+/* 헤더 타이틀 */
+.div2 {
+  grid-area: 1 / 1 / 2 / 13;
+  background: #FFFAC7;
+  height: 70px;
+  margin-bottom: 20px;
+}
+
+.story-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: center;
+}
+
 .close-button {
   position: absolute;
   top: 20px;
@@ -47,63 +57,37 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 0.5rem;
-  color: #333;
   width: 20px;
 }
-/* 헤더 -  lily's happy day */
-.div2 {
-  grid-area: 1 / 1 / 2 / 13;
-  background: #FFFAC7;
-  height: 70px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-}
-
-.story-title {
-  width: 100%;
-  font-size: 1.5em;
-  font-weight: bold;
-  margin-top: 10px;
-  text-align: center;
-}
-
-/* div 3-> 분리 */
 
 /* 문법 영역 */
-.div4 h4,
-.div5 h4 {
+.div4 {
+  grid-area: 4 / 1 / 5 / 4;
+  margin-left: 20px;
+  background-color: #FEFBE0;
+  border: 2px solid #fdf5a9;
+  overflow-y: auto;
+  max-height: 220px;
+  padding-bottom: 1rem;
+}
+
+.div5 {
+  grid-area: 4 / 4 / 5 / 7;
+  margin: 10px 15px 0px 20px;
+  background-color: #FEFBE0;
+  border: 2px solid #fdf5a9;
+  overflow-y: auto;
+  max-height: 220px;
+  padding-bottom: 1rem;
+}
+
+/* 문법, 단어 공통 스타일 */
+.grammar h4,
+.voca h4 {
   color: #4caf50;
   margin: 10px 20px 20px 20px;
   border-bottom: 1px solid #ccc;
   padding-bottom: 0.5rem;
-  font-weight: bold;
-}
-
-.div4 p,
-.div5 p {
-  font-size: 0.95rem;
-  color: #444;
-  margin-left: 20px;
-  font-weight: bold;
-}
-
-.div4 {
-  grid-area: 4 / 1 / 5 / 4;
-  margin-left: 20px;
-  border-radius: 12px 0px 0px 0px;
-  background-color: #FEFBE0;
-  border: 2px solid #fdf5a9;
-  margin-bottom: 10px;
-}
-
-.grammar h4,
-.voca h4 {
-  color: #4caf50;
-  margin: 10px 10px 20px 10px;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 0.5rem;
-  margin-left: 20px;
   font-weight: bold;
 }
 
@@ -113,17 +97,9 @@ body {
   color: #444;
   margin-left: 20px;
   font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
-/* 단어 영역 */
-.div5 {
-  grid-area: 4 / 4 / 5 / 7;
-  background: #FEFBE0;
-  margin: 10px 15px 0px 20px;
-  border-radius: 12px;
-    border: 2px solid #fdf5a9;
-  margin-bottom: 10px;
-}
 
 /* 언어 선택 */
 .div6 {
@@ -137,7 +113,6 @@ body {
   flex-wrap: wrap;
   margin: 0px 20px 20px 0px;
   border-radius: 12px;
-  margin-bottom: 30px;
   border: #b7df9f 2px solid;
 }
 
@@ -149,12 +124,10 @@ body {
 }
 
 .lang-select label {
-  font-size: 1rem; 
+  font-size: 1rem;
   line-height: 1.5rem;
-  margin: 0.5em 0;
-  /* 라디오 버튼과 글자 사이- 가로 gap */
-  display: flex;      
-  align-items: center;  
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
 }
 
@@ -162,7 +135,7 @@ body {
   appearance: none;
   width: 16px;
   height: 16px;
-  border: 2px solid White;
+  border: 2px solid white;
   border-radius: 50%;
   background-color: #DBE9D3;
   cursor: pointer;
@@ -185,4 +158,3 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-

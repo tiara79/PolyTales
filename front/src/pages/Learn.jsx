@@ -10,10 +10,10 @@ import pause from '../style/img/learn/button/pause.png';
 import send from '../style/img/learn/button/send.png';
 import pola from '../style/img/learn/pola.png';
 
-import '../style/storylearn.css';
+import '../style/Storylearn.css';
 import '../style/Learn.css';
-import '../style/note.css';
-import '../style/Chat.css';
+import '../style/Note.css';
+import '../style/Polachat.css';
 
 
 function Learn() {
@@ -259,25 +259,34 @@ function Learn() {
         </div>
       </div>
 
-      {/* 문법 영역 */}
-      <div className="div4 grammar">
-        <h4>문법</h4>
-        <p>{languageData[0]?.grammar || '로딩 중...'}</p>
-      </div>
+        {/* 문법 영역 */}
+        {languageData.length > 0 && (
+          <div className="div4 grammar">
+            <h4>문법</h4>
+            <div className="grammar-list">
+              {languageData
+                .slice((pageNum - 1) * 5, pageNum * 5)
+                .map((item, idx) => (
+                  <p key={idx}>{item.grammar}</p>
+              ))}
+            </div>
+          </div>
+        )}
 
-      <div className="div5 voca">
-        <h4>단어</h4>
-        <p>
-          {languageData[0] ? (
-            <>
-              {languageData[0].word} ({languageData[0].partspeech}) - {languageData[0].mean}<br />
-              예문: {languageData[0].vocasentence}
-            </>
-          ) : (
-            '로딩 중...'
-          )}
-        </p>
-      </div>
+        {/* 단어 영역 */}
+        {languageData.length > 0 && (
+          <div className="div5 voca">
+            <h4>단어</h4>
+            <div className="voca-list">
+              {languageData
+                .slice((pageNum - 1) * 5, pageNum * 5)
+                .map((item, idx) => (
+                  <p key={idx}>{item.voca}</p>
+              ))}
+            </div>
+          </div>
+        )}
+
 
       {/* 언어 선택 영역 */}
       <div className="div6 lang-select">
@@ -310,7 +319,12 @@ function Learn() {
 
       {/* 채팅 영역 */}
       <div className="div8">
-        <div className="tutor-info">채팅 내역은 저장되지 않습니다.</div>
+          <div>
+          <div className="tutor-lang-select">
+            <span className="tutor-info">채팅 내역은 저장되지 않습니다.</span>
+            <span className="tutor-info notelang">노트로 저장</span>
+          </div>  
+        </div>
         <div className="chat-header">
           <div className="pola-badge">
             <span className="tutor-ai">AI tutor Pola</span>
