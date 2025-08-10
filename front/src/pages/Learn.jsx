@@ -9,6 +9,7 @@ import close from '../style/img/learn/button/close.png';
 import pause from '../style/img/learn/button/pause.png';
 import send from '../style/img/learn/button/send.png';
 import pola from '../style/img/learn/pola.png';
+import diskIcon from '../style/img/learn/button/diskIcon.png';
 
 import '../style/Storylearn.css';
 import '../style/Learn.css';
@@ -308,7 +309,8 @@ function Learn() {
       <div className="div7 note-box">
         <div className="note-head">
           <strong>Note</strong>
-          <button className="save-note" onClick={handleSaveNote}>＋</button>
+          <img src={diskIcon} className='save-note' onClick={handleSaveNote} />
+          {/* <button className="save-note" onClick={handleSaveNote}>＋</button> */}
         </div>
         <div className="note-title">
           <label htmlFor="noteTitle" className="underline-note">Title :</label>

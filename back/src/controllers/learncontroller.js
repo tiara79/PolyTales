@@ -1,6 +1,5 @@
-// back/src/controllers/learncontroller.js
+// back/src/controllers/learnController.js
 const { learn } = require('../models');
-
 const getLearnPages = async (req, res) => {
   const { storyid } = req.params;
   const { lang } = req.query;

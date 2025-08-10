@@ -26,7 +26,7 @@ npx sequelize-cli init # 시퀄라이즈 초기화
 npm i sequelize-cli # 시퀄라이즈 ORM 커맨드라인 인터페이스
 npm i sequelize # 시퀄라이즈 ORM
 
-# 실행 : npm run dev
+# 실행 : npx nodemon
 
 cd front npm run start, cd back npx nodemon app.js , 루트 실행 npm run dev
 // 루트 폴더 설치 npm install concurrently --save-dev
@@ -36,6 +36,11 @@ cd front npm run start, cd back npx nodemon app.js , 루트 실행 npm run dev
 "nodemon": "^3.1.10"
 }
 /c/Users/user/Documents/Nambu/FullStackWeb/React/BookLife$ npm install concurrently --save-dev
+
+
+# 스키마 변경은 항상 CLI로
+npx sequelize-cli db:migrate
+npx sequelize-cli db:seed:all
 
 # 간편 sns 토큰 헤더 증량
 cd /Users/agelin/FullStackWeb/React/PolyTales\(BE\)/back && cat > nodemon.json << 'EOF'
@@ -47,3 +52,8 @@ cd /Users/agelin/FullStackWeb/React/PolyTales\(BE\)/back && cat > nodemon.json <
 }
 EOF
 파일 작성후, npx nodemon 또는 npm run server 로 백서버 실행
+
+# 다른 서버가 돌고 있는지 확인
+netstat -ano | findstr :3000
+# 서버 강제 종료
+taskkill /PID 19140 /F

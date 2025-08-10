@@ -30,8 +30,8 @@
   align-items: center;
   font-weight: bold;
   padding: 0.5rem 1rem;
-  background-color: #67B98A;
-  color: #4D4D4D;
+  background-color: #67b98a;
+  color: #4d4d4d;
   font-size: 1rem;
   border-radius: 12px 12px 0 0;
   box-sizing: border-box;
@@ -64,7 +64,7 @@
   background: transparent;
   padding: 0.2rem 0;
   outline: none;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   font-weight: bold;
   color: #333;
   margin-left: 50px;
@@ -76,7 +76,7 @@
 /* Placeholder Styling */
 .note-input::placeholder {
   background-color: #fefef8;
-  color: #3F3F3F;
+  color: #3f3f3f;
   font-weight: normal;
 }
 
@@ -90,21 +90,23 @@
   border: 1px solid transparent;
   border-radius: 8px;
   background-color: #fefef8;
-  background-image: url('../style/img/learn/notePen.png');
-  opacity: 0.5;
-  background-size: 150px 110px;
+  background-image: url("../style/img/learn/notePen.png");
+  opacity: 1;
+  background-size: 100px 90px; /* 크기를 줄여서 주황색 부분 숨기기 */
   background-repeat: no-repeat;
   background-position: center center;
-  font-family: 'Noto Sans KR', sans-serif;
+  outline: none;
+  padding: 0.5rem;
+  overflow-y: auto; /* 필요할 때만 스크롤바 표시 */
+  /* 이미지 위치를 약간 아래로 조정해서 파란색 부분만 보이게 */
+  /* background-position: center 60%;
+  font-family: "Noto Sans KR", sans-serif;
   color: #444;
   box-sizing: border-box;
-  outline: none;
   text-align: left;
-  padding: 0.5rem;
   margin-top: 6rem;
-  overflow-y: auto;
   position: relative;
-  z-index: 0;
+  z-index: 0; */
 }
 
 /* Placeholder Transparency */
@@ -126,7 +128,7 @@
   justify-content: center;
   padding: 0;
   transition: background-color 0.2s ease;
-  filter: drop-shadow(0 0 0 transparent);
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.3));
   border-radius: 4px;
 }
 
@@ -138,9 +140,9 @@
 }
 
 /* Scrollbar for Note Content */
-.note-content::-webkit-scrollbar {
+/* .note-content::-webkit-scrollbar {
   width: 6px;
-}
+} */
 
 .note-content::-webkit-scrollbar-track {
   background: #f1f1f1;
@@ -156,10 +158,10 @@
   background: #a8a8a8;
 }
 
-/* Ensure the scroll bar covers content area */
-.note-content {
-  overflow-y: scroll; /* Ensure it scrolls fully within the content area */
-}
+/* Ensure the scroll bar covers content area - 제거됨 */
+/* .note-content {
+  overflow-y: scroll;
+} */
 
 /* Fix Title Input Cursor */
 .note-input:focus {
@@ -171,7 +173,6 @@
 .note-content {
   background-position: center center;
 }
-
 
 .save-note:hover {
   background-color: rgba(255, 255, 255, 0.2);

@@ -1,1 +1,43 @@
-* text=auto
+# Git이 파일별 속성(텍스트/바이너리, 줄바꿈 규칙 등)을 관리하는 설정 파일
+# 기본: 텍스트 파일 줄바꿈을 LF로 고정
+* text=auto eol=lf
+
+# 소스/설정 파일 (명시적으로 LF)
+*.js      text eol=lf
+*.ts      text eol=lf
+*.jsx     text eol=lf
+*.tsx     text eol=lf
+*.json    text eol=lf
+*.sql     text eol=lf
+*.md      text eol=lf
+*.yml     text eol=lf
+*.yaml    text eol=lf
+*.css     text eol=lf
+*.html    text eol=lf
+*.env     text eol=lf
+*.env.*   text eol=lf
+*.sh      text eol=lf
+
+# Windows 전용 스크립트는 CRLF 허용(필요할 때만)
+*.bat     text eol=crlf
+*.cmd     text eol=crlf
+*.ps1     text eol=crlf
+
+# 바이너리(줄바꿈 변환/디프/병합 금지)
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.webp    binary
+*.svg     -text
+*.mp3     binary
+*.wav     binary
+*.mp4     binary
+*.mov     binary
+*.avi     binary
+*.woff    binary
+*.woff2   binary
+*.ttf     binary
+*.otf     binary
+*.db      binary
+*.sqlite  binary

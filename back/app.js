@@ -7,12 +7,13 @@ const { sequelize } = require('./src/models');
 
 // ──────────────── 라우터 설정 ────────────────
 const authRoutes = require('./src/routes/auth');
+console.log('authRoutes type:', typeof authRoutes);
 const userRouter = require('./src/routes/users');
 const notesRouter = require("./src/routes/notes");
 const storiesRouter = require("./src/routes/story");
 const learnRouter = require('./src/routes/learn');
 const languageRouter = require('./src/routes/language');
-const tutorRouter = require('./src/routes/tutor');
+// const tutorRouter = require('./src/routes/tutor');
 
 const app = express();
 
@@ -22,16 +23,22 @@ app.use(cors({
   credentials: true,
   exposedHeaders: ['Authorization'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+   optionsSuccessStatus: 204
 }));
-app.use(express.json());
+
+// Body parsers
+app.use(express.json({ limit: '2mb' }));           // 필요 시 조정
 app.use(express.urlencoded({ extended: true }));
+
 // ──────────────── 정적 파일 서빙 ────────────────
 app.use('/audio', express.static(path.join(__dirname, '../front/public/audio')));
 app.use('/img', express.static(path.join(__dirname, '../front/public/img')));
 app.use('/img/contents', express.static(path.join(__dirname, '../front/src/style/img/contents')));
 app.use('/caption', express.static(path.join(__dirname, '../front/public/caption')));
 
+// Health check
+app.get('/health', (_req, res) => res.json({ ok: true }));
 
 // ──────────────── 라우터 연결 ────────────────
 app.use('/auth', authRoutes);
@@ -40,6 +47,8 @@ app.use("/notes", notesRouter);
 app.use("/stories", storiesRouter);
 app.use('/learn', learnRouter);
 app.use('/language', languageRouter);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 // ──────────────── 에러 처리 ────────────────
 app.use((req, res) => {
@@ -64,8 +73,8 @@ async function startServer() {
   try {
     // await models.sequelize.sync({ force: true  }); // 데이터 삭제됨
     // 테이블이 없으면 생성, 있으면 그대로 유지 → 데이터 보존
-    await sequelize.sync();
-    console.log("DB connected successfully");
+    await sequelize.authenticate();
+    console.log(`Connected DB: ${sequelize.config.database}`);
 
     app.listen(PORT, () => {
       console.log(` 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);

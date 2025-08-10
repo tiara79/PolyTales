@@ -1,13 +1,9 @@
 // src/models/index.js
 const { Sequelize } = require('sequelize');
-const config = require('../config/config.js')['development'];
+const env = process.env.NODE_ENV || 'development';
+const config = require('../config.js')[env];
 
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  config
-);
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 const db = {};
 db.Sequelize = Sequelize; // Sequelize 클래스

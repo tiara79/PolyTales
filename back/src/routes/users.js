@@ -2,6 +2,14 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const { authRequired, onlyAdmin } = require('../middlewares/auth'); // ✅ 수정
+// const { authenticate , onlyAdmin } = require('../middlewares/auth'); // ❌ 기존 코드
+
+// 회원의 상태 변경(1,2,3,4)
+router.patch('/:userid/status', authRequired, onlyAdmin, userController.adminSetStatus);
+
+// 강제 탈퇴(= status 3)
+router.post('/:userid/force-withdraw', authRequired, onlyAdmin, userController.adminForceWithdraw);
 
 // GET /users - 전체 사용자 조회 
 router.get('/', userController.getAllUsers);
