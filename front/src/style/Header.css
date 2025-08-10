@@ -1,6 +1,6 @@
 :root {
   --header-height: 70px;
-  --footer-height: 60px;
+  --footer-height: 40px;
 }
 
 body, html {
@@ -71,7 +71,7 @@ body, html {
   background-color: #f68d4e;
 }
 
-.start-button:focus {
+/* .start-button:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(254, 162, 112, 0.4);
-}
+} */

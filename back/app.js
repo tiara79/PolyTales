@@ -7,7 +7,6 @@ const { sequelize } = require('./src/models');
 
 // ──────────────── 라우터 설정 ────────────────
 const authRoutes = require('./src/routes/auth');
-console.log('authRoutes type:', typeof authRoutes);
 const userRouter = require('./src/routes/users');
 const notesRouter = require("./src/routes/notes");
 const storiesRouter = require("./src/routes/story");
@@ -24,11 +23,11 @@ app.use(cors({
   exposedHeaders: ['Authorization'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-   optionsSuccessStatus: 204
+  optionsSuccessStatus: 204
 }));
 
 // Body parsers
-app.use(express.json({ limit: '2mb' }));           // 필요 시 조정
+app.use(express.json({ limit: '2mb' })); 
 app.use(express.urlencoded({ extended: true }));
 
 // ──────────────── 정적 파일 서빙 ────────────────

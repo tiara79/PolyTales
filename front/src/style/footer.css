@@ -5,15 +5,79 @@
   right: 0;
   height: var(--footer-height);
   background-color: #fffac73f; /* Light yellow background */
-  padding: 1.2rem 0;
+  padding: 0 2rem; /* 좌우 패딩 추가 */
   text-align: center;
-  font-size: 0.95rem;
+  font-size: 0.85rem; /* 폰트 사이즈도 약간 줄임 */
   color: #333;
   border-top: 1px solid #eee;
   box-sizing: border-box;
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 양쪽 끝과 가운데 배치 */
 }
-p{
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  gap: 0.8rem;
+}
+
+.footer-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.footer-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.copyright {
   margin: 0;
   padding: 0;
+  font-size: 0.8rem; /* 더 작게 */
+  color: #666;
+}
+
+.policy-links {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.policy-link {
+  color: #666 !important;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 0.8rem; /* 더 작게 */
+  transition: color 0.2s ease;
+}
+
+.policy-link:hover {
+  color: #666;
+  text-decoration: underline;
+  cursor: pointer; /* 커서 포인터로 변경 */
+}
+
+.divider {
+  color: #ccc;
+  font-size: 0.75rem; /* 구분자도 더 작게 */
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+.admin-icon {
+  width: 30px; /* 아이콘 크기 조정 */
+  height: 30px;
+  cursor: pointer;
 }

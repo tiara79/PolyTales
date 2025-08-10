@@ -1,19 +1,18 @@
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
-import { useSelector } from "react-redux"; // Redux의 상태를 읽기 위한 훅
-
-const UserprofImg = () => {
-  // Redux 상태에서 로그인된 사용자 정보 가져오기
-  const user = useSelector((state) => state.user);
+const UserProfile = () => {
+  const { user } = useContext(AuthContext);
 
   return (
     <div>
       {user ? (
-        <h1>안녕하세요, {user.name}님!</h1>  // 로그인된 사용자 이름 표시
+        <h1>안녕하세요, {user.nickname}님!</h1>
       ) : (
-        <p>로그인 해주세요.</p>  // 로그인되지 않은 경우 메시지
+        <p>로그인 해주세요.</p>
       )}
     </div>
   );
 };
 
-export default UserprofImg;
+export default UserProfile;

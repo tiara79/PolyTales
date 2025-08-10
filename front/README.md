@@ -83,3 +83,13 @@ API 호출용 axios, fetch 코드
 | `div6` | **언어 선택 라디오 버튼**                   |
 | `div7` | 노트                                        |
 | `div8` | 채팅내역                                    |
+
+# npm 캐시 정리
+npm cache clean --force
+
+# node_modules와 package-lock.json 삭제
+rm -rf node_modules
+rm -f package-lock.json
+
+# 다시 설치 시도
+npm install

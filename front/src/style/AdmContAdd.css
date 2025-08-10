@@ -1,0 +1,471 @@
+/* 업로드 버튼 있는 td 스타일 */
+.input-upload-td {
+    position: relative;
+    padding-right: 36px !important;
+}
+
+.input-upload-td .upload-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #f68d4e;
+    padding: 0 4px;
+    z-index: 2;
+}
+
+/* 설명 (텍스트에리어)플레이스홀더 스타일*/
+.content-table textarea::placeholder {
+    font-family: 'Noto Sans KR', 'Malgun Gothic', Arial, sans-serif;
+    font-size: 13px;
+    color: #d8d8d8;
+    opacity: 1;
+}
+
+/* 인풋박스 플레이스홀더 스타일 */
+.content-table input::placeholder {
+    font-family: 'Noto Sans KR', 'Malgun Gothic', Arial, sans-serif;
+    font-size: 13px;
+    color: #d8d8d8;
+    opacity: 1;
+}
+
+/* 플레이스홀더 스타일*/
+.content-table textarea::placeholder {
+    font-family: 'Noto Sans KR', 'Malgun Gothic', Arial, sans-serif;
+    font-size: 13px;
+    color: #d8d8d8;
+    opacity: 1;
+}
+
+/* 표 수정 input/textarea 포커스 및 기본 border 완전 제거 */
+.content-table input,
+.content-table textarea {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent;
+    font-size: 13px;
+    color: #222;
+    padding: 0 4px;
+}
+
+/* 설명 textarea의 우측하단 크기조절(리사이즈) 표시 제거 */
+.content-table textarea {
+    resize: none;
+    min-height: 60px; /* 3줄 기준 */
+    height: auto;
+    line-height: 1.5;
+    overflow: visible;
+    width: 95%;
+    box-sizing: border-box;
+}
+
+/* 표 수정 input/textarea 포커스시 아웃라인 제거 */
+.content-table input:focus,
+.content-table textarea:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* 업로드 버튼 스타일 */
+.input-upload-td img {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+
+:root {
+    --radio-checked-outline: #f68d4e;
+}
+
+/* 전체 컨테이너-------------------------- */
+.admin-edit-container {
+    position: fixed;
+    top: var(--header-height);
+    bottom: var(--footer-height);
+    left: 0;
+    right: 0;
+    overflow-y: auto;
+    padding-top: 0.5rem;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.admin-content-body {
+    display: flex;
+    gap: 1rem;
+}
+
+/*헤더*/
+.edit-header {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 15%;
+    margin-bottom: 30px;
+}
+
+.right-button-wrapper {
+    display: flex;
+    padding-top: 40px;
+    gap: 0.6rem;
+}
+
+/*뒤로가기 버튼 영역--------------------*/
+.back-button-wrapper {
+    display: flex;
+    gap: 1rem;
+    margin-top: 7px;
+    margin-left: 0.2rem;
+    align-items: center;
+    /* 추가 */
+    height: auto;
+    /* 필요시 추가 */
+}
+
+.back-button {
+    background-color: #fea270ad;
+    color: white;
+    border: none;
+    width: 48px;
+    height: 48px;
+    margin-top: 10px;
+    margin-right: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 3px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 10px;
+    color: #6c6c6c;
+    font-size: 25px;
+}
+
+/* 테이블 영역 -----------------*/
+.content-table-container {
+    width: 100%;
+    padding: 0 !important;
+}
+
+.content-table {
+    /* border-collapse: collapse; */
+    width: 100%;
+    background-color: white;
+}
+
+.content-table th,
+.content-table td {
+    padding: 7px 12px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.content-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #646464;
+    white-space: nowrap;
+    border: 1px solid #ddd;
+    /* 헤더는 항상 모든 border 있음 */
+}
+
+.content-table td {
+    color: #555;
+}
+
+/*우측 영역 ---------------------*/
+.right-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.button-wrapper {
+    display: flex;
+    gap: 0.5rem;
+
+}
+
+.save-button {
+    background-color: transparent;
+    border: none;
+    border-radius: 100%;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.save-button img {
+    width: 40px;
+    height: 40px;
+}
+
+.save-button:hover {
+    transform: scale(1.1);
+}
+
+/* 레벨 라디오 영역 ---------------------*/
+.level-radio {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    background-color: gainsboro;
+    gap: 0.5rem;
+    background: #f7f5f4;
+    border-radius: 16px;
+    padding: 24px 24px 20px 24px;
+    /* margin: 24px 0 0 0; */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.level-radio p {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #6c6c6c;
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+/* 3x2 그리드로 라디오 정렬 */
+.radio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 10px 20px;
+    justify-items: start;
+    align-items: center;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.radio-grid label {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    color: #6c6c6c;
+    font-weight: 500;
+    gap: 8px;
+    cursor: pointer;
+    min-width: 90px;
+    white-space: nowrap;
+}
+
+.radio-grid input[type="radio"] {
+    accent-color: var(--radio-checked-outline, #ff4d4f);
+    width: 17px;
+    height: 17px;
+    margin-right: 4px;
+}
+
+/* 기존 라디오 버튼 스타일 제거 (radio-row, radio-group, radio-row label, radio-row input 등) */
+.radio-group,
+.radio-row,
+.radio-row label,
+.radio-row input[type="radio"],
+.radio-row input[type="radio"]:checked,
+.radio-row input[type="radio"]:focus-visible,
+.radio-row label.align-head {
+    all: unset;
+}
+
+/* 커스텀 라디오 버튼 */
+.custom-radio {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    color: #a3a3a3;
+    font-weight: 500;
+    cursor: pointer;
+    min-width: 90px;
+    white-space: nowrap;
+}
+
+.custom-radio input[type="radio"] {
+    opacity: 0;
+    position: absolute;
+    width: 17px;
+    height: 17px;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.custom-radio span {
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    border: 1.5px solid #c5c5c5;
+    border-radius: 50%;
+    box-sizing: border-box;
+    position: relative;
+    margin-right: 4px;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+.custom-radio input[type="radio"]:checked+span {
+    border-color: #f68d4e;
+}
+
+/* 체크시 원 부분 스타일 */
+.custom-radio input[type="radio"]:checked+span:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background: #f68d4e;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+/*토픽 영역--------------------------- */
+.topic-area {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    background-color: gainsboro;
+    gap: 0.5rem;
+    background: #f7f5f4;
+    border-radius: 16px;
+    padding: 24px 24px 20px 24px;
+    /* margin: 24px 0 0 0; */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.topic-area p {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #6c6c6c;
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+/* 3x2 그리드로 체크박스 버튼 정렬 */
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 10px 20px;
+    justify-items: start;
+    align-items: center;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.checkbox-grid label {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    color: #6c6c6c;
+    font-weight: 500;
+    gap: 8px;
+    cursor: pointer;
+    min-width: 90px;
+    white-space: nowrap;
+}
+
+.checkbox-grid input[type="checkbox"] {
+    accent-color: var(--radio-checked-outline, #f68d);
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
+/* 체크박스 체크 시 체크마크 흰색 */
+.checkbox-grid input[type="checkbox"]:checked {
+    accent-color: #f68d4e;
+}
+
+.checkbox-grid input[type="checkbox"]:checked::after {
+    /* 일부 브라우저에서 커스텀 체크마크 지원 */
+    color: #fff;
+}
+
+/* 크롬 등 최신 브라우저에서 체크마크 색상은 accent-color로 제어됨 */
+
+/* 커스텀 체크박스 */
+.custom-checkbox {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    color: #6c6c6c;
+    font-weight: 500;
+    cursor: pointer;
+    min-width: 90px;
+    white-space: nowrap;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+
+/* 디폴트 체크박스 스타일 */
+.custom-checkbox span {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #c5c5c5;
+    border-radius: 4px;
+    box-sizing: border-box;
+    position: relative;
+    margin-right: 4px;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+/* 체크시 박스 스타일*/
+.custom-checkbox input[type="checkbox"]:checked+span {
+    border-color: #f68d4e;
+    background: #f68d4e;
+}
+
+/* 체크 표시v 스타일 */
+.custom-checkbox input[type="checkbox"]:checked+span:after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 4px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 3px 3px 0;
+    transform: translate(-50%, -60%) rotate(45deg);
+}

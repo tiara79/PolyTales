@@ -1,16 +1,17 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 const useUser = () => {
-  const dispatch = useDispatch();
-  const user = useSelector(state => state.user);
+  const { user, login, logout } = useContext(AuthContext);
 
-  const setUser = (userData) => {
-    dispatch({ type: 'SET_USER', payload: userData });
+  const setUser = (userData, token) => {
+    login(userData, token);
   };
 
   return {
     user,
     setUser,
+    logout,
   };
 };
 
