@@ -1,33 +1,26 @@
 // src/config.js
- // 상단, .env 파일이 없거나 문제가 있어도 에러 메시지가 출력되지 않습니다.
 require('dotenv').config({ debug: false });
 
-module.exports = {
-  development: {
-    username: process.env.DB_USERNAME || "postgres",
-     password: process.env.DB_PASSWORD || null,  // ← DB_PASSWORD로 표준화
-    database: process.env.DB_DATABASE || "polytales",
-    host: process.env.DB_HOST || "127.0.0.1",
-    port: process.env.DB_PORT || 5432,
-    dialect: process.env.DB_DIALECT || "postgres",
-    logging: false // 테스트 환경에서는 로그를 출력하지 않도록 설정
-  },
-  test: {
-    username: process.env.DB_USERNAME || "postgres", // 로컬 PostgreSQL 사용자명
-    password: process.env.DB_PASSWORD || null, // 로컬 PostgreSQL 비밀번호
-    database: process.env.DB_DATABASE || "database_test", // 테스트 DB 이름
-    host: process.env.DB_HOST || "127.0.0.1", // 로컬 호스트
-    port: process.env.DB_PORT || 5432, // PostgreSQL 기본 포트
-    dialect: "postgres", // PostgreSQL로 변경
-    logging: false,
-  },
-  production: {
-    username: "root", // 실제 Azure에서 사용하는 DB 사용자명
-    password: null, // 실제 DB 비밀번호
-    database: "database_production", // 실제 프로덕션 DB 이름
-    host: "127.0.0.1", // Azure에서 제공한 PostgreSQL 호스트
-    dialect: "postgres", // Azure PostgreSQL 사용 시 mysql에서 postgres로 변경
-    logging: false,
-  }
+function base() {
+  const cfg = {
+    username: process.env.DB_USERNAME || 'postgres',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_DATABASE || 'polytales',
+    host:     process.env.DB_HOST || '127.0.0.1',
+    port:     Number(process.env.DB_PORT || 5432),
+    dialect:  process.env.DB_DIALECT || 'postgres',
+    logging:  false,
+  };
 
+  // Azure 접속 시 SSL 필수 → .env에서 DB_SSL=require로 지정
+  if ((process.env.DB_SSL || '').toLowerCase() === 'require') {
+    cfg.dialectOptions = { ssl: { require: true, /* 개발 중엔 필요 시 rejectUnauthorized:false */ } };
+  }
+  return cfg;
+}
+
+module.exports = {
+  development: base(), // 로컬/azure 둘 다 env로 제어
+  test:        base(),
+  production:  base(), // 배포 때도 동일하게 env로 제어
 };

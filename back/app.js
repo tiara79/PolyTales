@@ -5,6 +5,7 @@ const cors = require("cors");
 const path = require('path');
 const { sequelize } = require('./src/models');
 
+
 // ──────────────── 라우터 설정 ────────────────
 const authRoutes = require('./src/routes/auth');
 const userRouter = require('./src/routes/users');
@@ -12,9 +13,28 @@ const notesRouter = require("./src/routes/notes");
 const storiesRouter = require("./src/routes/story");
 const learnRouter = require('./src/routes/learn');
 const languageRouter = require('./src/routes/language');
+const verificationRouter = require('./src/routes/verification');
 // const tutorRouter = require('./src/routes/tutor');
 
 const app = express();
+
+// ──────────────── 서버 설정 ────────────────
+// HTTP 헤더 크기 제한 늘리기 및 431 오류 해결
+app.use((req, res, next) => {
+  // 캐시 제어
+  res.setHeader('Cache-Control', 'no-cache');
+
+  // 큰 헤더 처리를 위한 설정
+  res.setHeader('Access-Control-Max-Age', '86400');
+
+  // 요청 헤더가 너무 클 경우 처리
+  if (req.headers && Object.keys(req.headers).length > 50) {
+    console.warn('Large number of headers detected:', Object.keys(req.headers).length);
+  }
+
+  next();
+});
+
 
 // ──────────────── 미들웨어 ────────────────
 app.use(cors({
@@ -47,7 +67,7 @@ app.use("/stories", storiesRouter);
 app.use('/learn', learnRouter);
 app.use('/language', languageRouter);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
+app.use('/verification', verificationRouter);
 
 // ──────────────── 에러 처리 ────────────────
 app.use((req, res) => {

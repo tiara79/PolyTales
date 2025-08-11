@@ -22,6 +22,8 @@ import AdmContAdd from "./pages/AdmContAdd";
 import AdmContDetail from "./pages/AdmContDetail";
 import AdmContEdit from "./pages/AdmContEdit";
 import SignupWithVerification from "./components/SignupWithVerification";
+import { LevelsProvider } from './context/LevelsContext';
+import { BookmarkProvider } from './context/BookmarkContext';
 
 export default function App() {
   // 1. 가입 : user 상태를 localStorage에서 불러오기
@@ -71,6 +73,8 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+       <LevelsProvider>
+       <BookmarkProvider>
         <Routes>
           {/* 헤더 + 푸터 포함 */}
           <Route element={<MainRouter />}>
@@ -115,6 +119,8 @@ export default function App() {
           draggable
           pauseOnHover
         />
+        </BookmarkProvider>
+        </LevelsProvider>
       </BrowserRouter>
     </AuthProvider>
   );

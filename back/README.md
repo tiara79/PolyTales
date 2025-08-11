@@ -20,6 +20,9 @@ npm i yamljs
 npm install dotenv #jwt 토큰 용
 npm install cors #클라이언트에서 오는 요청에 대해 허용
 
+# Azure에 필요한 설치
+npm i -D dotenv-cli sequelize-cli
+
 # 참고
 
 npx sequelize-cli init # 시퀄라이즈 초기화

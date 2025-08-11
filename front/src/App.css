@@ -39,3 +39,8 @@ img {
   display: block;
   border-radius: var(--border-radius);
 }
+/* 6. Toastify 색변경 가능 */
+/* .Toastify__toast {
+  background: #fffbe6 !important;
+  color: #333 !important;
+} */

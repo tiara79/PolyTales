@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { toast } from 'react-toastify';
 import { AuthContext } from '../context/AuthContext';
 
 import addbtn from '../style/img/admin/addbtn.png';

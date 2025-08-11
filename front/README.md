@@ -93,3 +93,11 @@ rm -f package-lock.json
 
 # 다시 설치 시도
 npm install
+
+# twilio 가입( 문자 인증 )
+https://www.twilio.com/docs/verify?utm_source=chatgpt.com
+
+// 개발환경: http://localhost:3000/img/contents/lilys_happy_day.png
+// 배포환경: https://polytales-api.azurewebsites.net/img/contents/lilys_happy_day.png
+// .env 환경변수 설정: REACT_APP_API_URL=https://polytales-api.azurewebsites.net
+// 환경별 설정 - App Service 정적 파일 서빙 방식

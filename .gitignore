@@ -71,3 +71,5 @@ yarn-debug.log*
 # OS에 따른 임시 디렉토리
 tmp/
 temp/
+
+.env*

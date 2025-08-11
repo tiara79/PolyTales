@@ -3,6 +3,11 @@ import { toast } from 'react-toastify';
 import { sendEmailVerification, verifyEmailCode, sendPhoneVerification, verifyPhoneCode } from "../api/verification";
 import "../style/SignupForm.css";
 
+const API_BASE_URL = (process.env.REACT_APP_API_URL || 'http://localhost:3000')
+  .trim()
+  .replace(/\/+$/, '');
+
+
 // 키보드 레이아웃 정의 (연속 문자/숫자 검사용)
 const keyboardRows = [
   ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="],
@@ -188,105 +193,57 @@ export default function SignupForm({ onSubmit }) {
     };
   }, [emailTimer, phoneTimer]);
 
-  //아이디 중복 확인 핸들러
-  const handleCheckUsername = async () => {
-    if (!form.username) {
-      setCheckMsg("아이디를 입력하세요.");
-      setCheckMsgType("error");
-      return;
-    }
-    try {
-      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
-      const res = await fetch(
-        `${API_BASE_URL}/auth/check-username?username=${encodeURIComponent(
-          form.username
-        )}`,
-        { cache: "no-store" }
-      );
-      if (!res.ok) {
-        setCheckMsg("서버 오류");
-        setCheckMsgType("error");
-        return;
-      }
-      const data = await res.json();
-      if (data && typeof data.exists !== "undefined") {
-        if (data.exists) {
-          setCheckMsg("이미 사용 중인 아이디입니다.");
-          setCheckMsgType("error");
-        } else {
-          setCheckMsg("아이디를 사용할 수 있습니다.");
-          setCheckMsgType("success");
-        }
-      } else {
-        setCheckMsg("서버 응답 형식이 잘못되었습니다.");
-        setCheckMsgType("error");
-      }
-    } catch (err) {
-      setCheckMsg("서버 오류");
-      setCheckMsgType("error");
-    }
-  };
+// 아이디 중복 확인
+const handleCheckUsername = async () => {
+  if (!form.username) { setCheckMsg("아이디를 입력하세요."); setCheckMsgType("error"); return; }
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/check-username?username=${encodeURIComponent(form.username)}`);
+    if (!res.ok) throw new Error('서버 오류');
+    const data = await res.json();
+    if (data.exists) { setCheckMsg("이미 사용 중인 아이디입니다."); setCheckMsgType("error"); }
+    else { setCheckMsg("아이디를 사용할 수 있습니다."); setCheckMsgType("success"); }
+  } catch {
+    setCheckMsg("서버 오류"); setCheckMsgType("error");
+  }
+};
 
-  // 이메일 중복 확인 핸들러
+  // 이메일 중복 확인
   const handleCheckEmail = async () => {
-    if (!form.email || errors.email) return;
-    try {
-      const res = await fetch(
-        `http://localhost:3000/auth/check-email?email=${encodeURIComponent(
-          form.email
-        )}`
-      );
-      const data = await res.json();
-      if (res.ok && !data.exists) {
-        setEmailCheckMsg("✔ 사용 가능한 이메일입니다.");
-        setEmailCheckType("success");
-        setVerificationStatus(prev => ({ ...prev, emailDuplicateChecked: true }));
-      } else if (data.exists) {
-        setEmailCheckMsg("✖ 이미 가입된 이메일입니다.");
-        setEmailCheckType("error");
-        setVerificationStatus(prev => ({ ...prev, emailDuplicateChecked: false }));
-      } else {
-        setEmailCheckMsg("✖ 서버 오류");
-        setEmailCheckType("error");
-        setVerificationStatus(prev => ({ ...prev, emailDuplicateChecked: false }));
-      }
-    } catch {
-      setEmailCheckMsg("✖ 서버 오류");
-      setEmailCheckType("error");
+  if (!form.email || errors.email) return;
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/check-email?email=${encodeURIComponent(form.email)}`);
+    const data = await res.json();
+    if (res.ok && !data.exists) {
+      setEmailCheckMsg("✔ 사용 가능한 이메일입니다."); setEmailCheckType("success");
+      setVerificationStatus(prev => ({ ...prev, emailDuplicateChecked: true }));
+    } else {
+      setEmailCheckMsg("✖ 이미 가입된 이메일입니다."); setEmailCheckType("error");
       setVerificationStatus(prev => ({ ...prev, emailDuplicateChecked: false }));
     }
-  };
+  } catch {
+    setEmailCheckMsg("✖ 서버 오류"); setEmailCheckType("error");
+    setVerificationStatus(prev => ({ ...prev, emailDuplicateChecked: false }));
+  }
+};
 
-  // 전화번호 중복 확인 핸들러
-  const handleCheckPhone = async () => {
-    if (!form.phone || errors.phone) return;
-    try {
-      const res = await fetch(
-        `http://localhost:3000/auth/check-phone?phone=${encodeURIComponent(
-          form.phone
-        )}`
-      );
-      const data = await res.json();
-      if (res.ok && !data.exists) {
-        setPhoneCheckMsg("✔ 사용 가능한 전화번호입니다.");
-        setPhoneCheckType("success");
-        setVerificationStatus(prev => ({ ...prev, phoneDuplicateChecked: true }));
-      } else if (data.exists) {
-        setPhoneCheckMsg("✖ 이미 가입된 전화번호입니다.");
-        setPhoneCheckType("error");
-        setVerificationStatus(prev => ({ ...prev, phoneDuplicateChecked: false }));
-      } else {
-        setPhoneCheckMsg("✖ 서버 오류");
-        setPhoneCheckType("error");
-        setVerificationStatus(prev => ({ ...prev, phoneDuplicateChecked: false }));
-      }
-    } catch {
-      setPhoneCheckMsg("✖ 서버 오류");
-      setPhoneCheckType("error");
+  // 전화번호 중복 확인
+const handleCheckPhone = async () => {
+  if (!form.phone || errors.phone) return;
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/check-phone?phone=${encodeURIComponent(form.phone)}`);
+    const data = await res.json();
+    if (res.ok && !data.exists) {
+      setPhoneCheckMsg("✔ 사용 가능한 전화번호입니다."); setPhoneCheckType("success");
+      setVerificationStatus(prev => ({ ...prev, phoneDuplicateChecked: true }));
+    } else {
+      setPhoneCheckMsg("✖ 이미 가입된 전화번호입니다."); setPhoneCheckType("error");
       setVerificationStatus(prev => ({ ...prev, phoneDuplicateChecked: false }));
     }
-  };
-
+  } catch {
+    setPhoneCheckMsg("✖ 서버 오류"); setPhoneCheckType("error");
+    setVerificationStatus(prev => ({ ...prev, phoneDuplicateChecked: false }));
+  }
+};
   // 이메일 인증번호 발송
   const handleSendEmailCode = async () => {
     try {

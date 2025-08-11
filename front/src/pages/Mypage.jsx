@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { BookmarkContext } from "../context/BookmarkContext";
 import "../style/Mypage.css";
 import Lilyshappyday from "../style/img/home/Lilyshappyday.png";
 import ProfImg from "../style/img/login/ProfImg.png";
@@ -8,6 +9,7 @@ import ProfImg from "../style/img/login/ProfImg.png";
 export default function Mypage() {
   const navigate = useNavigate();
   const { user, onLogout } = useContext(AuthContext);
+  const { bookmarks } = useContext(BookmarkContext);
 
   const likedBooks = [
     { id: 4, title: "Lily's happy dayLily's happy day", img: Lilyshappyday },
@@ -50,10 +52,7 @@ export default function Mypage() {
             </div>
             <div className="profile-email">{user?.email}</div>
             <div className="button-container">
-              <button
-                className="report-btn"
-                onClick={() => navigate("/report")}
-              >
+              <button className="report-btn" onClick={() => navigate("/report")}>
                 학습 정보
               </button>
               <button className="plan-btn" onClick={() => navigate("/plan")}>
@@ -71,10 +70,7 @@ export default function Mypage() {
               {/*내가 읽은 책 헤더 */}
               <div className="read-header">
                 <h2 className="read-title">내가 읽은 책들</h2>
-                <button
-                  className="more-btn"
-                  onClick={() => navigate("/history")}
-                >
+                <button className="more-btn" onClick={() => navigate("/history")} >
                   더보기
                 </button>
               </div>
@@ -109,20 +105,24 @@ export default function Mypage() {
               </div>
               <hr />
 
-              {/* 캐러셀로 변경 */}
-              <div className="books-carousel">
-                {likedBooks.map((book) => (
-                  <div key={book.id} className="books-card">
-                    <div className="books-cover-wrapper">
-                      <img
-                        className="books-cover-img"
-                        src={book.img}
-                        alt={book.title}
-                      />
-                    </div>
-                    <div className="books-title">{book.title}</div>
+              {/* 북마크 리스트 렌더링 */}
+              <div className="my-bookmark-section">
+                {bookmarks.length === 0 ? (
+                  <p>찜한 책이 없습니다.</p>
+                ) : (
+                  <div className="bookmark-list">
+                    {bookmarks.map((book) => {
+                      const imageBaseUrl = process.env.REACT_APP_IMAGE_BASE_URL || 'http://localhost:3000/img/contents';
+                      const imageUrl = book.thumbnail ? `${imageBaseUrl}/${book.thumbnail}` : Lilyshappyday;
+                      return (
+                        <div key={book.storyid} className="bookmark-item">
+                          <img src={imageUrl} alt={book.storytitle} />
+                          <p>{book.storytitle}</p>
+                        </div>
+                      );
+                    })}
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>

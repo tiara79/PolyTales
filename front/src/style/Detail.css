@@ -46,15 +46,17 @@ position: fixed;
 }
 
 .detail-image img {
-  width: 300px;
+  width: 320px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   border-radius: 4px;
 }
 
 /* 오른쪽 텍스트 영역 */
 .detail-text {
-  flex: 1.2;
+  flex: 1;
   color: #6E6E6E;
+  margin-left: 30px;
+  /* margin-top: 50px; */
 }
 
 /* 제목 + 북마크 아이콘 정렬 */
@@ -71,7 +73,7 @@ position: fixed;
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
-  gap: 1rem; /* 텍스트와 북마크 사이 간격 */
+  gap: 1.2rem; /* 텍스트와 북마크 사이 간격 */
 }
 
 .bookmark-icon.inline {
@@ -105,9 +107,9 @@ position: fixed;
 
 .tag {
   display: inline-block;
-  padding: 0.4rem 0.8rem;
+  padding: 0.6rem 1rem;
   border-radius: 999px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: bold;
   margin-right: 1rem;
   color: #89837B;
@@ -123,27 +125,25 @@ position: fixed;
 
 /* 작품 소개 */
 .detail-desc h4 {
-  margin-top: 1.7rem;
-  margin-bottom: 0.6rem;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: #6E6E6E;
 }
 
 .detail-desc p {
   margin: 0.4rem 0;
-  line-height: 1.8;
+  line-height: 1.5;
   color: #6E6E6E;
-  font-size: 0.90rem;
+  font-size: 1rem;
 }
 
 /* 읽기 버튼 */
 .read-button {
-  margin-top: 1.5rem;
+  /* margin-top: 1.5rem; */
   background-color: #FEA270;
   color: white;
   border: none;
-  padding: 0.7rem 2rem;
+  padding: 0.4rem 1.2rem;
   border-radius: 999px;
   font-size: 1rem;
   font-weight: bold;
