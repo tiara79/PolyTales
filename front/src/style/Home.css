@@ -1,0 +1,256 @@
+/* src/style/home.css */
+
+/* Home 페이지 주요 콘텐츠 영역: 헤더/푸터 제외한 전체 바디 스크롤 */
+.recommend-section {
+  position: absolute;
+  top: var(--header-height);
+  bottom: var(--footer-height);
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  padding: 2rem;
+  background-color: var(--main-bg);
+  text-align: center;
+}
+
+.recommend-section h2 {
+  font-size: 2rem;
+  color: #67b98aeb;
+  margin-bottom: 2rem;
+}
+
+.level-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.level-btn {
+  width: 120px;
+  height: 55px;
+  border-radius: 40px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  background-color: #eee;
+  color: #89837b;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  transform: translateY(0);
+}
+
+.level-btn:hover {
+  filter: brightness(0.95);
+}
+
+/* 레벨별 색상 */
+.level-btn.A1 {
+  background-color: #ffd9d9;
+}
+.level-btn.A2 {
+  background-color: #fee8d2;
+}
+.level-btn.B1 {
+  background-color: #fff5ba;
+}
+.level-btn.B2 {
+  background-color: #daf2cb;
+}
+.level-btn.C1 {
+  background-color: #d3f7ff;
+}
+.level-btn.C2 {
+  background-color: #e7cbf2;
+}
+
+.level-btn.selected {
+  color: #fff;
+  font-weight: 900;
+}
+
+.level-btn:hover:not(.selected) {
+  transform: translateY(-0.5px) scale(1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  filter: brightness(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  filter: brightness(1.02);
+  transition: all 0.3s ease;
+}
+
+/* 선택된 버튼은 hover 효과 중복 방지 */
+.level-btn.selected:hover {
+  transform: translateY(-0.5px) scale(1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  filter: brightness(1.02);
+}
+/* 선택된 상태 색상 */
+.level-btn.selected.A1 {
+  background-color: #ffb7b7;
+}
+.level-btn.selected.A2 {
+  background-color: #ffd1a3;
+}
+.level-btn.selected.B1 {
+  background-color: #f0df7e;
+}
+.level-btn.selected.B2 {
+  background-color: #c0e4a9;
+}
+.level-btn.selected.C1 {
+  background-color: #afe1ed;
+}
+.level-btn.selected.C2 {
+  background-color: #dab0ea;
+}
+
+/* 이미지 그리드 레이아웃 */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.image-box {
+  position: relative;
+  text-align: center;
+}
+
+.image-box img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  transition: transform 0.2s ease;
+  border: 0.5px solid rgba(0, 0, 0, 0.3);
+}
+
+.image-box img:hover {
+  transform: scale(1.05);
+}
+
+.image-title {
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* 자물쇠 이미지 처리 */
+.locked-image img {
+  filter: blur(2px);
+}
+
+.lock-icon,
+.lock-tooltip {
+  position: absolute;
+  color: rgba(255, 255, 255, 1);
+}
+
+.lock-icon {
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+}
+
+.lock-tooltip {
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(51, 51, 51, 0.8);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.locked-image:hover .lock-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* 커스텀 confirm dialog 스타일 - 개선 */
+.custom-confirm-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeInBg 0.3s;
+}
+
+@keyframes fadeInBg {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.custom-confirm-dialog {
+  background: #fff;
+  padding: 2.5rem 2rem 2rem 2rem;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  text-align: center;
+  min-width: 320px;
+  max-width: 90vw;
+  animation: fadeInDialog 0.3s;
+}
+
+@keyframes fadeInDialog {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.custom-confirm-dialog p {
+  font-size: 1.15rem;
+  color: #333;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.custom-confirm-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.custom-confirm-buttons button {
+  min-width: 90px;
+  padding: 0.7rem 1.5rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(90deg, #67b98a 60%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.custom-confirm-buttons button:hover {
+  background: linear-gradient(90deg, #fea270 60%, #67b98a 100%);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.custom-confirm-buttons button:last-child {
+  background: #eaeaea;
+  color: #555;
+  box-shadow: none;
+}
+
+.custom-confirm-buttons button:last-child:hover {
+  background: #d6d6d6;
+  color: #333;
+  transform: none;
+}
