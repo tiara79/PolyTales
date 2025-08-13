@@ -13,8 +13,27 @@ export const LevelsProvider = ({ children }) => {
       .catch(() => setLevels([]));
   }, []);
 
+  const levelLabelsKo = {
+    A1: '초급',
+    A2: '초중급',
+    B1: '중급',
+    B2: '중고급',
+    C1: '고급',
+    C2: '최고급',
+  };
+
+  // nation별 언어 라벨
+  const langLabel = {
+    ko: '한국어',
+    en: '영어',
+    fr: '프랑스어',
+    ja: '일본어',
+    es: '스페인어',
+    de: '독일어',
+  };
+
   return (
-    <LevelsContext.Provider value={levels}>
+    <LevelsContext.Provider value={{ levels, levelLabelsKo, langLabel }}>
       {children}
     </LevelsContext.Provider>
   );

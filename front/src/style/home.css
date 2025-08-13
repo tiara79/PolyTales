@@ -140,7 +140,7 @@
   text-align: center;
 }
 
-/* 잠긴 이미지 처리 */
+/* 자물쇠 이미지 처리 */
 .locked-image img {
   filter: blur(2px);
 }
@@ -148,7 +148,7 @@
 .lock-icon,
 .lock-tooltip {
   position: absolute;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 1);
 }
 
 .lock-icon {
@@ -162,7 +162,7 @@
   bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(51, 51, 51, 0.6);
+  background-color: rgba(51, 51, 51, 0.8);
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -175,4 +175,82 @@
 .locked-image:hover .lock-tooltip {
   visibility: visible;
   opacity: 1;
+}
+
+/* 커스텀 confirm dialog 스타일 - 개선 */
+.custom-confirm-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeInBg 0.3s;
+}
+
+@keyframes fadeInBg {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.custom-confirm-dialog {
+  background: #fff;
+  padding: 2.5rem 2rem 2rem 2rem;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  text-align: center;
+  min-width: 320px;
+  max-width: 90vw;
+  animation: fadeInDialog 0.3s;
+}
+
+@keyframes fadeInDialog {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.custom-confirm-dialog p {
+  font-size: 1.15rem;
+  color: #333;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.custom-confirm-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.custom-confirm-buttons button {
+  min-width: 90px;
+  padding: 0.7rem 1.5rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(90deg, #67b98a 60%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.custom-confirm-buttons button:hover {
+  background: linear-gradient(90deg, #fea270 60%, #67b98a 100%);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.custom-confirm-buttons button:last-child {
+  background: #eaeaea;
+  color: #555;
+  box-shadow: none;
+}
+
+.custom-confirm-buttons button:last-child:hover {
+  background: #d6d6d6;
+  color: #333;
+  transform: none;
 }

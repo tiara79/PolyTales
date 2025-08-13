@@ -103,7 +103,7 @@ const getStoryByLevel = async (req, res) => {
 // GET /stories/:level/detail/:id - 특정 레벨의 특정 스토리 상세 조회
 const getStoryById = async (req, res) => {
     try {
-        console.log('Start the getStoryById function');
+        // console.log('Start the getStoryById function');
         const { level, id } = req.params;
         // console.log(`Look up the ${id} story at the ${level} level`);
 
@@ -120,7 +120,7 @@ const getStoryById = async (req, res) => {
             });
         }
 
-        console.log('Story retrieval successful:', story.storytitle);
+        // console.log('Story retrieval successful:', story.storytitle);
 
         res.status(200).json({
             message: "Story detail retrieval successful",

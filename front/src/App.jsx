@@ -1,29 +1,30 @@
-import { React, useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+import { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AuthProvider } from "./context/AuthContext";
+import { StoryProvider } from "./context/StoryContext";
 
-import MainRouter from "./routes/MainRouter";
-import DetailRouter from "./routes/DetailRouter";
-import NoRoute from "./routes/NoRoute";
-import Home from "./pages/Home";
-import Detail from "./pages/Detail";
-import Learn from "./pages/Learn";
-import Login from "./pages/Login";
-import Mypage from "./pages/Mypage";
-import MyNotes from "./pages/MyNotes";
-import Bookmark from "./pages/Bookmark";
-import History from "./pages/History";
-import Plan from "./pages/Plan";
-import Report from "./pages/Report";
-import AdmHome from "./pages/AdmHome";
+import SignupWithVerification from "./components/SignupWithVerification";
+import { BookmarkProvider } from './context/BookmarkContext';
+import { LevelsProvider } from './context/LevelsContext';
 import AdmContAdd from "./pages/AdmContAdd";
 import AdmContDetail from "./pages/AdmContDetail";
 import AdmContEdit from "./pages/AdmContEdit";
-import SignupWithVerification from "./components/SignupWithVerification";
-import { LevelsProvider } from './context/LevelsContext';
-import { BookmarkProvider } from './context/BookmarkContext';
+import AdmHome from "./pages/AdmHome";
+import Bookmark from "./pages/Bookmark";
+import Detail from "./pages/Detail";
+import History from "./pages/History";
+import Home from "./pages/Home";
+import Learn from "./pages/Learn";
+import Login from "./pages/Login";
+import MyNotes from "./pages/MyNotes";
+import Mypage from "./pages/Mypage";
+import Plan from "./pages/Plan";
+import Report from "./pages/Report";
+import DetailRouter from "./routes/DetailRouter";
+import MainRouter from "./routes/MainRouter";
+import NoRoute from "./routes/NoRoute";
 
 export default function App() {
   // 1. 가입 : user 상태를 localStorage에서 불러오기
@@ -72,6 +73,7 @@ export default function App() {
 
   return (
     <AuthProvider>
+      <StoryProvider>
       <BrowserRouter>
        <LevelsProvider>
        <BookmarkProvider>
@@ -122,6 +124,7 @@ export default function App() {
         </BookmarkProvider>
         </LevelsProvider>
       </BrowserRouter>
+      </StoryProvider>
     </AuthProvider>
   );
 }

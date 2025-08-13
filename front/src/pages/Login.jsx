@@ -2,13 +2,14 @@ import { useState, useEffect, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { AuthContext } from "../context/AuthContext";
-
 import axios from "../api/axios";
 import JoinModal from "./JoinModal";
 import SignupForm from "./SignupForm";
 import "../style/Login.css";
 
 import googleIcon from "../style/img/login/google.png";
+import naverIcon from "../style/img/login/naver.png";
+import kakaoIcon from "../style/img/login/kakao.png";
 import logo from "../style/img/login/loginLogo.png";
 
 
@@ -85,28 +86,28 @@ export default function Login() {
   };
 
   // Google 로그인
-const handleCredentialResponse = useCallback(async (response) => {
-  try {
-    const responsePayload = decodeJwtResponse(response.credential);
+  const handleCredentialResponse = useCallback(async (response) => {
+    try {
+      const responsePayload = decodeJwtResponse(response.credential);
 
-    const loginData = {
-      oauthProvider: "google",
-      oauthId: responsePayload.sub,
-      email: responsePayload.email,
-      nickName: responsePayload.name,
-      profImg: responsePayload.picture,
-    };
+      const loginData = {
+        oauthProvider: "google",
+        oauthId: responsePayload.sub,
+        email: responsePayload.email,
+        nickName: responsePayload.name,
+        profImg: responsePayload.picture,
+      };
 
-    const apiResponse = await axios.post("/auth/google", loginData);
+      const apiResponse = await axios.post("/auth/google", loginData);
 
-    login(apiResponse.data.user, apiResponse.data.token);
-    navigate("/");
-  } catch (error) {
-    const errorMessage =
-      error.response?.data?.message || "로그인 중 오류가 발생했습니다.";
-    toast.error(errorMessage);
-  }
-}, [login, navigate]);
+      login(apiResponse.data.user, apiResponse.data.token);
+      navigate("/");
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "로그인 중 오류가 발생했습니다.";
+      toast.error(errorMessage);
+    }
+  }, [login, navigate]);
 
   // Google 아이콘 클릭 시 Google 로그인 실행
   const handleGoogleLogin = () => {
@@ -145,6 +146,64 @@ const handleCredentialResponse = useCallback(async (response) => {
       );
     }
   }, [handleCredentialResponse]);
+
+  // 카카오 로그인
+  const KAKAO_JS_KEY = "8fbba95a8ed2b06b47b542b8c493bc19";
+  useEffect(() => {
+    if (window.Kakao && !window.Kakao.isInitialized()) {
+      window.Kakao.init(KAKAO_JS_KEY);
+    }
+  }, []);
+
+  const handleKakaoLogin = () => {
+    if (window.Kakao) {
+      window.Kakao.Auth.authorize({
+        redirectUri: "http://localhost:3001/login", // 본인 Redirect URI로 교체
+      });
+    } else {
+      alert("카카오 SDK 로드 실패");
+    }
+  };
+
+  // 카카오 콜백 처리
+  const [kakaoProcessed, setKakaoProcessed] = useState(false);
+  const handleKakaoCallback = async (code) => {
+    try {
+      const res = await axios.post("/auth/kakao", { code });
+      login(res.data.user, res.data.token);
+      if (res.data.kakaoAccessToken && res.data.kakaoAccessToken.length < 200) {
+        localStorage.setItem('kakao_access_token', res.data.kakaoAccessToken);
+      } else {
+        localStorage.removeItem('kakao_access_token');
+      }
+      window.history.replaceState({}, document.title, "/login");
+      navigate("/");
+    } catch {
+      alert("카카오 로그인 실패");
+      window.history.replaceState({}, document.title, "/login");
+      navigate("/login");
+    }
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    if (code && !kakaoProcessed) {
+      setKakaoProcessed(true);
+      handleKakaoCallback(code);
+    }
+  }, [login, navigate, kakaoProcessed]);
+
+  // 네이버 로그인
+  const handleNaverLogin = async () => {
+    try {
+      const res = await axios.get("/auth/naver");
+      window.location.href = res.data.url;
+    } catch (error) {
+      console.error("네이버 로그인 오류:", error);
+      toast.error("네이버 로그인에 실패했습니다.");
+    }
+  };
 
   return (
     <div className="login-page">
@@ -199,6 +258,18 @@ const handleCredentialResponse = useCallback(async (response) => {
               onClick={handleGoogleLogin}
             >
               <img src={googleIcon} alt="구글 로그인" />
+            </button>
+            <button
+              className="social-btn naver-btn"
+              onClick={handleNaverLogin}
+            >
+              <img src={naverIcon} alt="네이버 로그인" />
+            </button>
+            <button
+              className="social-btn kakao-btn"
+              onClick={handleKakaoLogin}
+            >
+              <img src={kakaoIcon} alt="카카오 로그인" />
             </button>
           </div>
         </div>

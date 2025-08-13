@@ -1,14 +1,28 @@
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 import React, { useState ,useEffect, useContext} from 'react';
 import { BookmarkContext } from '../context/BookmarkContext';
 
+import lilys_happy_day from '../style/img/detail/lilys_happy_day.jpg';
+import fantasy_destination from '../style/img/detail/fantasy_destination.jpg';
+import five_glassballs from '../style/img/detail/five_glassballs.jpg';
+import girls_girls from '../style/img/detail/girls_girls.jpg';
+import happy_popttas_adventure from '../style/img/detail/happy_popttas_adventure.jpg';
+import jack_and_the_beanstalk from '../style/img/detail/jack_and_the_beanstalk.jpg';
+import red_hair_anny from '../style/img/detail/red_hair_anny.jpg';
+import on_safari from '../style/img/detail/on_safari.jpg';
+import noimage from '../style/img/home/no_image.png';
+import bookmarkPre from '../style/img/detail/button/bookmarkPre.png';
+import bookmarkNext from '../style/img/detail/button/bookmarkNext.png';
+
 import '../style/Detail.css';
-import lilyMain from '../style/img/detail/lilyMain.png';
-import bookmarkPre from '../style/img/detail/bookmarkPre.png';
-import bookmarkNext from '../style/img/detail/bookmarkNext.png';
 
 export default function Detail() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const storyid = Number(params.get('storyid'));
+  const level = params.get('level');
+
   const [bookmarked, setBookmarked] = useState(false);
 
   // story 상태 관리
@@ -30,8 +44,6 @@ export default function Detail() {
 
   // story 데이터 fetch 및 디버깅
   useEffect(() => {
-    const storyid = 1; 
-    const level = 'A1'; 
     fetch(`http://localhost:3000/stories/${level}/detail/${storyid}`)
       .then(res => res.json())
       .then(result => {
@@ -42,12 +54,25 @@ export default function Detail() {
         console.error('API 에러:', err);
         setStory(null);
       });
-  }, []);
+  }, [level, storyid]);
 
   // story가 null이면 로딩 표시
   if (!story) {
     return <div className="detail-container"><div>로딩 중...</div></div>;
   }
+
+  // storyid별 이미지 매핑
+  const storyImages = {
+    1: lilys_happy_day,
+    10: jack_and_the_beanstalk,
+    15: red_hair_anny,
+    17: happy_popttas_adventure,
+    19: five_glassballs,
+    29: fantasy_destination,
+    30: girls_girls,
+    38: on_safari,
+  };
+  const storyImage = storyImages[storyid] || noimage;
 
   return (
     <div className="detail-container">
@@ -57,7 +82,8 @@ export default function Detail() {
       {/* 왼쪽 영역 */}
       <div className="detail-wrapper">
         <div className="detail-image">
-          <img src={lilyMain} alt="Lily's Happy Day" />
+          <img src={storyImage} alt={story.storytitle} />
+  
         </div>
         {/* 오른쪽 영역 */}
         <div className="detail-text">

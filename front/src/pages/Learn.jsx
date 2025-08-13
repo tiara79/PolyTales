@@ -1,5 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { LevelsContext } from "../context/LevelsContext";
+import { StoryContext } from "../context/StoryContext";
 
 // toast (alert 대체용)
 import { toast } from 'react-toastify';
@@ -29,7 +32,19 @@ function Learn() {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [languageData, setLanguageData] = useState([]);
+  const [summary, setSummary] = useState(""); // 요약 내용 상태 추가
+  const { user, token } = useContext(AuthContext);
+  const levelsContext = useContext(LevelsContext);
+  const levels = levelsContext?.levels || [];
+  const levelLabelsKo = levelsContext?.levelLabelsKo || {};
+  const langLabel = levelsContext?.langLabel || {}; // 반드시 선언
+  const { stories } = useContext(StoryContext);
 
+  // 현재 story 정보 추출 (페이지 데이터와 stories context 모두 활용)
+  const currentStoryId = pages[pageNum - 1]?.storyid || pages[0]?.storyid || 1;
+  const currentStoryObj = stories?.find(s => s.storyid === currentStoryId);
+  const currentLangLevel = currentStoryObj?.langlevel || "A1";
+  const currentLang = lang;
 
   const goPrev = () => setPageNum(p => Math.max(p - 1, 1));
   const goNext = () => setPageNum(prev => Math.min(prev + 1, pages.length));
@@ -39,7 +54,6 @@ function Learn() {
     setPageNum(1);
   };
 
-  const langLabel = {ko: '한국어', fr: '프랑스어',ja: '일본어', en: '영어', es: '스페인어', de: '독일어',};
 
   // 데이터 로딩을 useEffect로 이동
   useEffect(() => {
@@ -180,49 +194,74 @@ function Learn() {
   const handleCloseClick = () => navigate('/detail');
 
   // 노트 저장 함수
-    const handleSaveNote = async () => {
-      const titleEl = noteTitleRef.current;
-      const contentEl = noteContentRef.current;
-      const title = titleEl?.value.trim();
-      const content = contentEl?.value.trim();
+  const handleSaveNote = async () => {
+    const titleEl = noteTitleRef.current;
+    const contentEl = noteContentRef.current;
+    const title = titleEl?.value.trim();
+    const content = contentEl?.value.trim();
 
-      if (!title || !content) {
-        toast.warn('제목과 내용을 모두 입력하세요.');
-        return;
-      }
+    if (!title || !content) {
+      toast.warn("제목과 내용을 모두 입력하세요.");
+      return;
+    }
 
-      const noteData = {
-        userid: 2, // 실제 로그인 상태면 여기 값을 useContext 또는 props 등에서 받아와야 함
-        storyid: 1,
-        title,
-        content
-      };
-
-      try {
-        const response = await fetch('http://localhost:3000/notes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(noteData)
-        });
-
-        if (!response.ok) {
-          throw new Error(`노트 저장 실패 (status ${response.status})`);
-        }
-
-        const result = await response.json();
-        console.log('노트 저장됨:', result);
-        toast.success('노트가 저장되었습니다!');
-
-        // 입력 필드 초기화
-        if (titleEl) titleEl.value = '';
-        if (contentEl) contentEl.value = '';
-
-      } catch (error) {
-        console.error('노트 저장 중 오류:', error.message);
-        toast.error('노트 저장에 실패했습니다.');
-      }
+    // 컨텍스트에서 받은 값 사용
+    const noteData = {
+      userid: user?.userid,
+      storyid: currentStoryId,
+      langlevel: currentLangLevel,
+      lang: currentLang,
+      title,
+      content,
     };
 
+    try {
+      const response = await fetch("http://localhost:3000/notes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify(noteData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`노트 저장 실패 (status ${response.status})`);
+      }
+
+      const result = await response.json();
+      console.log("노트 저장됨:", result);
+      toast.success("노트가 저장되었습니다!");
+
+      // 입력 필드 초기화
+      if (titleEl) titleEl.value = "";
+      if (contentEl) contentEl.value = "";
+    } catch (error) {
+      console.error("노트 저장 중 오류:", error.message);
+      toast.error("노트 저장에 실패했습니다.");
+    }
+  };
+
+  // 요약 내용 가져오기
+  const handleSummaryClick = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/tutor/summary/${currentStoryId}?userid=${user?.userid}`,
+        {
+          headers: {
+            "Authorization": token ? `Bearer ${token}` : "",
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      if (!response.ok) throw new Error("요약 데이터 불러오기 실패");
+      const result = await response.json();
+      setSummary(result.summary || "요약 데이터가 없습니다.");
+    } catch (error) {
+      toast.error("요약 데이터 불러오기 실패");
+      setSummary("");
+    }
+  };
 
   return (
     <div className="parent">
@@ -234,7 +273,7 @@ function Learn() {
         <button className="close-button" onClick={handleCloseClick}><img src={close} alt="close" /></button>
       </div>
 
-      {/* 이미지 및 자막 영역 */}
+      {/* 이미지 및 자막 영역 storylearn.css */}
       <div className="div3">
         <div className="story-image-container">
           {pages.length > 0 && (<>
@@ -242,7 +281,11 @@ function Learn() {
             <div className="caption-text">{formatCaption(caption)}</div>
             <div className="caption-box">
               <div className="control-btns">
-                <button onClick={goPrev} disabled={pageNum === 1} className="btn Text">
+                <button
+                  onClick={goPrev}
+                  disabled={pageNum === 1}
+                  className={`btn Text${pageNum === 1 ? ' disabled' : ''}`}
+                >
                   <span className="icon" />
                   <span>이전 문장</span>
                 </button>
@@ -265,11 +308,18 @@ function Learn() {
           <div className="div4 grammar">
             <h4>문법</h4>
             <div className="grammar-list">
-              {languageData
-                .slice((pageNum - 1) * 5, pageNum * 5)
-                .map((item, idx) => (
-                  <p key={idx}>{item.grammar}</p>
-              ))}
+              {lang === 'ko'
+                ? languageData
+                    .filter((item, idx) => idx % 10 === (pageNum - 1) % 10)
+                    .slice(0, 1)
+                    .map((item, idx) => (
+                      <p key={idx}>{item.grammar}</p>
+                    ))
+                : languageData
+                    .slice((pageNum - 1) * 5, pageNum * 5)
+                    .map((item, idx) => (
+                      <p key={idx}>{item.grammar}</p>
+                    ))}
             </div>
           </div>
         )}
@@ -279,11 +329,18 @@ function Learn() {
           <div className="div5 voca">
             <h4>단어</h4>
             <div className="voca-list">
-              {languageData
-                .slice((pageNum - 1) * 5, pageNum * 5)
-                .map((item, idx) => (
-                  <p key={idx}>{item.voca}</p>
-              ))}
+              {lang === 'ko'
+                ? languageData
+                    .filter((item, idx) => idx % 10 === (pageNum - 1) % 10)
+                    .slice(0, 1)
+                    .map((item, idx) => (
+                      <p key={idx}>{item.voca}</p>
+                    ))
+                : languageData
+                    .slice((pageNum - 1) * 5, pageNum * 5)
+                    .map((item, idx) => (
+                      <p key={idx}>{item.voca}</p>
+                    ))}
             </div>
           </div>
         )}

@@ -23,6 +23,12 @@
   position: relative;
 }
 
+/* Narrow Note Container */
+.note-box-narrow {
+  max-width: 400px;
+  margin: 0;
+}
+
 /* Note Header */
 .note-head {
   display: flex;
@@ -90,7 +96,7 @@
   border: 1px solid transparent;
   border-radius: 8px;
   background-color: #fefef8;
-  background-image: url("../style/img/learn/notePen.png");
+  /* background-image: url("../style/img/learn/notePen.png"); */
   opacity: 1;
   background-size: 100px 90px; /* 크기를 줄여서 주황색 부분 숨기기 */
   background-repeat: no-repeat;
@@ -157,12 +163,6 @@
 .note-content::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
-
-/* Ensure the scroll bar covers content area - 제거됨 */
-/* .note-content {
-  overflow-y: scroll;
-} */
-
 /* Fix Title Input Cursor */
 .note-input:focus {
   cursor: text;

@@ -1,97 +1,73 @@
-import React from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import "../style/Bookmark.css";
-import Lilyshappyday from "../style/img/home/Lilyshappyday.png";
-import noImg from "../style/img/home/no_image.png";
-import "../style/Bookmark.css";
-
-const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
-
-const levelLabelsKo = {
-  A1: "초급",
-  A2: "초중급",
-  B1: "중급",
-  B2: "중고급",
-  C1: "고급",
-  C2: "최고급",
-};
-
-const imageData = [
-  { id: 1, title: "Lily's happy day", level: "A1", available: true },
-  { id: 2, title: "Red Riding Hood", level: "A1", available: false },
-  { id: 3, title: "Diary", level: "A1", available: false },
-  { id: 4, title: "Friendship", level: "A1", available: false },
-  { id: 5, title: "Prince", level: "A1", available: false },
-  { id: 6, title: "Fighters", level: "A1", available: false },
-  { id: 7, title: "Pizza", level: "A1", available: false },
-  { id: 8, title: "Museum", level: "A1", available: false },
-  { id: 9, title: "Library", level: "A1", available: false },
-  { id: 10, title: "Ocean", level: "A1", available: false },
-  { id: 11, title: "Dream", level: "A1", available: false },
-  { id: 12, title: "Galaxy", level: "A1", available: false },
-  { id: 11, title: "Dream", level: "C2", available: false },
-  { id: 12, title: "Galaxy", level: "C2", available: false },
-];
+import React, { useState, useContext } from 'react';
+import { BookmarkContext } from '../context/BookmarkContext';
+import { LevelsContext } from '../context/LevelsContext';
+import '../style/Bookmark.css';
+import Lilyshappyday from '../style/img/home/Lilyshappyday.png';
+import nobookmark from '../style/img/mypage/nobookmark.png';
 
 export default function Bookmark() {
-  const navigate = useNavigate();
-  const goBack = () => navigate(-1); // back 버튼 -> 홈 이동
+  const { bookmarks } = useContext(BookmarkContext);
+  const levelsContext = useContext(LevelsContext);
+  const levels = levelsContext?.levels || [];
+  const levelLabelsKo = levelsContext?.levelLabelsKo || {};
 
-  const [selected, setSelected] = useState("A1");
+  const [selected, setSelected] = useState(levels[0] || 'A1');
 
-  const handleSelect = (level) => {
-    setSelected((prev) => (prev === level ? null : level));
-  };
-  // 선택된 level에 따라 이미지 필터링
-  const filteredImages = selected
-    ? imageData.filter((item) => item.level === selected)
-    : [];
+  // 디버깅: 북마크 데이터 확인
+  console.log('북마크 데이터:', bookmarks);
+
+  // langlevel이 없는 경우 전체 북마크 표시
+  const hasLangLevel = bookmarks.some(book => book.langlevel);
+  const filteredBookmarks = hasLangLevel
+    ? bookmarks.filter(book => book.langlevel === selected)
+    : bookmarks;
+
+  // myNotes와 동일한 back 버튼 핸들러
+  const goBack = () => window.history.length > 1 ? window.history.back() : null;
 
   return (
     <div className="bookmark-container">
-      <div className="back-button-wrapper">
-        <button className="back-button" onClick={goBack}>
-          🔙
-        </button>
-        <h1 className="page-title">내가 찜한 책들</h1>
-      </div>
-      <div className="level-buttons">
-        {levels.map((level) => {
-          const isSelected = selected === level;
-          return (
+      <div className="mynotes-container">
+        <div className="back-button-wrapper">
+          <button className="back-button" onClick={goBack}>
+            🔙
+          </button>
+          <h1 className="page-title">내가 찜한 책들</h1>
+        </div>
+        <div className="level-buttons">
+          {levels.map(level => (
             <button
               key={level}
-              onClick={() => handleSelect(level)}
-              className={`level-btn ${level} ${
-                isSelected ? `selected ${level}` : ""
-              }`}
+              onClick={() => setSelected(level)}
+              className={`level-btn ${level} ${selected === level ? `selected ${level}` : ''}`}
             >
-              <strong>{level}</strong>
-              <br />
+              <strong>{level}</strong><br />
               <span>{levelLabelsKo[level]}</span>
             </button>
-          );
-        })}
-      </div>
-      <div className="image-grid">
-        {filteredImages.map(({ id, title, available }) => (
-          <div key={id} className="image-box">
-            {available ? (
-              <Link to="/detail">
-                <img src={Lilyshappyday} alt={title} />
-              </Link>
-            ) : (
-              <div className="locked-image">
-                <img src={noImg} alt={title} />
-                <div className="lock-icon">🔒</div>
-                <div className="lock-tooltip">해당 콘텐츠는 유료입니다</div>
-              </div>
-            )}
-            <p className="image-title">{title}</p>
-          </div>
-        ))}
+          ))}
+        </div>
+        <div className="image-grid">
+          {filteredBookmarks.length === 0 ? (
+            <div className="image-box">
+              <img src={nobookmark} alt="" className="empty-img" />
+            </div>
+          ) : (
+            filteredBookmarks.map(book => {
+              const imageBaseUrl = process.env.REACT_APP_IMAGE_BASE_URL || 'http://localhost:3000/img/contents';
+              const imageUrl = book.thumbnail ? `${imageBaseUrl}/${book.thumbnail}` : Lilyshappyday;
+              return (
+                <div key={book.storyid} className="image-box">
+                  <img
+                    src={imageUrl}
+                    alt={book.storytitle}
+                    onError={e => { e.target.src = nobookmark; }}
+                  />
+                  <p className="image-title">{book.storytitle}</p>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
     </div>
   );

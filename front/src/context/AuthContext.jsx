@@ -17,10 +17,22 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData, token) => {
-    setUser(userData);
+    const nowDate = new Date();
+    const nowDateStr = nowDate.toISOString().slice(0, 10); // YYYY-MM-DD
+    const nowDateTimeStr = nowDate.toISOString().replace('T', ' ').slice(0, 19); // YYYY-MM-DD HH:MM:SS
+
+    const termsVersionNum = 1; // 약관 버전 숫자 타입으로 저장
+
+    const updatedUserData = {
+      ...userData,
+      terms_version: termsVersionNum,
+      accepted_terms_version: nowDateStr,
+      terms_agreed_at: nowDateTimeStr,
+    };
+    setUser(updatedUserData);
     setToken(token);
     localStorage.setItem("token", token); 
-    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("user", JSON.stringify(updatedUserData));
     // console.log("Token length:", token?.length);
   };
 

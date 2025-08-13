@@ -6,7 +6,7 @@
     right: 0;
     overflow-y: auto;
     padding-top: 0.5rem;
-    /* padding-left: 5%; */
+    padding-left: 5%;
     background-color: #fff;
     box-sizing: border-box;
 }
@@ -312,7 +312,7 @@
     border: 1px solid transparent;
     border-radius: 8px;
     background-color: #fefef8;
-    background-image: url("../style/img/learn/notePen.png");
+    /* background-image: url("../style/img/learn/notePen.png"); */
     opacity: 0.9;
     background-size: 25%;
     background-repeat: no-repeat;
@@ -330,9 +330,10 @@
     padding: 0 1rem;
 }
 
-.no-notes {
-    text-align: center;
-    color: #666;
-    font-size: 1.1rem;
-    margin-top: 2rem;
+
+
+/* 이미지 래퍼에 position:relative 필요 */
+.image-box,
+.detail-image {
+  position: relative;
 }
