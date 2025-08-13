@@ -1,9 +1,12 @@
-name: Azure Static Web Apps CI/CD
+name: polytales frontend
 
 on:
   push:
     branches:
       - main
+    paths:
+      - front/**
+      - .github/workflows/front.yml
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
