@@ -17,18 +17,31 @@ instance.defaults.headers.common['Content-Type'] = 'application/json';
 // 요청 인터셉터: 토큰 자동 추가
 instance.interceptors.request.use(
   (config) => {
+    // 정적 파일 요청은 토큰 제외
+    if (
+      config.url &&
+      (config.url.includes('/img/') ||
+       config.url.includes('/audio/') ||
+       config.url.includes('/caption/'))
+    ) {
+      return config; // Authorization 안 붙임
+    }
+
     // 카카오 언링크 요청은 Authorization 헤더를 덮어쓰지 않음
     if (config.url && config.url.includes('/auth/kakao/unlink')) {
-      // 아무것도 하지 않음 (kakaoUnlink에서 직접 헤더 지정)
-    } else {
-      const token = localStorage.getItem('token');
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+      return config;
     }
+
+    // 나머지 API 요청에는 토큰 자동 추가
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
     // 불필요한 헤더 제거
     delete config.headers['User-Agent'];
     delete config.headers['Accept-Encoding'];
+
     return config;
   },
   (error) => Promise.reject(error)

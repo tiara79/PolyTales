@@ -1,3 +1,4 @@
+// front/src/components/SignupWithVerification.jsx
 import React, { useState } from 'react';
 import { sendEmailVerification, verifyEmailCode, sendPhoneVerification, verifyPhoneCode } from '../api/verification';
 

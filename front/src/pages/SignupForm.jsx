@@ -1,3 +1,4 @@
+// front/src/pages/SignupForm.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import { toast } from 'react-toastify';
 import { sendEmailVerification, verifyEmailCode, sendPhoneVerification, verifyPhoneCode } from "../api/verification";

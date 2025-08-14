@@ -1,36 +1,38 @@
-/* chat.css - 채팅 관련 스타일 */
-
 /* 튜터 채팅 컨테이너 */
 .div8 {
   grid-area: 2 / 10 / 5 / 13;
-  background: #F6F6F6;
-  margin: 10px 10px 0 0px;
+  background: rgba(249, 249, 249, 0.5);
+  margin: 10px 20px 0 0;
   border-radius: 12px;
   display: flex;
   flex-direction: column;
   position: relative;
-  min-height: 400px; 
-  max-height: 1000px; 
-  padding: 1rem;
+  min-height: 400px;
+  max-height: 1000px;
+  padding: 0.5rem;
   border: #33333313 2px solid;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
+  height: 97.4%;
 }
 
-.tutor-lang-select{
-  margin-bottom: 15px;
+.tutor-lang-select {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 /* 튜터 정보 텍스트 */
 .tutor-info {
-  padding: 0.8rem 3rem 1rem 1rem;
+  padding: 1rem;
   text-align: left;
-  color: #939393;
+  color: #bfbfbf;
   font-size: 0.8rem;
 }
 
 /* 폴라 튜터 배지 */
 .pola-badge {
-  background-color: #FEBE9B;
+  background-color: #febe9b;
   padding: 0.3rem 1rem;
   border-radius: 999px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
@@ -39,17 +41,22 @@
   font-weight: bold;
   color: #777777;
   font-size: 0.8rem;
-  margin-left: 20px;
+  margin: 0 0 5px 10px;
 }
 
-
-.notelang{
-  background-color: #67B98A;
+.notelang {
+  background-color: #67b98a;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 0.2rem 1rem;
+  padding: 0.2rem 1rem 0.3rem 1rem;
+  margin-right: 1rem;
   border-radius: 999px;
-  color : #FFFFFF;
-} 
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.notelang:hover {
+  transform: scale(1.05);
+}
 
 .tutor-ai {
   margin-right: 0.2rem;
@@ -71,7 +78,6 @@
   flex-direction: column;
   gap: 0.5rem;
 }
-
 
 /* 메시지 공통 스타일 */
 .message {
@@ -99,7 +105,7 @@
 /* 튜터 메시지 */
 .message.tutor {
   align-self: flex-start;
-  background-color: #F1F1F1;
+  background-color: #f1f1f1;
   color: #333;
   border-radius: 18px 18px 18px 4px;
   text-align: left;
@@ -126,30 +132,29 @@
 }
 /* 말풍선 꼬리 */
 .message.user::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0; /* 12px에서 0으로 변경 */
   right: -8px;
   width: 0;
   height: 0;
-  border: 8px solid transparent; 
+  border: 8px solid transparent;
   border-left-color: white; /* 사용자 메시지 배경색에 맞춤 */
   border-bottom: none;
 }
 
 .message.tutor::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0; /* 12px에서 0으로 변경 */
   left: -8px;
   width: 0;
   height: 0;
   border: 8px solid transparent;
-  border-right-color: #F1F1F1; /* 튜터 메시지 배경색에 맞춤 */
+  border-right-color: #f1f1f1; /* 튜터 메시지 배경색에 맞춤 */
   border-bottom: none;
 }
 
-/* 채팅 입력창 컨테이너 */
 .chat-input-box {
   position: absolute;
   bottom: 10px;
@@ -159,23 +164,22 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 1rem; 
+  padding: 1rem;
   background-color: white;
-  border: 1px solid #DDD;
+  border: 1px solid #ddd;
   border-radius: 12px;
   box-sizing: border-box;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* 채팅 입력창 */
 .chat-input {
   flex: 1;
-  height: 120px; 
-  padding: 0.5rem 0.5rem; 
+  height: 120px;
+  padding: 0.5rem 0.5rem;
   border: 1px solid white;
-  border-radius: 12px; 
+  border-radius: 12px;
   outline: none;
-  font-size: 1rem; 
+  font-size: 1rem;
   background-color: white;
   box-sizing: border-box;
   resize: none;
@@ -184,17 +188,16 @@
 }
 
 .chat-input::placeholder {
-  color: #999;
+  color: #d2d2d2;
   font-size: 0.9rem;
 }
 .chat-input:focus::placeholder {
   color: transparent; /* 투명하게 만들기 */
 }
 
-/* 전송 버튼 - 크기 수정 */
 .chat-send {
-  width: 25px; 
-  height: 25px; 
+  width: 25px;
+  height: 25px;
   border: none;
   cursor: pointer;
   background: none;
@@ -205,6 +208,15 @@
 }
 
 .chat-send img {
-  width: 30px; 
-  height: 30px; 
+  margin-top: 80px;
+  width: 25px;
+  height: 25px;
+}
+
+.chat-send:hover {
+  transform: scale(1.05);
+}
+
+.chat-send:disabled {
+  background-color: transparent !important;
 }

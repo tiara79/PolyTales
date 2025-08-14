@@ -1,7 +1,7 @@
+// front/src/pages/Report.jsx       
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../style/Report.css";
-import Athlete_f from "../style/img/report/Athlete_f.png";
 import Piechart from "../style/img/report/Piechart.png";
 
 export default function Report() {
@@ -24,14 +24,86 @@ export default function Report() {
         <div className="report-wrapper">
           {/* 좌측 출석일 박스 */}
           <div className="date-box">
-            <img src={Athlete_f} className="img" alt="Athlete" />
-            <p className="img-text">
-              '<b>21</b>'일째 달리고 있어요.
-              <br />
-              훌륭하네요~
-              <br />
-              연속으로 출석해봐요!
-            </p>
+            <div className="stage">
+              <div className="shadow"></div>
+              <div className="core">
+                <div className="dress"></div>
+
+                <div className="shoulder-r">
+                  <div className="shoulder-r-arm-upper">
+                    <div className="elbow-r">
+                      <div className="elbow-r-arm-lower">
+                        <div className="hand-r"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="shoulder-l">
+                  <div className="shoulder-l-arm-upper">
+                    <div className="elbow-l">
+                      <div className="elbow-l-arm-lower">
+                        <div className="hand-l"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="hip-r">
+                  <div className="hip-r-leg-upper">
+                    <div className="knee-r">
+                      <div className="knee-r-leg-lower">
+                        <div className="sock-r"></div>
+                        <div className="foot-r"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="hip-l">
+                  <div className="hip-l-leg-upper">
+                    <div className="knee-l">
+                      <div className="knee-l-leg-lower">
+                        <div className="sock-l"></div>
+                        <div className="foot-l"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="headcontainer">
+                  <div className="bun-r"></div>
+                  <div className="bun-l"></div>
+                  <div className="ear-r"></div>
+                  <div className="ear-l"></div>
+                  <div className="headbg">
+                    <div className="hair-r"></div>
+                    <div className="hair-l"></div>
+                    <div className="face"></div>
+                    <div className="smile"></div>
+                    <div className="eyes">
+                      <div className="eyelid-t"></div>
+                      <div className="eyelid-b"></div>
+                      <div className="eye-r">
+                        <div className="pupil-r"></div>
+                      </div>
+                      <div className="eye-l">
+                        <div className="pupil-l"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 텍스트를 stage 안으로 이동 */}
+              <div className="stage-text">
+                '<b>21</b>'일째 달리고 있어요.
+                <br />
+                훌륭하네요~
+                <br />
+                연속으로 출석해봐요!
+              </div>
+            </div>
           </div>
 
           {/* 컨텐츠 로우 박스 리스트 */}

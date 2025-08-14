@@ -3,7 +3,7 @@
   grid-area: 3 / 7 / 9 / 10;
   background-color: #fefef8;
   margin: 10px 20px 0 20px;
-  border-radius: 12px;
+  border-radius: 10px;
   border: #b7df9f 2px solid;
 }
 
@@ -14,19 +14,13 @@
   gap: 0.6rem;
   background-color: #fefef8;
   border: 1px solid #cce5cc;
-  border-radius: 12px;
+  border-radius: 1px;
   padding: 1rem;
-  height: 98%;
+  height: 97%;
   width: 95%;
   box-sizing: border-box;
   margin: 0;
   position: relative;
-}
-
-/* Narrow Note Container */
-.note-box-narrow {
-  max-width: 400px;
-  margin: 0;
 }
 
 /* Note Header */
@@ -39,10 +33,10 @@
   background-color: #67b98a;
   color: #4d4d4d;
   font-size: 1rem;
-  border-radius: 12px 12px 0 0;
+  border-radius: 0px 0px 0 0;
   box-sizing: border-box;
   margin: -2rem -1rem 1rem -1rem;
-  border-bottom: 1px solid #76b187;
+  /* border-bottom: 1px solid #76b187; */
 }
 
 /* Title Area */
@@ -96,7 +90,7 @@
   border: 1px solid transparent;
   border-radius: 8px;
   background-color: #fefef8;
-  /* background-image: url("../style/img/learn/notePen.png"); */
+  background-image: url("../style/img/learn/notePen.png");
   opacity: 1;
   background-size: 100px 90px; /* 크기를 줄여서 주황색 부분 숨기기 */
   background-repeat: no-repeat;
@@ -126,8 +120,8 @@
   color: white;
   font-size: 1.2rem;
   border: none;
-  width: 28px;
-  height: 28px;
+  width: 18px;
+  height: 17px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -163,6 +157,12 @@
 .note-content::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
+
+/* Ensure the scroll bar covers content area - 제거됨 */
+/* .note-content {
+  overflow-y: scroll;
+} */
+
 /* Fix Title Input Cursor */
 .note-input:focus {
   cursor: text;

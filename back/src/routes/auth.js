@@ -1,17 +1,11 @@
-// File: back/routes/auth.js
-//백엔드에서 회원가입과 로그인 요청을 처리하는 라우터
+// back/routes/auth.js
+// 회원가입, 로그인, 토큰검증 등을 처리하는 라우터
 
 const router = require('express').Router();
 const { User } = require('../models');
-
 const { googleAuth, register, login, me } = require('../controllers/authController');
 const { validateRegister, validateLogin } = require('../middlewares/validation');
 const { authRequired } = require('../middlewares/auth');
-
-// 디버그 체크
-// console.log('[auth route] ctrl= {googleAuth, login, me} ok');
-// console.log('[auth route] typeof validateLogin =', typeof validateLogin);
-// console.log('[auth route] typeof authRequired =', typeof authRequired);
 
 // 아이디 중복 확인
 router.get('/check-username', async (req, res) => {
@@ -52,10 +46,15 @@ router.get('/check-phone', async (req, res) => {
   }
 });
 
-router.post('/google', googleAuth);                     // 소셜
-router.post('/register', validateRegister, register);   // 로컬 가입
+router.post('/google', googleAuth);                     // 소셜 로그인
+router.post('/register', validateRegister, register);   // 로컬 회원가입
 router.post('/login', validateLogin, login);            // 로컬 로그인
 router.get('/me', authRequired, me);                    // 내 정보
 
-module.exports = router;
+// 토큰 검증(프론트 F5 시 세션 복구용)
+router.post('/verify', authRequired, (req, res) => {
+  // authRequired에서 최신 사용자 정보가 req.user에 세팅됨
+  res.json({ ok: true, user: req.user });
+});
 
+module.exports = router;

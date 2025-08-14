@@ -1,14 +1,8 @@
-.mybookmark-container {
-    position: fixed;
-    top: var(--header-height);
-    bottom: var(--footer-height);
-    left: 0;
-    right: 0;
-    overflow-y: auto;
-    padding-top: 0.5rem;
-    padding-left: 5%;
-    background-color: #fff;
-    box-sizing: border-box;
+/* 초기화  */
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
 }
 
 .back-button-wrapper {

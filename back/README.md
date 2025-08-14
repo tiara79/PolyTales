@@ -57,6 +57,7 @@ EOF
 파일 작성후, npx nodemon 또는 npm run server 로 백서버 실행
 
 # 다른 서버가 돌고 있는지 확인
-netstat -ano | findstr :3000
+netstat -ano | grep ":3000"
+
 # 서버 강제 종료
-taskkill /PID 19140 /F
+for pid in $(netstat -ano | grep ":3000" | awk '{print $5}' | sort -u); do taskkill //PID $pid //F 2>/dev/null; done

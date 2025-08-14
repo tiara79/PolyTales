@@ -1,3 +1,4 @@
+//  front/src/pages/joinModal.jsx 
 import React from "react";
 import '../style/JoinModal.css';
 import { IoClose } from "react-icons/io5";
