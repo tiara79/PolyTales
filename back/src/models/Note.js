@@ -14,6 +14,14 @@ module.exports = (sequelize, DataTypes) => {
     type:DataTypes.INTEGER,
     allowNull:false
   },
+  langlevel: {
+    type: DataTypes.STRING(10),
+    allowNull: true
+  },
+  lang: {
+    type: DataTypes.STRING(10),
+    allowNull: true
+  },
   title:{
     type: DataTypes.TEXT,
     allowNull: false
@@ -21,7 +29,11 @@ module.exports = (sequelize, DataTypes) => {
   content: {
     type: DataTypes.TEXT,
     allowNull: false
-  } 
+  },
+  createdat: {
+    type: DataTypes.DATE,
+    defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+  }
   },{
     tableName:'note',
     timestamps: false,

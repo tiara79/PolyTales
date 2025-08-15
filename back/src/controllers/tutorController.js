@@ -2,8 +2,8 @@
 
 const db = require('../models');
 const Tutor = db.Tutor;
- // Sequelize에서 제공하는 연산자(Operators) 모음 객체 : SQL의 WHERE, BETWEEN, LIKE, OR, IN 같은 조건을 자바스크립트 코드로 쓸 수 있게 해주는 객체
-const {Op} = db.Sequelize;
+const { Op } = db.Sequelize;
+const axios = require('axios');
 
 // ──────────────── 메시지 생성 ────────────────
 exports.createMessage = async (req, res) => {
@@ -143,6 +143,65 @@ exports.getSummary = async (req, res) => {
 
     res.json({ summary });
   } catch (error) {
+    res.status(500).json({ message: 'server error', error: error.message });
+  }
+};
+
+// 새로운 채팅 API 추가
+exports.createChat = async (req, res) => {
+  try {
+    const { userid, storyid, message, lang } = req.body;
+    
+    if (!userid || !storyid || !message) {
+      return res.status(400).json({ message: '필수 필드가 누락되었습니다.' });
+    }
+
+    // 사용자 메시지 저장
+    await Tutor.create({
+      userid,
+      storyid,
+      sender: 'user',
+      message
+    });
+
+    // Azure OpenAI API 호출 (실제 구현 시)
+    let aiResponse = "죄송합니다. 현재 AI 서비스에 연결할 수 없습니다.";
+    
+    try {
+      // 실제 Azure OpenAI 연결 코드
+      // const response = await axios.post('your-azure-openai-endpoint', {
+      //   messages: [{ role: 'user', content: message }],
+      //   max_tokens: 150
+      // }, {
+      //   headers: {
+      //     'Authorization': `Bearer ${process.env.AZURE_OPENAI_KEY}`,
+      //     'Content-Type': 'application/json'
+      //   }
+      // });
+      // aiResponse = response.data.choices[0].message.content;
+      
+      // 임시 응답 (개발용)
+      aiResponse = `"${message}"에 대한 답변입니다. 현재 개발 중인 기능으로 임시 응답을 제공합니다.`;
+    } catch (error) {
+      console.error('AI API 호출 오류:', error);
+      aiResponse = "죄송합니다. 현재 AI 서비스에 일시적인 문제가 있습니다.";
+    }
+
+    // AI 응답 저장
+    await Tutor.create({
+      userid,
+      storyid,
+      sender: 'pola',
+      message: aiResponse
+    });
+
+    res.json({ 
+      message: 'ok',
+      response: aiResponse 
+    });
+
+  } catch (error) {
+    console.error('Chat creation error:', error);
     res.status(500).json({ message: 'server error', error: error.message });
   }
 };

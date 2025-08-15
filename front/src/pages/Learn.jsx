@@ -17,6 +17,7 @@ function Learn() {
   const [searchParams] = useSearchParams();
   const noteTitleRef = useRef(null);
   const noteContentRef = useRef(null);
+  const chatInputRef = useRef(null);
   const [pages, setPages] = useState([]);
   const [pageNum, setPageNum] = useState(1);
   const [caption, setCaption] = useState('');
@@ -25,6 +26,11 @@ function Learn() {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [languageData, setLanguageData] = useState([]);
+  const [chatMessages, setChatMessages] = useState([
+    { type: 'user', content: 'comes up이란 뜻이 뭐야?' },
+    { type: 'tutor', content: '"comes up"은 발생하다라는 뜻이에요' }
+  ]);
+  const [isChatLoading, setIsChatLoading] = useState(false);
   const { user, token } = useContext(AuthContext);
   const storyContext = useContext(StoryContext);
   const stories = storyContext?.stories || [];
@@ -55,7 +61,6 @@ function Learn() {
       .then(res => res.json())
       .then(result => {
         console.log('백엔드에서 받은 데이터:', result);
-        console.log('페이지 데이터:', result.pages);
         setPages(result.pages || []);
         setLanguageData(result.language || []);
         
@@ -75,10 +80,6 @@ function Learn() {
     }
     
     const currentAudioPath = pages[pageNum - 1]?.audiopath;
-    console.log('재생하려는 오디오 경로:', currentAudioPath);
-    console.log('현재 페이지 번호:', pageNum);
-    console.log('오디오 요소 src:', audioRef.current.src);
-    console.log('오디오 요소 readyState:', audioRef.current.readyState);
     
     try {
       if (isPlaying) {
@@ -87,7 +88,6 @@ function Learn() {
       } else {
         // 오디오가 로드되지 않았다면 다시 로드
         if (audioRef.current.readyState === 0) {
-          console.log('오디오를 다시 로드합니다');
           audioRef.current.load();
           
           // 로드 완료까지 기다림
@@ -109,17 +109,13 @@ function Learn() {
       }
     } catch (error) {
       console.error('오디오 재생 오류:', error);
-      console.error('오디오 재생 오류 세부사항:', {
-        name: error.name,
-        message: error.message,
-        code: error.code
-      });
       toast.error(`오디오 파일을 재생할 수 없습니다: ${error.message}`);
       setIsPlaying(false);
     }
   };
 
-  // 오디오 요소 생성 및 관리 - audioElement 의존성 제거로 무한 렌더링 방지
+  // 오디오 요소 생성 및 관리 - ESLint 경고 해결을 위해 eslint-disable 사용
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (pages.length === 0) return;
     const current = pages[pageNum - 1];
@@ -173,7 +169,7 @@ function Learn() {
       audio.pause();
       audio.src = '';
     };
-  }, [pageNum, pages]); // audioElement 의존성 제거로 무한 렌더링 방지
+  }, [pageNum, pages]); // audioElement를 의존성에 추가하면 무한 렌더링 발생하므로 eslint-disable 사용
 
   // 자막 줄바꿈 포맷 함수 
   const formatCaption = text => {
@@ -185,7 +181,7 @@ function Learn() {
 
   const handleCloseClick = () => navigate(-1);
 
-  // 노트 저장 함수
+  // 노트 저장 함수 - 토큰 검증 개선
   const handleSaveNote = async () => {
     const titleEl = noteTitleRef.current;
     const contentEl = noteContentRef.current;
@@ -197,8 +193,14 @@ function Learn() {
       return;
     }
 
+    // 사용자 인증 확인
+    if (!user?.userid) {
+      toast.error("로그인이 필요합니다.");
+      return;
+    }
+
     const noteData = {
-      userid: user?.userid,
+      userid: user.userid,
       storyid: currentStoryId,
       langlevel: currentLangLevel,
       lang: currentLang,
@@ -207,16 +209,26 @@ function Learn() {
     };
 
     try {
+      const headers = {
+        "Content-Type": "application/json"
+      };
+
+      // 토큰이 있는 경우에만 Authorization 헤더 추가
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
       const response = await fetch("http://localhost:3000/notes", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
-        },
+        headers,
         body: JSON.stringify(noteData),
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          toast.error("인증이 필요합니다. 다시 로그인해주세요.");
+          return;
+        }
         throw new Error(`노트 저장 실패 (status ${response.status})`);
       }
 
@@ -229,7 +241,89 @@ function Learn() {
       if (contentEl) contentEl.value = "";
     } catch (error) {
       console.error("노트 저장 중 오류:", error.message);
-      toast.error("노트 저장에 실패했습니다.");
+      if (error.message.includes('401')) {
+        toast.error("인증이 만료되었습니다. 다시 로그인해주세요.");
+      } else {
+        toast.error("노트 저장에 실패했습니다.");
+      }
+    }
+  };
+
+  // 튜터 채팅 전송 함수 추가
+  const handleChatSend = async () => {
+    const chatInput = chatInputRef.current;
+    const message = chatInput?.value.trim();
+
+    if (!message) {
+      toast.warn("메시지를 입력하세요.");
+      return;
+    }
+
+    // 사용자 인증 확인
+    if (!user?.userid) {
+      toast.error("로그인이 필요합니다.");
+      return;
+    }
+
+    // 사용자 메시지 추가
+    const newUserMessage = { type: 'user', content: message };
+    setChatMessages(prev => [...prev, newUserMessage]);
+    chatInput.value = "";
+    setIsChatLoading(true);
+
+    try {
+      const headers = {
+        "Content-Type": "application/json"
+      };
+
+      // 토큰이 있는 경우에만 Authorization 헤더 추가
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch("http://localhost:3000/tutor/chat", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          userid: user.userid,
+          storyid: currentStoryId,
+          message: message,
+          lang: currentLang
+        }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          toast.error("인증이 필요합니다. 다시 로그인해주세요.");
+          return;
+        }
+        throw new Error(`튜터 응답 실패 (status ${response.status})`);
+      }
+
+      const result = await response.json();
+      const tutorMessage = { type: 'tutor', content: result.response || "죄송합니다. 응답을 생성할 수 없습니다." };
+      setChatMessages(prev => [...prev, tutorMessage]);
+
+    } catch (error) {
+      console.error("튜터 채팅 오류:", error.message);
+      const errorMessage = { type: 'tutor', content: "죄송합니다. 현재 서비스에 문제가 있습니다. 잠시 후 다시 시도해주세요." };
+      setChatMessages(prev => [...prev, errorMessage]);
+      
+      if (error.message.includes('401')) {
+        toast.error("인증이 만료되었습니다. 다시 로그인해주세요.");
+      } else {
+        toast.error("튜터 서비스 연결에 실패했습니다.");
+      }
+    } finally {
+      setIsChatLoading(false);
+    }
+  };
+
+  // Enter 키로 채팅 전송 - onKeyDown으로 변경
+  const handleChatKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleChatSend();
     }
   };
 
@@ -367,7 +461,7 @@ function Learn() {
         <textarea className="note-content" placeholder="" ref={noteContentRef} defaultValue="" />
       </div>
 
-      {/* 채팅 영역 */}
+      {/* 채팅 영역 - 실제 API 연결 */}
       <div className="div8">
         <div>
           <div className="tutor-lang-select">
@@ -382,12 +476,30 @@ function Learn() {
           </div>
         </div>
         <div className="chat-messages">
-          <div className="message user">comes up이란 뜻이 뭐야?</div>
-          <div className="message tutor">"comes up"은 발생하다라는 뜻이에요</div>
+          {chatMessages.map((msg, index) => (
+            <div key={index} className={`message ${msg.type}`}>
+              {msg.content}
+            </div>
+          ))}
+          {isChatLoading && (
+            <div className="message tutor">
+              <span>응답을 생성하고 있습니다...</span>
+            </div>
+          )}
         </div>
         <div className="chat-input-box">
-          <textarea className="chat-input" placeholder="comes up 예제 추가해 주세요." defaultValue="" />
-          <button className="chat-send">
+          <textarea 
+            ref={chatInputRef}
+            className="chat-input" 
+            placeholder="comes up 예제 추가해 주세요." 
+            onKeyDown={handleChatKeyDown}
+            disabled={isChatLoading}
+          />
+          <button 
+            className="chat-send" 
+            onClick={handleChatSend}
+            disabled={isChatLoading}
+          >
             <img src="/style/img/learn/send.png" alt="send button" />
           </button>
         </div>
