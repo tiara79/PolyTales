@@ -5,7 +5,7 @@ export const LevelsContext = createContext();
 
 export const LevelsProvider = ({ children }) => {
   const [levels, setLevels] = useState([]); // 하드코딩 제거
-  const [levelLabelsKo, setLevelLabelsKo] = useState({
+  const [levelLabelsKo] = useState({
     A1: '초급 1',
     A2: '초급 2', 
     B1: '중급 1',

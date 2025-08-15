@@ -7,7 +7,6 @@ import '../style/Detail.css';
 export default function Detail() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [bookmarked, setBookmarked] = useState(false);
 
   // story 상태 관리
   const [story, setStory] = useState(null);

@@ -7,6 +7,7 @@ import { StoryContext } from "../context/StoryContext";
 import "../style/MyNotes.css";
 import "../style/Note.css";
 
+
 export default function MyNotes() {
   const navigate = useNavigate();
   const { storyid } = useParams();
@@ -26,7 +27,7 @@ export default function MyNotes() {
 
   // 이미지 URL 생성 함수
   const getImageUrl = (path) => {
-    if (!path) return null;
+    if (!path) return "../style/img/home/no_image.png";
     const baseUrl = process.env.REACT_APP_IMAGE_BASE_URL || "http://localhost:3000";
     // 절대 경로 or 업로드 경로 처리
     if (path.startsWith("http")) return path;
@@ -151,14 +152,7 @@ export default function MyNotes() {
         </div>
         <div className="notes-display-container">
           <div className="image-box">
-            <img 
-              src={storyImage} 
-              alt={storyTitle}
-              onError={(e) => {
-                // 이미지 로드 실패시 header_logo.png로 대체
-                e.target.src = "/style/img/home/header_logo.png";
-              }}
-            />
+            <img src={storyImage} alt={storyTitle} />
           </div>
           {specificNotes.length === 0 ? (
             <p className="no-notes">이 스토리에 대한 노트가 없습니다.</p>
@@ -185,17 +179,7 @@ export default function MyNotes() {
                       readOnly
                     />
                   </div>
-                  <div 
-                    className="note-content-display"
-                    style={{
-                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='50' font-size='20' fill='%23ddd'%3E📝%3C/text%3E%3C/svg%3E")`,
-                      backgroundSize: '25%',
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'center center'
-                    }}
-                  >
-                    {note.content}
-                  </div>
+                  <div className="note-content-display">{note.content}</div>
                 </div>
               );
             })
@@ -238,17 +222,10 @@ export default function MyNotes() {
           return (
             <div key={storyid} className="image-box">
               <Link to={`/mynotes/${storyid}`}>
-                <img 
-                  src={storyImage} 
-                  alt={storyTitle}
-                  onError={(e) => {
-                    // 이미지 로드 실패시 header_logo.png로 대체
-                    e.target.src = "/style/img/home/header_logo.png";
-                  }}
-                />
+                <img src={storyImage} alt={storyTitle} />
               </Link>
               <p className="image-title">{storyTitle}</p>
-              <p className="note-count">{noteCount}개인 노트</p>
+              <p className="note-count">{noteCount}개의 노트</p>
             </div>
           );
         })}

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../style/ProfileMenu.css";
 
-export default function ProfileMenu({ username, userId, userProfileImg, onLogout }) {
+export default function ProfileMenu({ username, userid, userProfileImg, onLogout }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
   const navigate = useNavigate();
@@ -50,6 +50,7 @@ export default function ProfileMenu({ username, userId, userProfileImg, onLogout
           <div className="button-container">
             <button
               className="mypage-btn"
+              
               onClick={() => {
                 navigate("/mypage");
                 setOpen(false);

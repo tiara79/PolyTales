@@ -132,14 +132,6 @@ export default function Home() {
     <div className="recommend-section">
       <h2>언어레벨에 따라 언어를 공부해보세요!</h2>
       
-      {/* 디버깅 정보 표시 */}
-      {/* <div style={{ margin: '10px 0', padding: '10px', backgroundColor: '#f0f0f0', fontSize: '12px' }}>
-        <div>Levels count: {levels.length}</div>
-        <div>Selected: {selected}</div>
-        <div>Stories count: {stories.length}</div>
-        <div>Loading: {loading.toString()}</div>
-      </div> */}
-      
       {/* 레벨 선택 버튼 영역 시작 */}
       <div className="level-buttons">
         {levels.length === 0 ? (

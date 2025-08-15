@@ -22,7 +22,7 @@ export const StoryProvider = ({ children }) => {
 				setLoading(false);
 			})
 			.catch(() => setLoading(false));
-	}, []);
+	}, [API_BASE_URL]);
 
 	// 출석 정보 불러오기
 	useEffect(() => {
@@ -30,7 +30,7 @@ export const StoryProvider = ({ children }) => {
 			.then(res => res.json())
 			.then(result => setAttendance(result.data?.days || 0))
 			.catch(() => setAttendance(0));
-	}, []);
+	}, [API_BASE_URL]);
 
 	return (
 		<StoryContext.Provider value={{ stories, currentStory, setCurrentStory, attendance, loading }}>
