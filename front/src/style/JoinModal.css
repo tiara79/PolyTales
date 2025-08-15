@@ -1,0 +1,49 @@
+/* 모달 오버레이 스타일 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999999999;
+  animation: fadeIn 0.3s;
+}
+
+/* 페이드 인 애니메이션 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 모달 컨텐츠 스타일 */
+.modal-content {
+  background-color: #fff;
+  padding: 22px 24px;
+  border-radius: 8px;
+  min-width: 320px;
+  position: relative;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+}
+
+/* 닫기 버튼 스타일 */
+.modal-close {
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  background: none;
+  font-size: 24px;
+  cursor: pointer;
+  border: none;
+  color: #888;
+}
+
+/* 닫기 버튼 호버 효과 */
+.modal-close:hover {
+  color:#bc74ff ;
+}

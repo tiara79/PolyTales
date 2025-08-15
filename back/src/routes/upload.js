@@ -1,27 +1,36 @@
+
 const express = require('express');
 const multer = require('multer');
+const { BlobServiceClient } = require('@azure/storage-blob');
+const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const router = express.Router();
+require('dotenv').config();
 
-const uploadPath = path.join(__dirname, '../../../front/public/img/uploads');
+const upload = multer({ storage: multer.memoryStorage() });
 
-const storage = multer.diskStorage({
-  destination: (_, __, cb) => cb(null, uploadPath),
-  filename: (_, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
-});
+const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
+const BLOB_CONTAINER_NAME = process.env.BLOB_CONTAINER_NAME;
+const BASE_BLOB_URL = process.env.AZURE_BLOB_BASE_URL;
 
-const upload = multer({ storage });
+const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
+const containerClient = blobServiceClient.getContainerClient(BLOB_CONTAINER_NAME);
 
-// 프로필 이미지 업로드
-router.post('/', upload.single('profileImage'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: '업로드 실패: 파일이 없습니다.' });
+router.post('/', upload.single('profileImage'), async (req, res) => {
+  try {
+    const blobName = uuidv4() + path.extname(req.file.originalname);
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+    await blockBlobClient.uploadData(req.file.buffer, {
+      blobHTTPHeaders: { blobContentType: req.file.mimetype }
+    });
+
+    const imageUrl = `${BASE_BLOB_URL}/${blobName}`;
+    res.status(200).json({ imageUrl });
+  } catch (error) {
+    console.error('Blob upload failed:', error.message);
+    res.status(500).json({ error: 'Image upload failed' });
   }
-  res.json({
-    message: '업로드 성공',
-    filename: req.file.filename,
-    url: `/img/uploads/${req.file.filename}`
-  });
 });
 
 module.exports = router;

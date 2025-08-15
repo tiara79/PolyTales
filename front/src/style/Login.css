@@ -1,0 +1,189 @@
+/* 페이지 전체 영역 */
+.login-page {
+  position: fixed;
+  top: var(--header-height);
+  bottom: var(--footer-height);
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  background-color: var(--main-bg);
+  box-sizing: border-box;
+  gap: 5rem;
+  overflow-y: auto;
+}
+
+/* 로그인 전체 좌,우 영역 */
+.login-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* 좌측 폴라 이미지 영역 */
+.login-logo {
+  margin-top:70px;
+  width: 400px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 30px;
+}
+/* 폴라와 함께 ~ 문구 */
+.login-message {
+  font-size: 1.4rem;
+  color: var(--text-color);
+  font-weight: bold;
+  line-height: 1.8;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  color: #67b98a;
+}
+
+/* 로그인 영역 -----------------*/
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 인풋박스 */
+.input-container {
+  display: flex;
+}
+
+/* 입력 영역(메시지 포함) */
+.input-context {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: left;
+}
+
+.input-wrap{
+  margin-bottom: -10px;
+}
+
+/* 아이디/비밀번호 입력창 */
+.login-form input[type="text"],
+.login-form input[type="password"] {
+  width: 280px;
+  /* background-color: #e53935; */
+  padding: 8px 12px;
+  border: 1px solid #cfcfcf;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  outline: none;
+  transition: border 0.2s;
+  margin-bottom: 2px; 
+  /*인풋박스 사이*/
+}
+
+.login-form input[type="text"]:focus,
+.login-form input[type="password"]:focus {
+  background: #fdf2eb;
+  border: 1.5px solid #fcb78c;
+}
+
+/* 안내 메시지 */
+.guideMsg {
+  color: #b0b0b0;
+  font-size: 12px;
+  margin-top: 3px;
+  margin-left: 2px;
+}
+
+/* 에러 메시지 */
+.errMsg {
+  color: #e53935;
+  font-size: 13px;
+  /* margin-top: 3px; */
+  margin-left: 2px;
+  margin-bottom: 5px;
+}
+
+/* 로그인 버튼 */
+.login-form button,
+.signup-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 280px;
+  height: 36px;
+  background: #f68d4e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.login-form button:hover{
+  background: #ffe0cd;
+  color: #f68d4e;
+}
+
+/** 회원가입 문구 */
+.signup-text {
+  margin-top: 25px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #67b98a;
+}
+
+/*회원가입 영역 -------*/
+.signup-btn{
+  background: #67b98a;
+}
+
+.signup-btn:hover {
+  background: #c1eed5;
+  color:  #67b98a;
+}
+
+
+/* SNS 가입/로그인 ------ */
+.social-login-section {
+  /* display: flex;
+  flex-direction: column; */
+  align-items: center;
+  margin-top: 20px;
+  gap: 1rem;
+}
+
+.social-login-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+#googleSignInDiv > div,
+.g_id_signin {
+  transform: scale(1.5);
+  transform-origin: center;
+  margin: 20px; /* 크기가 커진 만큼 여백 추가 */
+}
+
+.social-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.social-btn img {
+  width: 48px;
+  height: 48px;
+}
+
+.social-btn:hover {
+  transform: scale(1.1);
+}

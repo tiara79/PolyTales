@@ -1,0 +1,344 @@
+/* 초기화  */
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+
+.back-button-wrapper {
+  display: flex;
+  gap: 1rem;
+  margin-top: 5px;
+  margin-left: 0.2rem;
+  margin-bottom: 1rem;
+}
+.back-button {
+  background-color: #fea270ad;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.5rem;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+
+.main-content {
+  overflow-y: auto;
+  padding: 2rem;
+  background-color: var(--main-bg);
+  height: 100vh;
+  /* background-color: #67b98a; */
+}
+
+
+.mypage-container {
+  position: relative;
+  padding: 3rem 0 2rem 0;
+  /* background-color: #e4cdff; */
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+
+.mypage-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 5%;
+}
+
+
+.mynote{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 35px;
+  border: none;
+  border-radius: 20px;
+  background-color: #67b98a;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15);
+  color: #fff;
+  font-size: 16px;
+  margin-top: 30px;
+  cursor: pointer;
+}
+
+.mynote img {
+  height: 18px;
+  width: 18px;
+  margin-right: 5px;
+}
+
+.mypage-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 80vw;
+  max-width: 1200px;
+  min-width: 600px;
+  margin: 0 auto;
+  gap: 2.5rem;
+  align-items: flex-start;
+  justify-content: center;
+  /* background-color: #631704; */
+  box-sizing: border-box;
+  border-radius: 24px;
+  overflow-x: visible;
+}
+
+
+.profile-box {
+  background-color: #f7f7f7;
+  border-radius: 20px;
+  flex: 0 0 350px;
+  max-width: 400px;
+  min-width: 320px;
+  margin-top: 50px;
+  height: 530px;
+  padding: 20px 40px;
+  text-align: center;
+}
+
+.join-date {
+  text-align: left !important;
+  color: dimgrey;
+}
+
+.profile-img-big {
+  width: 110px;
+  height: 110px;
+  margin: 40px auto 15px auto;
+  display: block;
+  border-radius: 50%;
+}
+
+.plan-badge {
+  background-color: #fea270;
+  width: 100px;
+  padding: 5px;
+  border-radius: 50px;
+  color: #fff;
+  font-weight: 600;
+  margin: 0 auto 20px auto;
+  display: block;
+}
+
+.profile-name {
+  font-size: 25px;
+}
+
+b {
+  color: chocolate;
+}
+
+.profile-email {
+  font-size: 15px;
+  margin-bottom: 40px;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.report-btn,
+.plan-btn {
+  width: 230px;
+  height: 40px;
+  background-color: #67b98a;
+  border: none;
+  border-radius: 10px;
+  padding: 5px;
+  color: #fff;
+  font-size: 20px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.exit {
+    margin-top: 25px;
+    margin-left: auto;
+    margin-right: 0;
+    color: rgb(167, 167, 167);
+    background-color: transparent;
+    border: none;
+    display: block;
+    text-align: right;
+    cursor: pointer;
+}
+
+
+.contents-list-wrap {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-width: 800px;
+    max-width: 900px;
+}
+
+
+.read-book,
+.books-marked {
+    width: 100%;
+    min-width: 0;
+    border-radius: 20px;
+}
+
+.read-header,
+.bookmarks-header {
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    padding-top: -2rem;
+    margin-left: 0;
+    justify-content: space-between;
+}
+
+.read-title,
+.bookmarks-title {
+    color: #3a3a3aad;
+    padding: 0;
+    margin: 0;
+    margin-top: 50px;
+}
+.more-btn {
+    background-color: transparent;
+    padding: 0;
+    margin-top: 50px;
+    max-width: 40px;
+    /* 버튼 아이콘, 화살표 */
+    min-width: 40px;
+    /* 기본 높이 설정 */
+    height: 40px;
+    border: none;
+    color: gray;
+    cursor: pointer;
+}
+hr {
+    border-color: rgba(0, 0, 0, 0.2);
+    /* margin-bottom: 10px; */
+}
+
+
+
+.carousel-container {
+    min-width: 60%;
+    margin: 0 auto;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.books-carousel {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    /* padding: 10px 0 10px 0; */
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.books-card {
+  flex: 0 0 calc((100% - 16px * 2) / 3.2);
+  width: calc((100% - 16px * 2) / 3.2);
+  flex-shrink: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.books-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.books-cover-wrapper {
+  width: 100%;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+
+.books-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+  background: #fff;
+}
+
+/* 책 제목 */
+.books-title {
+  padding: 12px 8px 16px 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  /* text-align: center; */
+  padding-left: 17px;
+  display: block;
+}
+
+.bookmark-list {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.bookmark-item {
+  flex: 0 0 calc((100% - 16px * 2) / 3.2);
+  width: calc((100% - 16px * 2) / 3.2);
+  flex-shrink: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.bookmark-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+.bookmark-item img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 0;
+  background: #fff;
+}
+.bookmark-item p {
+  padding: 12px 8px 16px 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  padding-left: 17px;
+  display: block;
+}
