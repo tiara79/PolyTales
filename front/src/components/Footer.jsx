@@ -24,10 +24,17 @@ export default function Footer() {
       </div>
       <div className="footer-right">
         {console.log("user.role:", user?.role)}
-        {/* 관리자만 admin 버튼 보이게 - 임시로 항상 표시 */}
-        {/* {user?.role === 1 || user?.role === "1" ? ( */}
         {true ? (
-          <img  src="/style/img/footer/admin.png" alt="Admin" className="admin-icon" onClick={handleAdminClick} />
+          <img  
+            src="/style/img/footer/admin.png" 
+            alt="Admin" 
+            className="admin-icon" 
+            onClick={handleAdminClick}
+            onError={(e) => {
+              // 관리자 아이콘 로드 실패시 header_logo.png로 대체
+              e.target.src = "/style/img/home/header_logo.png";
+            }}
+          />
         ) : null}
       </div>
     </footer>

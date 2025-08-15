@@ -247,8 +247,8 @@ const handleCheckPhone = async () => {
   // 이메일 인증번호 발송
   const handleSendEmailCode = async () => {
     try {
-      const result = await sendEmailVerification(form.email);
-      setEmailCheckMsg(result.message);
+      await sendEmailVerification(form.email);
+      setEmailCheckMsg("✔ 인증번호가 발송되었습니다.");
       setEmailCheckType("success");
       setVerificationStatus(prev => ({ ...prev, emailCodeSent: true }));
       setEmailTimer(300); // 5분 = 300초
@@ -262,7 +262,7 @@ const handleCheckPhone = async () => {
   // 이메일 인증번호 확인
   const handleVerifyEmailCode = async () => {
     try {
-      const result = await verifyEmailCode(form.email, form.emailCode);
+      await verifyEmailCode(form.email, form.emailCode);
       setEmailCheckMsg("✔ 이메일 인증이 완료되었습니다.");
       setEmailCheckType("success");
       setVerificationStatus(prev => ({ ...prev, emailVerified: true }));
@@ -275,8 +275,8 @@ const handleCheckPhone = async () => {
   // 핸드폰 인증번호 발송
   const handleSendPhoneCode = async () => {
     try {
-      const result = await sendPhoneVerification(form.phone);
-      setPhoneCheckMsg(result.message);
+      await sendPhoneVerification(form.phone);
+      setPhoneCheckMsg("✔ 인증번호가 발송되었습니다.");
       setPhoneCheckType("success");
       setVerificationStatus(prev => ({ ...prev, phoneCodeSent: true }));
       setPhoneTimer(300); // 5분 = 300초
@@ -290,7 +290,7 @@ const handleCheckPhone = async () => {
   // 핸드폰 인증번호 확인
   const handleVerifyPhoneCode = async () => {
     try {
-      const result = await verifyPhoneCode(form.phone, form.phoneCode);
+      await verifyPhoneCode(form.phone, form.phoneCode);
       setPhoneCheckMsg("✔ 핸드폰 인증이 완료되었습니다.");
       setPhoneCheckType("success");
       setVerificationStatus(prev => ({ ...prev, phoneVerified: true }));

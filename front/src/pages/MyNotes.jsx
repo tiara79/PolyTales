@@ -155,23 +155,10 @@ export default function MyNotes() {
               src={storyImage} 
               alt={storyTitle}
               onError={(e) => {
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'flex';
+                // 이미지 로드 실패시 header_logo.png로 대체
+                e.target.src = "/style/img/home/header_logo.png";
               }}
             />
-            <div 
-              style={{
-                display: 'none',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#f0f0f0',
-                color: '#666',
-                height: '200px',
-                fontSize: '14px'
-              }}
-            >
-              이미지 없음
-            </div>
           </div>
           {specificNotes.length === 0 ? (
             <p className="no-notes">이 스토리에 대한 노트가 없습니다.</p>
@@ -255,26 +242,13 @@ export default function MyNotes() {
                   src={storyImage} 
                   alt={storyTitle}
                   onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'flex';
+                    // 이미지 로드 실패시 header_logo.png로 대체
+                    e.target.src = "/style/img/home/header_logo.png";
                   }}
                 />
-                <div 
-                  style={{
-                    display: 'none',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#f0f0f0',
-                    color: '#666',
-                    height: '200px',
-                    fontSize: '14px'
-                  }}
-                >
-                  이미지 없음
-                </div>
               </Link>
               <p className="image-title">{storyTitle}</p>
-              <p className="note-count">{noteCount}개의 노트</p>
+              <p className="note-count">{noteCount}개인 노트</p>
             </div>
           );
         })}

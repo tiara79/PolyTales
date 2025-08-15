@@ -149,7 +149,7 @@ const handleCredentialResponse = useCallback(async (response) => {
   return (
     <div className="login-page">
       <div>
-        <img  src="/img/login/loginLogo.png" alt="북극곰 Pola" className="login-logo" />
+        <img src="/style/img/login/login_logo.png" alt="북극곰 Pola" className="login-logo" />
       </div>
       <div className="login-content">
         <p className="login-message">
@@ -198,7 +198,7 @@ const handleCredentialResponse = useCallback(async (response) => {
               className="social-btn google-btn"
               onClick={handleGoogleLogin}
             >
-              <img  src="/img/login/google.png" alt="구글 로그인" />
+              <img src="/style/img/login/google.png" alt="구글 로그인" />
             </button>
           </div>
         </div>

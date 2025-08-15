@@ -19,6 +19,8 @@ npm i swagger-ui-express
 npm i yamljs
 npm install dotenv #jwt 토큰 용
 npm install cors #클라이언트에서 오는 요청에 대해 허용
+# 추가 설치
+npm install bcrypt jsonwebtoken sequelize pg pg-hstore cors dotenv express multer axios
 
 # Azure에 필요한 설치
 npm i -D dotenv-cli sequelize-cli
