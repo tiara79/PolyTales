@@ -115,7 +115,9 @@ position: fixed;
   color: #89837B;
 }
 
-.tag-a1 {
+.tag-a1 , .tag-a2 ,
+.tag-b1 , .tag-b2 ,
+.tag-c1 , .tag-c2 {
   background-color: #FFD9D9;
 }
 

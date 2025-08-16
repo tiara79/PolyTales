@@ -165,7 +165,7 @@ export default function Home() {
               {locked && (
                 <>
                   <div className="lock-icon">🔒</div>
-                  <div className="lock-tooltip">로그인 후 이용 가능</div>
+                  <div className="lock-tooltip">Premium Service</div>
                 </>
               )}
               <div className="image-title">{s.storytitle}</div>

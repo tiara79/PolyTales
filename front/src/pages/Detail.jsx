@@ -8,6 +8,9 @@ import "../style/Detail.css";
 const isAbs = (u) => /^https?:\/\//i.test(String(u || ""));
 const norm = (p = "") => String(p).replace(/\\/g, "/").replace(/([^:]\/)\/+/g, "$1");
 
+// 상세페이지 제공 리스트
+const OPEN_DETAIL_IDS = [ 10, 15, 17, 19, 29, 30, 38];
+
 const dedupe = (arr) => {
   const seen = new Set();
   const out = [];
@@ -41,6 +44,20 @@ export default function Detail() {
   const location = useLocation();
 
   const [story, setStory] = useState(null);
+
+
+  // 현재 스토리가 공개된 ID인지 확인 
+    const isOpenId = story ? OPEN_DETAIL_IDS.includes(Number(story.storyid)) : false;
+
+  // 상세페이지 제공 리스트에 해당 되지 않을 경우 예외 처리
+    const handleReadClick = () => {
+      if (isOpenId) {
+        window.alert("이 콘텐츠는 준비 중입니다.");
+        return;
+      }
+      navigate("/learn");
+    };
+
 
   const { addBookmark, removeBookmark, bookmarks } = useContext(BookmarkContext);
 
@@ -147,7 +164,7 @@ export default function Detail() {
             </p>
           </div>
 
-          <button className="read-button" onClick={() => navigate("/learn")}>읽기</button>
+          <button className="read-button" onClick={handleReadClick} disabled={isOpenId}> 읽기 </button>
         </div>
       </div>
     </div>
