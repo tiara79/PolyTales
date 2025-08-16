@@ -1,4 +1,5 @@
 const db = require("../models");
+const { toImgUrl } = require("../utils/pathFixers"); // 이미지 경로를 절대 경로로 변환하는 유틸리티 함수
 
 // === 조회 관련 시작 ===
 // GET /stories - 전체 스토리 목록 조회

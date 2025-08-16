@@ -117,7 +117,7 @@ export default function Home() {
   // 초기 데이터 확인
   useEffect(() => {
     console.log('Initial render - levels:', levels, 'selected:', selected);
-  }, []);
+  }, [selected, levels]);
 
   // confirm dialog 핸들러
   const handleConfirmYes = () => {

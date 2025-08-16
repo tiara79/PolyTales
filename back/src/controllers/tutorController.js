@@ -6,7 +6,7 @@ const { Op } = db.Sequelize;
 const axios = require('axios');
 
 // ──────────────── 메시지 생성 ────────────────
-exports.createMessage = async (req, res) => {
+const createMessage = async (req, res) => {
   try {
     const { userid, storyid, sender, message } = req.body;
     const newMessage = await Tutor.create({ userid, storyid, sender, message });
@@ -18,7 +18,7 @@ exports.createMessage = async (req, res) => {
 };
 
 // 당일 story 대화에 한해서만 전체 조회 (GET /tutor/:storyid)
-exports.getMessagesByStory = async (req, res) => {
+const getMessagesByStory = async (req, res) => {
   try {
     const { storyid } = req.params;
     const { userid } = req.query; 
@@ -49,7 +49,7 @@ exports.getMessagesByStory = async (req, res) => {
 };
 
 // ──────────────── 페이징 기반 메시지 조회 ────────────────
-exports.getPagedMessages = async (req, res) => {
+const getPagedMessages = async (req, res) => {
   try {
     const { storyid } = req.params;
     const { userid, limit = 10, offset = 0, sort = 'DESC' } = req.query;
@@ -80,7 +80,7 @@ exports.getPagedMessages = async (req, res) => {
 
 // ──────────────── 튜터 페이지 메시지 삭제 ────────────────
 // DELETE /tutor/:chatid
-exports.deleteMessage = async (req, res) => {
+const deleteMessage = async (req, res) => {
   try {
     const { chatid } = req.params;
     const { userid } = req.query;
@@ -110,7 +110,7 @@ exports.deleteMessage = async (req, res) => {
 };
 
 // 튜터 대화 정리-> 노트에 저장 (GET /tutor/summary/:storyid?userid=1)
-exports.getSummary = async (req, res) => {
+const getSummary = async (req, res) => {
   try {
     const { storyid } = req.params;
     const { userid } = req.query;
@@ -148,7 +148,7 @@ exports.getSummary = async (req, res) => {
 };
 
 // 새로운 채팅 API 추가
-exports.createChat = async (req, res) => {
+const createChat = async (req, res) => {
   try {
     const { userid, storyid, message, lang } = req.body;
     
@@ -206,3 +206,11 @@ exports.createChat = async (req, res) => {
   }
 };
 
+module.exports = {
+  createMessage,
+  getMessagesByStory,
+  deleteMessage,
+  getSummary,
+  createChat,
+  getPagedMessages // 필요시 추가
+};

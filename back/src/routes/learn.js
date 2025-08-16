@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models');
+const { toAudioUrl, toImgUrl } = require('../utils/pathFixers'); //  유틸 불러오기
 
 // GET /learn/:storyid?lang=en
 router.get('/:storyid', async (req, res) => {
@@ -8,36 +9,23 @@ router.get('/:storyid', async (req, res) => {
   const lang = req.query.lang;
 
   try {
-    // 페이지 데이터 가져오기
+    // 페이지 데이터
     const pages = await db.learn.findAll({
       where: { storyid, nation: lang },
       order: [['pagenumber', 'ASC']]
     });
 
-    // 오디오 경로를 백엔드 서버 URL로 수정
     const processedPages = pages.map(page => {
-      const pageData = page.toJSON();
-      // console.log('Source audio path:', pageData.audiopath);
-      
-      // 오디오 경로가 상대 경로인 경우 절대 경로로 변경
-      if (pageData.audiopath && !pageData.audiopath.startsWith('http')) {
-        // 경로에서 'public/' 부분 제거하고 백엔드 서버 URL 추가
-        let cleanPath = pageData.audiopath.replace(/^.*public\//, '');
-        // 시작 슬래시 제거
-        cleanPath = cleanPath.replace(/^\/+/, '');
-        
-        // 언어별 파일명 수정 - ("imagepath": "/img/A1/lily/lily_3.png")를 lily_1_ko.mp3로 변경
-        if (cleanPath.includes('lily_') && !cleanPath.includes(`_${lang}.mp3`)) {
-          cleanPath = cleanPath.replace('.mp3', `_${lang}.mp3`);
-        }
-        
-        pageData.audiopath = `http://localhost:3000/${cleanPath}`;
-        // console.log('modified audio path:', pageData.audiopath);
-      }
-      return pageData;
+      const o = page.toJSON();
+
+      // 이미지, 오디오 경로 변환
+      if (o.imagepath)  o.imagepath  = toImgUrl(o.imagepath);
+      if (o.audiopath)  o.audiopath  = toAudioUrl(o.audiopath);
+
+      return o;
     });
 
-    // 문법/단어(language) 데이터 가져오기
+    // 문법/단어
     const language = await db.Language.findAll({
       where: { storyid, nation: lang }
     });

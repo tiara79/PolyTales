@@ -79,7 +79,7 @@ function Learn() {
       return;
     }
     
-    const currentAudioPath = pages[pageNum - 1]?.audiopath;
+    // const currentAudioPath = pages[pageNum - 1]?.audiopath;
     
     try {
       if (isPlaying) {

@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-
-
 
 import '../style/AdmHome.css';
 
@@ -24,40 +21,15 @@ export default function Admin() {
         '한국레벨',
         '토픽'
     ];
+    
 
     // 테스트 데이터 배열
-    const testDataList = [
-        {
-            storyId: '01',
-            title: "Lily's Happy Day",
-            imagePath: 'http://cdn.polytales.kr/lilystory.png',
-            thumbnail: '썸네일1.jpg',
-            video: 'lilys_happy_day_video.mp4',
-            description: '릴리의 행복한 하루를 따라가며, 친구들과 함께하는 즐거운 이야기',
-            koreanLevel: '초급',
-            topic: '일상'
-        },
-        {
-            storyId: '02',
-            title: 'Adventure Story',
-            imagePath: 'http://cdn.polytales.kr/adventure.png',
-            thumbnail: '썸네일2.jpg',
-            video: 'adventure_video.mp4',
-            description: '모험을 떠나는 친구들의 신나는 이야기',
-            koreanLevel: '중급',
-            topic: '모험'
-        },
-        {
-            storyId: '03',
-            title: 'Magic Forest',
-            imagePath: 'http://cdn.polytales.kr/forest.png',
-            thumbnail: '썸네일3.jpg',
-            video: 'magic_forest_video.mp4',
-            description: '마법의 숲에서 벌어지는 환상적인 이야기',
-            koreanLevel: '초급',
-            topic: '판타지'
-        }
-    ];
+    const testDataList = useMemo(() => [
+  { storyid: 1, thumbnail: "lilys_happy_day.jpg", storytitle: "Lily's Happy Day" },
+  { storyid: 2, thumbnail: "lion.png", storytitle: "Lion Story" },
+  { storyid: 3, thumbnail: "cat.png", storytitle: "Cat Story" },
+  { storyid: 4, thumbnail: "tiger.png", storytitle: "Tiger Story" }
+], []);
 
 
     // localStorage에서 story_로 시작하는 데이터 읽어오기
@@ -162,7 +134,7 @@ export default function Admin() {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, []);
+    }, [testDataList]);
 
     // // role이 1이 아닌 경우 아무것도 렌더링하지 않음
     // if (!user || user.role !== 1) {
@@ -234,7 +206,7 @@ export default function Admin() {
                         </div>
                     </div>
                     <img
- src="/img/admin/addbtn.png"
+                        src="/img/admin/addbtn.png"
                         alt="Add-btn"
                         className='add-icon'
                         onClick={handleAddContent}

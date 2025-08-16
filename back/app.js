@@ -12,7 +12,7 @@ const storiesRouter = require("./src/routes/story");
 const learnRouter = require('./src/routes/learn');
 const languageRouter = require('./src/routes/language');
 const verificationRouter = require('./src/routes/verification');
-const uploadRouter = require('./src/routes/upload');
+// const uploadRouter = require('./src/routes/upload'); // 파일이 없으면 주석 처리
 
 const app = express();
 
@@ -43,7 +43,7 @@ app.use("/notes", notesRouter);
 app.use("/stories", storiesRouter);
 app.use('/learn', learnRouter);
 app.use('/language', languageRouter);
-app.use('/uploads', uploadRouter); // 프로필 업로드
+// app.use('/uploads', uploadRouter); // 프로필 업로드
 app.use('/verification', verificationRouter);
 
 // 404
