@@ -1,13 +1,15 @@
+// src/controllers/storyController.js
+
 const db = require("../models");
-const { toImgUrl } = require("../utils/pathFixers");
+
+const { getCover } = require("../utils/coverResolver");
 
 const OPEN_DETAIL_IDS = [1, 10, 15, 17, 19, 29, 30, 38];
 
-function decorate(v) {
+function decorate(v, page) {
   const raw = v || {};
-  const rawPath = raw.thumbnail || raw.storycoverpath || null;
-  const thumbnail_url = rawPath ? toImgUrl(rawPath) : null;
-  return { ...raw, thumbnail_url };
+  const { thumbnail_url, cover_candidates } = getCover(raw, page);
+  return { ...raw, thumbnail_url, cover_candidates };
 }
 
 function roleFromReq(req) {
@@ -24,7 +26,7 @@ const getStories = async (req, res) => {
     if (topic) where.topic = topic;
 
     const rows = await db.Story.findAll({ where, order: [["storyid", "ASC"]] });
-    const data = rows.map((r) => decorate(r.get({ plain: true })));
+    const data = rows.map((r) => decorate(r.get({ plain: true }), "home"));
     res.status(200).json({ message: "Full Story View Success", count: data.length, data });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
@@ -63,7 +65,7 @@ const getStoryByLevel = async (req, res) => {
 
     const role = roleFromReq(req);
     const data = rows.map((r) => {
-      const v = decorate(r.get({ plain: true }));
+      const v = decorate(r.get({ plain: true }), "home");
       const is_open_id = OPEN_DETAIL_IDS.includes(v.storyid);
       let can_access = false;
       if (role === 1) can_access = true;
@@ -86,7 +88,7 @@ const getStoryById = async (req, res) => {
     const row = await db.Story.findOne({ where: { storyid: id, langlevel: level } });
     if (!row) return res.status(404).json({ message: `${level} Level story not found.` });
 
-    const data = decorate(row.get({ plain: true }));
+    const data = decorate(row.get({ plain: true }), "detail");
     res.status(200).json({ message: "Story detail retrieval successful", data });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
@@ -134,7 +136,7 @@ const updateStory = async (req, res) => {
     if (cnt === 0) return res.status(400).json({ message: "Failed to update story." });
 
     const updated = await db.Story.findOne({ where: { storyid: id } });
-    res.status(200).json({ message: "Successful story modification", data: decorate(updated.get({ plain: true })) });
+    res.status(200).json({ message: "Successful story modification", data: decorate(updated.get({ plain: true }), "detail") });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
@@ -151,7 +153,10 @@ const deleteStory = async (req, res) => {
     const cnt = await db.Story.destroy({ where: { storyid: id, langlevel: level } });
     if (cnt === 0) return res.status(400).json({ message: "Failed to delete story." });
 
-    res.status(200).json({ message: "Successful story deletion", data: { deletedStoryId: id, deletedLevel: level, deletedTitle: existing.storytitle } });
+    res.status(200).json({
+      message: "Successful story deletion",
+      data: { deletedStoryId: id, deletedLevel: level, deletedTitle: existing.storytitle },
+    });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }

@@ -1,77 +1,134 @@
-import {useNavigate, useSearchParams} from 'react-router-dom';
-import React, { useState ,useEffect, useContext} from 'react';
-import { BookmarkContext } from '../context/BookmarkContext';
+// src/pages/Detail.jsx
+import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import React, { useState, useEffect, useContext, useMemo } from "react";
+import { BookmarkContext } from "../context/BookmarkContext";
+import api from "../api/axios";
+import "../style/Detail.css";
 
-import '../style/Detail.css';
+const isAbs = (u) => /^https?:\/\//i.test(String(u || ""));
+const norm = (p = "") => String(p).replace(/\\/g, "/").replace(/([^:]\/)\/+/g, "$1");
+
+const dedupe = (arr) => {
+  const seen = new Set();
+  const out = [];
+  for (const v of arr) {
+    const k = isAbs(v) ? v : norm(v);
+    if (!seen.has(k) && k) {
+      seen.add(k);
+      out.push(k);
+    }
+  }
+  return out;
+};
+
+function FallbackImage({ candidates, alt }) {
+  const [idx, setIdx] = useState(0);
+  const src = candidates[idx] || "/img/home/no_image.png";
+  return (
+    <img
+      src={src}
+      alt={alt}
+      onError={() => {
+        if (idx < candidates.length - 1) setIdx(idx + 1);
+      }}
+    />
+  );
+}
 
 export default function Detail() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
 
-  // story 상태 관리
   const [story, setStory] = useState(null);
 
-  const goBack = () => navigate('/'); // back 버튼 -> 홈 이동
-
-  const handleReadClick = () => {
-    navigate('/learn'); //  "학습하기"
-  };
-  
   const { addBookmark, removeBookmark, bookmarks } = useContext(BookmarkContext);
-  const isBookmarked = story && bookmarks.some(b => b.storyid === story.storyid);
-  const toggleBookmark = () => {
-    if (!story) return;
-    if (isBookmarked) removeBookmark(story.storyid);
-    else addBookmark(story);
-  } 
 
-  // story 데이터 fetch 및 디버깅
   useEffect(() => {
-    // URL 파라미터에서 storyid와 level 가져오기
-    const storyid = searchParams.get('storyid') || 1; 
-    const level = searchParams.get('level') || 'a1'; // 소문자 그대로 사용
-    
-    fetch(`http://localhost:3000/stories/${level}/detail/${storyid}`)
-      .then(res => res.json())
-      .then(result => {
-        console.log('API 응답:', result);
-        setStory(result.data);
-      })
-      .catch(err => {
-        console.error('API 에러:', err);
+    const storyid = searchParams.get("storyid") || 1;
+    const level = String(searchParams.get("level") || "A1").toUpperCase();
+    (async () => {
+      try {
+        const res = await api.get(`/stories/${level}/detail/${storyid}`);
+        setStory(res.data?.data || null);
+      } catch {
         setStory(null);
-      });
+      }
+    })();
   }, [searchParams]);
 
-  // story가 null이면 로딩 표시
+  const candidates = useMemo(() => {
+    const fromHome = (() => {
+      const st = location.state || {};
+      const arr = [];
+      if (st.thumb) arr.push(st.thumb);
+      if (Array.isArray(st.thumbCandidates)) arr.push(...st.thumbCandidates);
+      return arr;
+    })();
+
+    const fromApi = (() => {
+      if (!story) return [];
+      const arr = [];
+      if (Array.isArray(story.cover_candidates)) arr.push(...story.cover_candidates);
+      if (story.thumbnail_url) arr.push(story.thumbnail_url);
+      return arr;
+    })();
+
+    const fallback = ["/img/home/no_image.png"];
+    return dedupe([...fromHome, ...fromApi, ...fallback]);
+  }, [location.state, story]);
+
+  const isBookmarked =
+    story && bookmarks?.some((b) => String(b.storyid) === String(story.storyid));
+
+  const toggleBookmark = () => {
+    if (!story) return;
+    if (isBookmarked) {
+      removeBookmark(story.storyid);
+    } else {
+      addBookmark({
+        storyid: story.storyid,
+        storytitle: story.storytitle,
+        langlevel: story.langlevel,
+        thumb: candidates[0] || "/img/home/no_image.png",
+        thumbCandidates: candidates,
+      });
+    }
+  };
+
   if (!story) {
-    return <div className="detail-container"><div>로딩 중...</div></div>;
+    return (
+      <div className="detail-container">
+        <div>로딩 중...</div>
+      </div>
+    );
   }
 
   return (
     <div className="detail-container">
       <div className="back-button-wrapper">
-        <button className="back-button" onClick={goBack}>🔙</button>
+        <button className="back-button" onClick={() => navigate("/")}>🔙</button>
       </div>
-      {/* 왼쪽 영역 */}
+
       <div className="detail-wrapper">
         <div className="detail-image">
-          <img  src="/img/detail/lilys_happy_day.jpg" alt={story.storytitle} />
+          <FallbackImage candidates={candidates} alt={story.storytitle} />
         </div>
-        {/* 오른쪽 영역 */}
+
         <div className="detail-text">
           <div className="detail-title-row">
-            {/* 제목 */}
-              <h2 className="detail-title">{story.storytitle}
-            {story && (
-              <img src={isBookmarked ? "/img/detail/next_btn.png" : "/img/detail/pre_btn.png"}
-                alt="bookmark"  className="bookmark-icon"  onClick={toggleBookmark}/>
-            )}
+            <h2 className="detail-title">
+              {story.storytitle}
+              <img
+                src={isBookmarked ? "/img/detail/next_btn.png" : "/img/detail/pre_btn.png"}
+                alt="bookmark"
+                className="bookmark-icon"
+                onClick={toggleBookmark}
+              />
             </h2>
           </div>
 
           <div className="detail-tags">
-            {/* 레벨, 한글 레벨, 주제 태그 */}
             <span className={`tag tag-${story.langlevel?.toLowerCase()}`}>{story.langlevel}</span>
             <span className={`tag tag-${story.langlevel?.toLowerCase()}`}>{story.langlevelko}</span>
             <span className="tag tag-daily">{story.topic}</span>
@@ -80,16 +137,17 @@ export default function Detail() {
           <div className="detail-desc">
             <h4>작품 소개</h4>
             <p>
-              {story.description && story.description.split('\n').map((line, idx) => (
-                <React.Fragment key={idx}>
-                  {line}
-                  <br />
-                </React.Fragment>
-              ))}
+              {story.description &&
+                story.description.split("\n").map((line, idx) => (
+                  <React.Fragment key={idx}>
+                    {line}
+                    <br />
+                  </React.Fragment>
+                ))}
             </p>
           </div>
 
-          <button className="read-button" onClick={handleReadClick}>읽기</button>
+          <button className="read-button" onClick={() => navigate("/learn")}>읽기</button>
         </div>
       </div>
     </div>
