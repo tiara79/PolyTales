@@ -20,7 +20,7 @@ export default function Header() {
   return (
     <header className="header">
       <img
-        src="/style/img/home/header_logo.png"
+        src="/img/home/header_logo.png"
         alt="PolyTales Logo"
         className="header-logo"
         onClick={handleLogoClick}

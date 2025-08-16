@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState, useContext, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { StoryContext } from "../context/StoryContext";
@@ -26,16 +26,18 @@ function Learn() {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [languageData, setLanguageData] = useState([]);
+
   const [chatMessages, setChatMessages] = useState([
     { type: 'user', content: 'comes up이란 뜻이 뭐야?' },
     { type: 'tutor', content: '"comes up"은 발생하다라는 뜻이에요' }
   ]);
+  
   const [isChatLoading, setIsChatLoading] = useState(false);
   const { user, token } = useContext(AuthContext);
   const storyContext = useContext(StoryContext);
   const stories = storyContext?.stories || [];
   
-  // 언어 라벨 정의 (하드코딩)
+  // 언어 라벨 정의 
   const langLabel = {ko: '한국어', fr: '프랑스어', ja: '일본어', en: '영어', es: '스페인어', de: '독일어'};
 
   // URL에서 storyid 가져오기
@@ -146,8 +148,8 @@ function Learn() {
     audio.addEventListener('error', handleError);
     audio.addEventListener('ended', handleEnded);
 
-    // 오디오 소스 설정
-    audio.src = current.audiopath;
+    // 오디오 소스 설정 (경로 변환 적용)
+    audio.src = getCorrectAudioPath(current.audiopath);
     
     // ref와 state 설정
     audioRef.current = audio;
@@ -169,7 +171,8 @@ function Learn() {
       audio.pause();
       audio.src = '';
     };
-  }, [pageNum, pages]); // audioElement를 의존성에 추가하면 무한 렌더링 발생하므로 eslint-disable 사용
+  }, [pageNum, pages, audioElement]);
+  // audioElement를 의존성에 추가하면 무한 렌더링 발생하므로 eslint-disable 사용
 
   // 자막 줄바꿈 포맷 함수 
   const formatCaption = text => {
@@ -332,15 +335,42 @@ function Learn() {
     if (!imagepath) return '';
     
     if (imagepath.startsWith('/img/')) {
-      return imagepath.replace('/img/', '/style/img/');
+      return imagepath.replace('/img/', '/img/');
     }
     
-    if (imagepath.startsWith('/style/img/')) {
+    if (imagepath.startsWith('/img/')) {
       return imagepath;
     }
     
     return imagepath;
   };
+
+  // 오디오 경로 변환 함수 (useCallback으로 감싸기)
+  const getCorrectAudioPath = useCallback((audiopath) => {
+    if (!audiopath) return '';
+    const azurePrefix = 'https://polytalesimg.blob.core.windows.net/audio/';
+    let localPath = '';
+    if (audiopath.startsWith(azurePrefix)) {
+      localPath = audiopath.replace(azurePrefix, '');
+      // A1 → a1 변환
+      localPath = localPath.replace(/^A1\//, 'a1/');
+    } else if (audiopath.startsWith('/audio/')) {
+      localPath = audiopath.replace('/audio/A1/', '/audio/a1/');
+      localPath = localPath.replace('/audio/', '');
+    } else if (audiopath.startsWith('A1/')) {
+      localPath = 'a1/' + audiopath.slice(3);
+    } else {
+      localPath = audiopath;
+    }
+
+    // 파일명에 언어코드가 없으면 추가 (예: lily_1.mp3 → lily_1_ko.mp3)
+    const extIdx = localPath.lastIndexOf('.mp3');
+    if (extIdx > -1 && !localPath.includes(`_${lang}.mp3`)) {
+      localPath = localPath.slice(0, extIdx) + `_${lang}.mp3`;
+    }
+
+    return '/audio/' + localPath;
+  }, [lang]);
 
   return (
     <div className="parent">
@@ -349,7 +379,7 @@ function Learn() {
       <div className="div2">
         <h2 className="story-title">{currentStoryObj?.storytitle || "Lily's happy day"}</h2>
         <button className="close-button" onClick={handleCloseClick}>
-          <img src="/style/img/learn/close.png" alt="close" />
+          <img src="/img/learn/close.png" alt="close" />
         </button>
       </div>
 
@@ -370,17 +400,17 @@ function Learn() {
                   disabled={pageNum === 1}
                   className={`btn Text${pageNum === 1 ? ' disabled' : ''}`}
                 >
-                  <img src="/style/img/learn/prev.png" alt="previous" className="icon" />
+                  <img src="/img/learn/prev.png" alt="previous" className="icon" />
                   <span>이전 문장</span>
                 </button>
                 <button onClick={togglePlay} className="btn pause">
                   <img 
-                    src={isPlaying ? "/style/img/learn/pause.png" : "/style/img/learn/play.png"} 
+                    src={isPlaying ? "/img/learn/pause.png" : "/img/learn/play.png"} 
                     alt="play/pause" 
                   />
                 </button>
                 <button onClick={goNext} disabled={pageNum === pages.length} className="btn Text">
-                  <img src="/style/img/learn/next.png" alt="next" className="icon" />
+                  <img src="/img/learn/next.png" alt="next" className="icon" />
                   <span>다음 문장</span>
                 </button>
               </div>
@@ -452,7 +482,7 @@ function Learn() {
       <div className="div7 note-box">
         <div className="note-head">
           <strong>Note</strong>
-          <img src="/style/img/learn/disk_icon.png" className='save-note' onClick={handleSaveNote} alt="save note" />
+          <img src="/img/learn/disk_icon.png" className='save-note' onClick={handleSaveNote} alt="save note" />
         </div>
         <div className="note-title">
           <label htmlFor="noteTitle" className="underline-note">Title :</label>
@@ -472,7 +502,7 @@ function Learn() {
         <div className="chat-header">
           <div className="pola-badge">
             <span className="tutor-ai">AI tutor Pola</span>
-            <img src="/style/img/learn/pola.png" alt="pola" className="tutor-icon" />
+            <img src="/img/learn/pola.png" alt="pola" className="tutor-icon" />
           </div>
         </div>
         <div className="chat-messages">
@@ -500,7 +530,7 @@ function Learn() {
             onClick={handleChatSend}
             disabled={isChatLoading}
           >
-            <img src="/style/img/learn/send.png" alt="send button" />
+            <img src="/img/learn/send.png" alt="send button" />
           </button>
         </div>
       </div>

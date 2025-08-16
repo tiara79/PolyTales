@@ -26,13 +26,13 @@ export default function Footer() {
         {console.log("user.role:", user?.role)}
         {true ? (
           <img  
-            src="/style/img/footer/admin.png" 
+            src="/img/footer/admin.png" 
             alt="Admin" 
             className="admin-icon" 
             onClick={handleAdminClick}
             onError={(e) => {
               // 관리자 아이콘 로드 실패시 header_logo.png로 대체
-              e.target.src = "/style/img/home/header_logo.png";
+              e.target.src = "/img/home/header_logo.png";
             }}
           />
         ) : null}

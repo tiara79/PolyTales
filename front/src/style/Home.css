@@ -257,3 +257,13 @@
   color: #333;
   transform: none;
 }
+
+/* 뱃지(칩) */
+.chip { display:inline-block; padding:0 8px; line-height:22px; font-size:.75rem;
+  border:1px solid #ddd; border-radius:999px; margin-left:6px; }
+.chip.primary { background:#fff7f2; border-color:#fea270; }
+.chip.admin { background:#f5f5f5; border-color:#999; }
+
+/* 접근 불가 카드 표시(선택) */
+.story-card.locked { opacity: .6; cursor: not-allowed; }
+.story-card.locked img { filter: grayscale(10%); }

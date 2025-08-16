@@ -44,13 +44,13 @@ export default function History() {
           ) : (
             bookmarks.map((book) => {
               const imageBaseUrl = process.env.REACT_APP_IMAGE_BASE_URL || 'http://localhost:3000/img/contents';
-              const imageUrl = book.thumbnail ? `${imageBaseUrl}/${book.thumbnail}` : '/style/img/home/no_image.png';
+              const imageUrl = book.thumbnail ? `${imageBaseUrl}/${book.thumbnail}` : '/img/home/no_image.png';
               return (
                 <div key={book.storyid} className="image-box">
                   <img
                     src={imageUrl}
                     alt={book.storytitle}
-                    onError={e => { e.target.src = '/style/img/home/no_image.png'; }}
+                    onError={e => { e.target.src = '/img/home/no_image.png'; }}
                   />
                   <p className="image-title">{book.storytitle}</p>
                 </div>

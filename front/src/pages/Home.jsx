@@ -1,238 +1,178 @@
-import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import { LevelsContext } from '../context/LevelsContext';
-import '../style/Home.css';
+import { useEffect, useMemo, useState, useContext, useCallback, useMemo as useMem } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import api from "../api/axios";
+import "../style/Home.css";
 
-const config = {
-  development: {
-    apiUrl: 'http://localhost:3000',
-    imageBaseUrl: 'http://localhost:3000'
-  },
-  production: {
-    apiUrl: process.env.REACT_APP_API_URL || 'https://polytales-api.azurewebsites.net',
-    imageBaseUrl: process.env.REACT_APP_API_URL || 'https://polytales-api.azurewebsites.net'
-  }
+const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
+const LEVEL_LABELS = { A1: "초급", A2: "초중급", B1: "중급", B2: "중고급", C1: "고급", C2: "최고급" };
+
+const isAbs = (u) => /^https?:\/\//i.test(String(u || ""));
+const norm = (p = "") => String(p).replace(/\\/g, "/").replace(/([^:]\/)\/+/g, "$1");
+
+const baseName = (p = "") => {
+  const s = norm(String(p));
+  const i = s.lastIndexOf("/");
+  return i >= 0 ? s.slice(i + 1) : s;
 };
 
-const currentConfig = config[process.env.NODE_ENV || 'development'];
+const slugifyTitle = (title = "") => {
+  const s = String(title)
+    .toLowerCase()
+    .replace(/'/g, "")
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+  const under = s.replace(/\s+/g, "_");
+  const hyphen = s.replace(/\s+/g, "-");
+  return Array.from(new Set([under, hyphen]));
+};
+
+const wrapToLocal = (name, level) => {
+  const n = baseName(name);
+  if (!n) return [];
+  const lv = String(level || "").toLowerCase(); // a1, a2 ...
+  const arr = [`/img/contents/${n}`, `/img/detail/${n}`];
+  if (lv) arr.push(`/img/${lv}/${n}`);
+  return arr;
+};
+
+const buildSrcCandidates = (s) => {
+  const localFirst = [];
+  const later = [];
+
+  const rawPaths = [s?.thumbnail_url, s?.storycoverpath, s?.storycover_path, s?.thumbnail].filter(Boolean);
+
+  // 1) 로컬 정적 경로 후보(파일명 기준) — 최우선
+  const names = new Set(rawPaths.map(baseName).filter(Boolean));
+  for (const t of slugifyTitle(s?.storytitle)) {
+    names.add(`${t}.jpg`);
+    names.add(`${t}.png`);
+    names.add(`${t}.webp`);
+  }
+  for (const n of names) {
+    localFirst.push(...wrapToLocal(n, s?.langlevel));
+  }
+
+  // 2) 서버가 준 경로들 중에서 루트(/)나 /img로 시작하는 것은 그 자체로 시도
+  for (const p of rawPaths) {
+    const v = String(p);
+    if (v.startsWith("/img/") || v.startsWith("/style/img/") || v.startsWith("/audio/") || v.startsWith("/")) {
+      localFirst.push(norm(v.replace(/^\/style\/img\//i, "/img/")));
+    }
+  }
+
+  // 3) 절대 URL(Blob 등)은 마지막에 시도
+  for (const p of rawPaths) {
+    if (isAbs(p)) later.push(norm(p));
+  }
+
+  // 4) 최종 폴백
+  const all = [...localFirst, ...later, "/img/home/no_image.png"];
+
+  // 중복 제거(앞쪽 우선)
+  const uniq = [];
+  const seen = new Set();
+  for (const u of all) {
+    const key = isAbs(u) ? u : norm(u);
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniq.push(key);
+    }
+  }
+  return uniq;
+};
+
+function FallbackImage({ story, alt }) {
+  const candidates = useMem(() => buildSrcCandidates(story), [story]);
+  const [idx, setIdx] = useState(0);
+  const src = candidates[idx] || "/img/home/no_image.png";
+
+  return (
+    <img
+      className="story-image"
+      src={src}
+      alt={alt}
+      onError={() => {
+        if (idx < candidates.length - 1) setIdx(idx + 1);
+      }}
+    />
+  );
+}
 
 export default function Home() {
-  const [selected, setSelected] = useState('A1');
+  const navigate = useNavigate();
+  const { token } = useContext(AuthContext) || {};
+  const [selected, setSelected] = useState("A1");
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const levelsContext = useContext(LevelsContext);
-  const levels = levelsContext?.levels || [];
-  const levelLabelsKo = levelsContext?.levelLabelsKo || {};
-  const authContext = useContext(AuthContext);
-  const user = authContext?.user;
-  const navigate = useNavigate();
 
-  // Context 디버깅
-  console.log('LevelsContext:', levelsContext);
-  console.log('Levels:', levels);
-  console.log('LevelLabelsKo:', levelLabelsKo);
+  const headers = useMemo(() => (token ? { Authorization: `Bearer ${token}` } : undefined), [token]);
 
-  // 이미지 URL 생성 함수
-  const getImageUrl = (story) => {
-    console.log('Processing story:', story.storyid, 'thumbnail:', story.thumbnail);
-    
-    // blob URL인 경우 그대로 반환
-    if (story.thumbnail && story.thumbnail.startsWith('blob:')) {
-      return story.thumbnail;
-    }
-    
-    // HTTP URL인 경우 그대로 반환
-    if (story.thumbnail && story.thumbnail.startsWith('http')) {
-      return story.thumbnail;
-    }
-    
-    // 썸네일이 있는 경우 public/style/img/contents/ 경로로 변환
-    if (story.thumbnail) {
-      return `/style/img/contents/${story.thumbnail}`;
-    }
-    
-    // 특정 스토리의 fallback 이미지
-    if (story.storyid === 1) {
-      return '/style/img/contents/lilys_happy_day.jpg';
-    }
-    
-    // 기본 fallback 이미지 - 정확한 경로 사용
-    return '/style/img/home/no_image.png';
-  };
-
-  // 레벨별 스토리 데이터 가져오기
-  const fetchStoriesByLevel = async (level) => {
-    setLoading(true);
-    try {
-      console.log('Fetching stories for level:', level);
-      
-      // 백엔드 라우터 경로에 맞게 수정: /stories/level/:level
-      const response = await fetch(`${currentConfig.apiUrl}/stories/level/${level}`);
-      console.log('Response status:', response.status);
-      
-      if (response.status === 404) {
-        // 404인 경우 소문자로 재시도
-        const retryResponse = await fetch(`${currentConfig.apiUrl}/stories/level/${level.toLowerCase()}`);
-        if (retryResponse.ok) {
-          const result = await retryResponse.json();
-          console.log('Stories response (retry):', result);
-          if (result.data && Array.isArray(result.data)) {
-            setStories(result.data);
-          } else {
-            setStories([]);
-          }
-        } else {
-          console.error('Both attempts failed');
-          setStories([]);
-        }
-      } else if (response.ok) {
-        const result = await response.json();
-        console.log('Stories response:', result);
-        if (result.data && Array.isArray(result.data)) {
-          setStories(result.data);
-        } else {
-          setStories([]);
-        }
-      } else {
-        console.error('Failed to fetch stories:', response.status);
+  const fetchStories = useCallback(
+    async (level) => {
+      setLoading(true);
+      try {
+        const L = String(level || "A1").toUpperCase();
+        const res = await api.get(`/stories/level/${L}`, { headers });
+        setStories(Array.isArray(res.data?.data) ? res.data.data : []);
+      } catch {
         setStories([]);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching stories:', error);
-      setStories([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [headers]
+  );
 
   useEffect(() => {
-    console.log('useEffect triggered with selected:', selected);
-    if (selected) {
-      fetchStoriesByLevel(selected);
-    }
-  }, [selected]);
+    fetchStories(selected);
+  }, [selected, fetchStories]);
 
-  // 초기 데이터 확인
-  useEffect(() => {
-    console.log('Initial render - levels:', levels, 'selected:', selected);
-  }, [selected, levels]);
-
-  // confirm dialog 핸들러
-  const handleConfirmYes = () => {
-    setShowConfirm(false);
-    navigate('/plan');
-  };
-  const handleConfirmNo = () => {
-    setShowConfirm(false);
+  const onClickStory = (s) => {
+    if (s?.can_access) navigate(`/detail?storyid=${s.storyid}&level=${selected}`);
   };
 
   return (
-    <div className="recommend-section">
-      <h2>언어레벨에 따라 언어를 공부해보세요!</h2>
-      
-      {/* 레벨 선택 버튼 영역 시작 */}
+    <section className="recommend-section">
       <div className="level-buttons">
-        {levels.length === 0 ? (
-          <div>레벨 데이터를 불러오는 중...</div>
-        ) : (
-          levels.map(level => (
-            <button
-              key={level}
-              onClick={() => {
-                console.log('Level button clicked:', level);
-                setSelected(level);
-              }}
-              className={`level-btn ${level} ${selected === level ? `selected ${level}` : ''}`}
-            >
-              <strong>{level}</strong><br />
-              <span>{levelLabelsKo[level] || level}</span>
-            </button>
-          ))
-        )}
+        {LEVELS.map((lv) => (
+          <button
+            key={lv}
+            className={`level-btn ${lv} ${selected === lv ? "selected" : ""}`}
+            onClick={() => setSelected(lv)}
+          >
+            <span className="lv-en">{lv}</span>
+            <br />
+            <span className="lv-ko">{LEVEL_LABELS[lv]}</span>
+          </button>
+        ))}
       </div>
-      {/* 레벨 선택 버튼 영역 끝 */}
 
-      {/* 스토리 이미지 그리드 영역 시작 */}
+      {loading && <div className="loading">불러오는 중…</div>}
+      {!loading && stories.length === 0 && <div className="empty">해당 레벨의 스토리가 없습니다.</div>}
+
       <div className="image-grid">
-        {loading ? (
-          <div className="loading">로딩 중...</div>
-        ) : stories.length === 0 ? (
-          <div className="no-stories">이 레벨에 해당하는 스토리가 없습니다.</div>
-        ) : (
-          stories.map((story) => {
-            const imageUrl = getImageUrl(story);
-            console.log('Rendering story:', story.storyid, 'with image URL:', imageUrl);
-            
-            const handleImageClick = () => {
-              const openDetailIds = [1, 10, 15, 17, 19, 29, 30, 38];
-              
-              if (
-                (user?.role === 1) ||
-                (user?.role === 2 && (user?.status === 1 || user?.status === 2) && openDetailIds.includes(story.storyid)) ||
-                (!user && story.storyid === 1)
-              ) {
-                navigate(`/detail?storyid=${story.storyid}&level=${selected}`); // selected는 이미 대문자
-              } else {
-                setShowConfirm(true);
-              }
-            };
-            
-            return (
-              <div key={story.storyid} className="image-box">
-                <img
-                  src={imageUrl}
-                  alt={story.storytitle || 'Story image'}
-                  className="story-image" // CSS 클래스 추가
-                  onClick={handleImageClick}
-                  onLoad={() => console.log('Image loaded successfully:', imageUrl)}
-                  onError={(e) => { 
-                    console.error('Image load error for story:', story.storyid, 'URL:', imageUrl);
-                    
-                    // public/style/img 폴더 내 다양한 경로 시도
-                    const currentSrc = e.target.src;
-                    
-                    if (story.thumbnail && !currentSrc.includes('/style/img/contents/')) {
-                      // 첫 번째 시도: /style/img/contents/ 폴더
-                      e.target.src = `/style/img/contents/${story.thumbnail}`;
-                    } else if (story.thumbnail && !currentSrc.includes('/style/img/uploads/')) {
-                      // 두 번째 시도: /style/img/uploads/ 폴더
-                      e.target.src = `/style/img/uploads/${story.thumbnail}`;
-                    } else if (story.thumbnail && !currentSrc.includes('/style/img/a1/')) {
-                      // 세 번째 시도: /style/img/a1/ 폴더 (레벨별 폴더)
-                      e.target.src = `/style/img/a1/${story.thumbnail}`;
-                    } else if (story.storyid === 1 && !currentSrc.includes('lilyshappyday.png')) {
-                      // 네 번째 시도: 특별 이미지
-                      e.target.src = '/style/img/home/lilyshappyday.png';
-                    } else if (!currentSrc.includes('no_image.png')) {
-                      // 마지막 시도: 기본 이미지
-                      e.target.src = '/style/img/home/no_image.png';
-                    }
-                  }}
-                />
-                <p className="image-title">
-                  {story.storytitle || `Story ${story.storyid}`}
-                </p>
-              </div>
-            );
-          })
-        )}
-      </div>
-      {/* 스토리 이미지 그리드 영역 끝 */}
-
-      {/* 커스텀 confirm dialog */}
-      {showConfirm && (
-        <div className="custom-confirm-overlay">
-          <div className="custom-confirm-dialog">
-            <p>유료 서비스 입니다.<br />유료 서비스를 이용 하시겠습니까?</p>
-            <div className="custom-confirm-buttons">
-              <button onClick={handleConfirmYes}>Yes</button>
-              <button onClick={handleConfirmNo}>No</button>
+        {stories.map((s) => {
+          const locked = !s.can_access;
+          return (
+            <div
+              key={s.storyid}
+              className={`image-box ${locked ? "locked-image" : ""}`}
+              onClick={() => onClickStory(s)}
+            >
+              <FallbackImage story={s} alt={s.storytitle || "Story"} />
+              {locked && (
+                <>
+                  <div className="lock-icon">🔒</div>
+                  <div className="lock-tooltip">로그인 후 이용 가능</div>
+                </>
+              )}
+              <div className="image-title">{s.storytitle}</div>
             </div>
-          </div>
-        </div>
-      )}
-    </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }

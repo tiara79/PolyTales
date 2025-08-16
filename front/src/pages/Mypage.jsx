@@ -149,7 +149,7 @@ export default function Mypage() {
             <h1 className="page-title">마이페이지</h1>
           </div>
           <button className="mynote" onClick={() => navigate("/mynotes")}>
-            <img src="/style/img/mypage/notes.png" alt="my note" />노트 필기
+            <img src="/img/mypage/notes.png" alt="my note" />노트 필기
           </button>
         </div>
         <div className="mypage-wrapper">
@@ -170,11 +170,11 @@ export default function Mypage() {
               onMouseLeave={() => setIsHovering(false)}
             >
               <img
-                src={getProfileImageUrl(user?.profimg, "/style/img/login/prof_img.png")}
+                src={getProfileImageUrl(user?.profimg, "/img/login/prof_img.png")}
                 alt="profile-image"
                 className="profile-img-big"
                 onClick={handleProfileImageClick}
-                onError={e => { e.target.onerror = null; e.target.src = "/style/img/login/prof_img.png"; }}
+                onError={e => { e.target.onerror = null; e.target.src = "/img/login/prof_img.png"; }}
                 style={{  cursor: "pointer",
                   opacity: isUploading ? 0.5 : 1,  }}
               />
@@ -246,11 +246,11 @@ export default function Mypage() {
                           className="books-cover-img"
                           src={
                             book.thumbnail ||
-                            "/style/img/home/no_read.png"
+                            "/img/home/no_read.png"
                           }
                           alt={book.storytitle}
                           onError={(e) => {
-                            e.target.src = "/style/img/home/no_read.png";
+                            e.target.src = "/img/home/no_read.png";
                           }}
                         />
                       </div>
@@ -261,11 +261,11 @@ export default function Mypage() {
               ) : (
                 <div className="empty-state">
                   <img
-                    src="/style/img/mypage/no_read.png"
+                    src="/img/mypage/no_read.png"
                     alt="읽은 책이 없습니다"
                     className="empty-state-img"
                     onError={(e) => {
-                      e.target.src = "/style/img/home/no_read.png";
+                      e.target.src = "/img/home/no_read.png";
                     }}
                   />
                 </div>
@@ -291,8 +291,8 @@ export default function Mypage() {
                     // 대표 이미지 추출 (없으면 no_bookmark.png)
                     const imageUrl =
                       storyObj?.thumbnail
-                        ? `/style/img/contents/${storyObj.thumbnail}`
-                          : "/style/img/mypage/no_bookmark.png";
+                        ? `/img/contents/${storyObj.thumbnail}`
+                          : "/img/mypage/no_bookmark.png";
 
                     return (
                       <div key={book.storyid || idx} className="books-card">
@@ -301,7 +301,7 @@ export default function Mypage() {
                             className="books-cover-img"
                             src={imageUrl}
                             alt={storyObj?.storytitle || book.storytitle}
-                            onError={e => { e.target.src = "/style/img/mypage/no_bookmark.png"; }}
+                            onError={e => { e.target.src = "/img/mypage/no_bookmark.png"; }}
                           />
                         </div>
                         <div className="books-title">{storyObj?.storytitle || book.storytitle}</div>
@@ -312,7 +312,7 @@ export default function Mypage() {
               ) : (
                 <div className="empty-state">
                   <img
-                    src="/style/img/mypage/no_bookmark.png"
+                    src="/img/mypage/no_bookmark.png"
                     alt="찜한 책이 없습니다"
                     className="empty-state-img"
                   />

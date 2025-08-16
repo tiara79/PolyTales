@@ -27,7 +27,7 @@ export default function MyNotes() {
 
   // 이미지 URL 생성 함수
   const getImageUrl = (path) => {
-    if (!path) return "../style/img/home/no_image.png";
+    if (!path) return "../img/home/no_image.png";
     const baseUrl = process.env.REACT_APP_IMAGE_BASE_URL || "http://localhost:3000";
     // 절대 경로 or 업로드 경로 처리
     if (path.startsWith("http")) return path;

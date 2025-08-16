@@ -22,11 +22,11 @@ export default function ProfileMenu({ username, userid, userProfileImg, onLogout
     <div ref={menuRef} className="profile-menu-wrap">
       <div className="profile-btn" onClick={() => setOpen((v) => !v)}>
         <img
-          src={userProfileImg || "/style/img/login/prof_img.png"}
+          src={userProfileImg || "/img/login/prof_img.png"}
           alt="profile-image"
           className="profile-img"
           onError={(e) => {
-            e.target.src = "/style/img/home/header_logo.png";
+            e.target.src = "/img/home/header_logo.png";
           }}
         />
         <div className="profile-username">{`${username || "사용자"}님`}</div>
@@ -37,11 +37,11 @@ export default function ProfileMenu({ username, userid, userProfileImg, onLogout
             X
           </button>
           <img
-            src={userProfileImg || "/style/img/login/prof_Img.png"}
+            src={userProfileImg || "/img/login/prof_Img.png"}
             alt="profile-image"
             className="dropdown-profile-img"
             onError={(e) => {
-              e.target.src = "/style/img/home/header_logo.png";
+              e.target.src = "/img/home/header_logo.png";
             }}
           />
           <div className="dropdown-greeting">

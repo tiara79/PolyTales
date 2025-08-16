@@ -1,19 +1,26 @@
-const IMAGE_BASE_URL = process.env.REACT_APP_IMAGE_BASE_URL || 'http://localhost:3001/img';
+// 번들러 무관 안전 베이스 경로
+const IMG_BASE =
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_IMAGE_BASE_URL) ||
+  (typeof process !== "undefined" && process.env?.REACT_APP_IMAGE_BASE_URL) ||
+  "/img";
 
-/**
- * 이미지 URL 생성 (fallback 지원)
- */
-export function toImageUrl(filename, fallback) {
-  if (!filename) return fallback;
-  if (filename.startsWith('http') || filename.startsWith('/')) return filename;
-  return `${IMAGE_BASE_URL}/${filename}`;
+const isAbs = (u) => /^https?:\/\//i.test(String(u || ""));
+const norm = (p = "") =>
+  String(p)
+    .replace(/\\/g, "/")
+    .replace(/([^:]\/)\/+/g, "$1")
+    .replace(/^\.?\/*/, "");
+
+export function toImageUrl(input, fallback = "/img/home/no_image.png") {
+  if (!input) return fallback;
+  const s = String(input).trim();
+  if (!s) return fallback;
+  if (isAbs(s) || s.startsWith("/")) return s;
+  return `${IMG_BASE}/${norm(s)}`;
 }
 
-/**
- * 프로필 이미지 URL 생성
- */
-export function getProfileImageUrl(filename, fallback) {
+export function getProfileImageUrl(filename, fallback = "/img/profile/default.png") {
   if (!filename) return fallback;
-  if (filename.startsWith('http')) return filename;
-  return `${IMAGE_BASE_URL}/uploads/${filename}`;
+  if (isAbs(filename) || filename.startsWith("/")) return filename;
+  return `${IMG_BASE}/profile/${norm(filename)}`;
 }

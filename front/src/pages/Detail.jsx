@@ -56,7 +56,7 @@ export default function Detail() {
       {/* 왼쪽 영역 */}
       <div className="detail-wrapper">
         <div className="detail-image">
-          <img  src="/style/img/detail/lilys_happy_day.jpg" alt={story.storytitle} />
+          <img  src="/img/detail/lilys_happy_day.jpg" alt={story.storytitle} />
         </div>
         {/* 오른쪽 영역 */}
         <div className="detail-text">
@@ -64,7 +64,7 @@ export default function Detail() {
             {/* 제목 */}
               <h2 className="detail-title">{story.storytitle}
             {story && (
-              <img src={isBookmarked ? "/style/img/detail/next_btn.png" : "/style/img/detail/pre_btn.png"}
+              <img src={isBookmarked ? "/img/detail/next_btn.png" : "/img/detail/pre_btn.png"}
                 alt="bookmark"  className="bookmark-icon"  onClick={toggleBookmark}/>
             )}
             </h2>
