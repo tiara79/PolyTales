@@ -103,7 +103,7 @@ function Learn() {
       setChatMessages((prev) => [...prev, { type: "tutor", content: data.response || "응답 없음" }]);
     } catch (err) {
       setChatMessages((prev) => [...prev, { type: "tutor", content: "서비스 오류" }]);
-      toast.error("튜터 서비스 오류");
+      toast.error("tutor service error");
     } finally {
       setIsChatLoading(false);
     }
