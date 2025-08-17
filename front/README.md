@@ -1,4 +1,3 @@
-
 # 프로젝트
 
 React + Express + SQLite 기반의  웹입니다.  
@@ -109,3 +108,23 @@ StoryLearn.audiopath = /audio/A1/lily/lily_1_ko.mp3 (컨테이너명 포함 + �
 Blob은 컨테이너명은 URL에서만 붙이고, 경로는 대소문자 그대로 매칭합니다.
 -> img/, audio/ 컨테이너명 사용
 -> DB에는 컨테이너명 없이 상대경로만(+ a1 소문자 저장) 하거나, 응답 시 변환
+
+cd polytales-be
+cd polytales-fe
+npm install
+npm run build
+
+# PowerShell에서 폴더 이동 방법
+cd "C:\Users\user\Documents\Nambu\PolyTales\back"
+
+# PowerShell에서 npm 실행 오류(Execution Policy) 해결 방법
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+
+# 이후 npm install 등 명령 실행 가능
+npm install
+
+# 폴더가 없어서 cd polytales-be 에러가 발생할 경우
+# 먼저 폴더를 생성하세요.
+mkdir -p polytales-be
+cd polytales-be
+
