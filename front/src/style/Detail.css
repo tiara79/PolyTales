@@ -76,19 +76,19 @@ position: fixed;
   gap: 1.2rem; /* 텍스트와 북마크 사이 간격 */
 }
 
-.bookmark-icon.inline {
+.BookMark-icon.inline {
   width: 15px;
   height: 38px;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
 
-.bookmark-icon.inline:hover {
+.BookMark-icon.inline:hover {
   transform: scale(1.1);
 }
 
 /* 북마크 이미지 버튼 */
-.bookmark-icon {
+.BookMark-icon {
   margin-top: 6px;
   width: 20px;
   height: 26px;
@@ -96,7 +96,7 @@ position: fixed;
   transition: transform 0.2s ease;
 }
 
-.bookmark-icon:hover {
+.BookMark-icon:hover {
   transform: scale(1.1);
 }
 

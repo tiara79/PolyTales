@@ -1,7 +1,8 @@
+// back/src/routes/learn.js
 const express = require('express');
 const router = express.Router();
 const db = require('../models');
-const { toAudioUrl, toImgUrl } = require('../utils/pathFixers'); //  유틸 불러오기
+const { toAudioUrl, toImgUrl } = require('../util/pathFixers');
 
 // GET /learn/:storyid?lang=en
 router.get('/:storyid', async (req, res) => {
@@ -9,20 +10,28 @@ router.get('/:storyid', async (req, res) => {
   const lang = req.query.lang;
 
   try {
-    // 페이지 데이터
     const pages = await db.learn.findAll({
       where: { storyid, nation: lang },
       order: [['pagenumber', 'ASC']]
     });
 
-    const processedPages = pages.map(page => {
-      const o = page.toJSON();
+    const processed = pages.map((row) => {
+      const o = row.toJSON();
 
-      // 이미지, 오디오 경로 변환
-      if (o.imagepath)  o.imagepath  = toImgUrl(o.imagepath);
-      if (o.audiopath)  o.audiopath  = toAudioUrl(o.audiopath);
+      // 가능한 모든 후보 키에서 경로를 뽑아 image/audio 필드에 정규화하여 담는다
+      const imgRaw = o.image || o.img || o.imagepath || o.imgpath || o.picture || o.thumbnail || o.storycoverpath || o.cover;
+      const audRaw = o.audio || o.audiopath || o.sound || o.movie || o.mp3;
 
-      return o;
+      const imgUrl = imgRaw ? toImgUrl(imgRaw) : '';
+      const audUrl = audRaw ? toAudioUrl(audRaw) : '';
+
+      return {
+        ...o,
+        image: imgUrl || o.image || '',
+        audio: audUrl || o.audio || '',
+        imagepath: imgUrl || o.imagepath || o.imgpath || '',
+        audiopath: audUrl || o.audiopath || '',
+      };
     });
 
     // 문법/단어
@@ -30,10 +39,10 @@ router.get('/:storyid', async (req, res) => {
       where: { storyid, nation: lang }
     });
 
-    res.json({ pages: processedPages, language });
+    res.json({ page: processed, language });
   } catch (err) {
     console.error('learn get failed:', err);
-    res.status(500).json({ message: 'Internal server error', error: err.message });
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 

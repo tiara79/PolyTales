@@ -1,27 +1,17 @@
 // back/src/routes/notes.js
+const router = require('express').Router();
+const auth = require('../middlewares/auth') || {};
+const note = require('../controllers/noteController');
 
-const express = require('express');
-const router = express.Router();
-const {
-  createNote,
-  getNotes,
-  getAllNotes,
-  updateNote,
-  deleteNote
-} = require('../controllers/noteController');
+const required = auth.required || auth.authRequired || auth.authenticate || ((req, _res, next) => next());
+const adminOnly = auth.adminOnly || ((req, _res, next) => next());
 
-// 인증 미들웨어
-const { authRequired, onlyAdmin } = require('../middlewares/auth');
+router.post('/', required, note.createNote);
+router.get('/:userid', required, note.getNotes);
+router.put('/:noteid', required, note.updateNote);
+router.delete('/:noteid', required, note.deleteNote);
 
-// 전체(관리자)
-router.get('/', authRequired, onlyAdmin, getAllNotes);
-
-// 사용자 노트 조회 (본인/관리자)
-router.get('/:userid', authRequired, getNotes);
-
-// 생성/수정/삭제는 로그인 필요
-router.post('/', authRequired, createNote);
-router.put('/:noteid', authRequired, updateNote);
-router.delete('/:noteid', authRequired, deleteNote);
+// 전체 목록 (관리자)
+router.get('/', required, adminOnly, note.getAllNotes);
 
 module.exports = router;

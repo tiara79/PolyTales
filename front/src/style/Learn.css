@@ -160,3 +160,40 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+/* 래퍼: 이미지/오디오가 div4 안에서 세로 스택 */
+.learn-media-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* 이미지 패널 */
+.learn-image-container { position: relative; width: 100%; }
+.learn-image { width: 100%; height: auto; display: block; object-fit: contain; }
+.learn-image--empty { padding: 2rem; text-align: center; color: #888; border: 1px dashed #ccc; border-radius: 12px; }
+.learn-caption { background: #ffffff6d; font-weight: 700; }
+
+/* 이미지 네비게이션 */
+.learn-image-nav {
+  position: absolute; top: 8px; right: 8px;
+  display: flex; align-items: center; gap: .5rem;
+}
+.learn-page-indicator { font-size: .9rem; color: #333; }
+
+/* 오디오 패널 */
+.learn-audio-panel {
+  background: #fff; border: 1px solid #e8e8e8; border-radius: 12px; padding: .75rem 1rem;
+}
+.learn-audio-controls { display: flex; align-items: center; gap: .75rem; }
+.learn-audio-progress { flex: 1; }
+.learn-audio--empty { padding: .75rem; text-align: center; color: #777; }
+
+/* 공통 버튼 */
+.learn-btn {
+  border: none; background: #fff; border-radius: 12px; cursor: pointer;
+  width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+}
+.learn-btn img { width: 24px; height: 24px; display: block; }
+

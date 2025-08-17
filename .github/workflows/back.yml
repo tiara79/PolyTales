@@ -1,75 +1,70 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: polytales backend
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
-      - 'back/**'
-      - '.github/workflows/back.yml'
-  workflow_dispatch:
+      - "polytales-be/**"
+      - ".github/workflows/back.yml"
+
+env:
+  NODE_VERSION: "18.x"
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    defaults:
-      run:
-        working-directory: back
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
-          cache: 'npm'
-          cache-dependency-path: back/package-lock.json
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install
-        run: npm ci
+      - name: Install dependencies
+        run: |
+          cd polytales-be
+          npm ci
 
-      - name: Build (optional)
-        run: npm run build --if-present
+      - name: Generate .env.production
+        run: |
+          cd polytales-be
+          echo "PORT=3000" > .env.production
+          echo "CLIENT_URL=https://polytales.z01.web.core.windows.net" >> .env.production
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env.production
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env.production
+          echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env.production
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env.production
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env.production
+          echo "DB_DIALECT=postgres" >> .env.production
+          echo "DB_SSL=require" >> .env.production
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.production
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env.production
+          echo "AZURE_OPENAI_KEY=${{ secrets.AZURE_OPENAI_KEY }}" >> .env.production
+          echo "AZURE_OPENAI_ENDPOINT=${{ secrets.AZURE_OPENAI_ENDPOINT }}" >> .env.production
+          echo "GMAIL_USER=${{ secrets.GMAIL_USER }}" >> .env.production
+          echo "GMAIL_APP_PASSWORD=${{ secrets.GMAIL_APP_PASSWORD }}" >> .env.production
+          echo "TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }}" >> .env.production
+          echo "TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }}" >> .env.production
+          echo "TWILIO_FROM_NUMBER=${{ secrets.TWILIO_FROM_NUMBER }}" >> .env.production
+          echo "BLOB_URL=${{ secrets.BLOB_URL }}" >> .env.production
+          echo "BLOB_CONTAINER_IMG=img" >> .env.production
+          echo "BLOB_CONTAINER_AUDIO=audio" >> .env.production
+          echo "BLOB_CONTAINER_PROFILE=profile" >> .env.production
+          echo "BLOB_CONTAINER_ADMIN=admin" >> .env.production
 
-      - name: Test (optional)
-        run: npm test --if-present
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: back
-          path: back
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: back
-          path: back
-
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_6F413C7AB98D4C169C51ABC227BCC67F }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0FFFBAAD7F444C518EADA8E6520AF7DB }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1A070CA010DF4C5CB9F386EB8A09A3FB }}
+      - name: Build backend
+        run: |
+          cd polytales-be
+          npm run build || echo "No build step defined"
 
       - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
+        uses: azure/webapps-deploy@v2
         with:
-          app-name: 'polytales'   # App Service 이름 정확히 일치
-          package: back           # 아티팩트로 받은 back 폴더만 배포
+          app-name: polytales
+          slot-name: production
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: polytales-be

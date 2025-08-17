@@ -102,10 +102,10 @@ https://www.twilio.com/docs/verify?utm_source=chatgpt.com
 // .env 환경변수 설정: REACT_APP_API_URL=https://polytales-api.azurewebsites.net
 // 환경별 설정 - App Service 정적 파일 서빙 방식
 
-#DB 값 - 경로 설정(//back/src/utils/pathFixers.js )
+#DB 값 - 경로 설정(//back/src/util/pathFixers.js )
 story.storycoverpath = /style/img/… (레거시)
-storylearn.imagepath = /img/A1/lily/lily_1.png (컨테이너명 포함 + 대문자 A1)
-storylearn.audiopath = /audio/A1/lily/lily_1_ko.mp3 (컨테이너명 포함 + 대문자 A1)
+StoryLearn.imagepath = /img/A1/lily/lily_1.png (컨테이너명 포함 + 대문자 A1)
+StoryLearn.audiopath = /audio/A1/lily/lily_1_ko.mp3 (컨테이너명 포함 + 대문자 A1)
 Blob은 컨테이너명은 URL에서만 붙이고, 경로는 대소문자 그대로 매칭합니다.
 -> img/, audio/ 컨테이너명 사용
 -> DB에는 컨테이너명 없이 상대경로만(+ a1 소문자 저장) 하거나, 응답 시 변환

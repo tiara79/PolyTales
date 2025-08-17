@@ -1,4 +1,4 @@
-// src/config/appConfig.js
+// src/config/AppConfig.js
 // 번들러(Vite/CRA/Webpack) 상관없이 안전하게 API_URL 결정
 export const API_URL = (() => {
   // Vite

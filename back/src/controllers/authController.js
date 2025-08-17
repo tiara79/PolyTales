@@ -2,8 +2,8 @@ const bcrypt = require('bcryptjs'); // 비밀번호를 일방향 해시로 저�
 const crypto = require('crypto'); // 각종 암호학 유틸로 고유 ID 생성, 안전한 랜덤/암호 기능
 const { Op } = require('sequelize');
 const { User } = require('../models');
-const { generateAccessToken } = require('../utils/token');
-const toSafe = require('../utils/toSafe');
+const { generateAccessToken } = require('../util/token');
+const toSafe = require('../util/toSafe');
 
 // Google OAuth (요청 body 키: oauthprovider, oauthid)
 async function googleAuth(req, res) {

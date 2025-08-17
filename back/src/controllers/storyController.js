@@ -2,7 +2,7 @@
 
 const db = require("../models");
 
-const { getCover } = require("../utils/coverResolver");
+const { getCover } = require("../util/coverResolver");
 
 const OPEN_DETAIL_IDS = [1, 10, 15, 17, 19, 29, 30, 38];
 

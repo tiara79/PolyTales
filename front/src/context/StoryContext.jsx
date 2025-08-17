@@ -1,40 +1,59 @@
-import { createContext, useEffect, useState } from 'react';
+// src/context/StoryContext.jsx
+import { createContext, useEffect, useState } from "react";
 
-export const StoryContext = createContext();
+export const StoryContext = createContext({
+  stories: [],
+  currentStory: null,
+  setCurrentStory: () => {},
+  loading: false,
+});
 
 export const StoryProvider = ({ children }) => {
-	const [stories, setStories] = useState([]); // 스토리 목록
-	const [currentStory, setCurrentStory] = useState(null); // 현재 선택된 스토리
-	const [attendance, setAttendance] = useState(0); // 출석/진도 등
-	const [loading, setLoading] = useState(false);
+  const [stories, setStories] = useState([]);        // 스토리 목록
+  const [currentStory, setCurrentStory] = useState(null); // 현재 선택된 스토리
+  const [loading, setLoading] = useState(false);
+
+  const API = process.env.REACT_APP_API_URL;
+
+  // 안전한 응답 파싱 유틸
+  const parseList = (payload) => {
+    if (Array.isArray(payload)) return payload;
+    if (Array.isArray(payload?.data)) return payload.data;
+    if (Array.isArray(payload?.rows)) return payload.rows;
+    return [];
+  };
+
+  // 스토리 목록 불러오기
+  useEffect(() => {
+    const ac = new AbortController();
+    const { signal } = ac;
+
+    setLoading(true);
+    fetch(`${API}/stories`, { signal })
+      .then((res) => res.json().catch(() => ({})))
+      .then((result) => {
+        if (signal.aborted) return;
+        setStories(parseList(result));
+      })
+      .catch(() => {
+        if (signal.aborted) return;
+        setStories([]);
+      })
+      .finally(() => {
+        if (signal.aborted) return;
+        setLoading(false);
+      });
+
+    return () => ac.abort();
+  }, [API]);
 
 
-	// 환경별 API base URL 적용
-	const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
-	// 스토리 목록 불러오기
-	useEffect(() => {
-		setLoading(true);
-		fetch(`${API_BASE_URL}/stories`)
-			.then(res => res.json())
-			.then(result => {
-				setStories(result.data);
-				setLoading(false);
-			})
-			.catch(() => setLoading(false));
-	}, [API_BASE_URL]);
-
-	// 출석 정보 불러오기
-	useEffect(() => {
-		fetch(`${API_BASE_URL}/users/attendance`)
-			.then(res => res.json())
-			.then(result => setAttendance(result.data?.days || 0))
-			.catch(() => setAttendance(0));
-	}, [API_BASE_URL]);
-
-	return (
-		<StoryContext.Provider value={{ stories, currentStory, setCurrentStory, attendance, loading }}>
-			{children}
-		</StoryContext.Provider>
-	);
+  return (
+    <StoryContext.Provider
+      value={{ stories, currentStory, setCurrentStory, loading }}
+    >
+      {children}
+    </StoryContext.Provider>
+  );
 };

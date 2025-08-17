@@ -34,7 +34,7 @@ box-sizing: border-box;
 }
 
 
-.mypage-container {
+.MyPage-container {
   position: relative;
   padding: 3rem 0 2rem 0;
   /* background-color: #e4cdff; */
@@ -43,7 +43,7 @@ box-sizing: border-box;
 }
 
 
-.mypage-header {
+.MyPage-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -73,7 +73,7 @@ box-sizing: border-box;
   margin-right: 5px;
 }
 
-.mypage-wrapper {
+.MyPage-wrapper {
   display: flex;
   flex-direction: row;
   width: 80vw;
@@ -227,7 +227,7 @@ b {
 }
 
 .read-header,
-.bookmarks-header {
+.BookMarks-header {
     display: flex;
     box-sizing: border-box;
     width: 100%;
@@ -238,7 +238,7 @@ b {
 }
 
 .read-title,
-.bookmarks-title {
+.BookMarks-title {
     color: #3a3a3aad;
     padding: 0;
     margin: 0;
@@ -330,12 +330,12 @@ hr { border-color: rgba(0, 0, 0, 0.2);}
   display: block;
 }
 
-.bookmark-list {
+.BookMark-list {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
 }
-.bookmark-item {
+.BookMark-item {
   flex: 0 0 calc((100% - 16px * 2) / 3.2);
   width: calc((100% - 16px * 2) / 3.2);
   flex-shrink: 0;
@@ -349,13 +349,13 @@ hr { border-color: rgba(0, 0, 0, 0.2);}
   flex-direction: column;
   align-items: center;
 }
-.bookmark-item:hover {
+.BookMark-item:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   background-color: #252323; /* 회색 바탕 추가 */
 }
 
-.bookmark-item img {
+.BookMark-item img {
   width: 100%;
   height: 140px;
   object-fit: cover;
@@ -363,7 +363,7 @@ hr { border-color: rgba(0, 0, 0, 0.2);}
   background: #fff;
 }
 
-.bookmark-item p {
+.BookMark-item p {
   padding: 12px 8px 16px 8px;
   font-size: 16px;
   font-weight: 500;
@@ -378,7 +378,7 @@ hr { border-color: rgba(0, 0, 0, 0.2);}
 }
 
 .read-header,
-.bookmarks-header { align-items: center; }
+.BookMarks-header { align-items: center; }
 .read-book hr,
 .books-marked hr { margin: 8px 0 16px; }
 .more-btn { font-size: 13px; color: #9aa0a6; }

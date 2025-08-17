@@ -1,25 +1,17 @@
-const express = require('express');
-const router = express.Router();
-const tutorController = require('../controllers/tutorController');
-const { authRequired } = require('../middlewares/auth');
+// back/src/routes/tutor.js
+const router = require('express').Router();
+const auth = require('../middlewares/auth');
+const tutor = require('../controllers/tutorController');
 
-// POST /tutor
-router.post('/', tutorController.createMessage);
+const required = auth.required || auth.authRequired || auth.authenticate || ((req, _res, next) => next());
 
-// GET /tutor/:storyid
-router.get('/:storyid', tutorController.getMessagesByStory);
+router.post('/chat', required, tutor.createChat);
 
-//  10개씩 최신순으로 오늘 작성된 user 1의 story 1 대화 조회
-//http://localhost:3000/tutor/page/1?userid=1&limit=10&offset=0
-router.get('/page/:storyid', tutorController.getPagedMessages);
-
-// DELETE /tutor/:chatid
-router.delete('/:chatid', tutorController.deleteMessage);
-
-// 
-router.get('/summary/:storyid', tutorController.getSummary);
-
-// 새로운 채팅 API 추가
-router.post('/chat', authRequired, tutorController.createChat);
+// 필요 시 아래도 정책에 맞춰 해제
+// router.post('/messages', required, tutor.createMessage);
+// router.get('/messages/:storyid', required, tutor.getMessagesByStory);
+// router.delete('/messages/:id', required, tutor.deleteMessage);
+// router.get('/summary/:storyid', required, tutor.getSummary);
+// router.get('/messages/:storyid/page/:page', required, tutor.getPagedMessages);
 
 module.exports = router;

@@ -1,31 +1,47 @@
-// src/models/index.js
-const { Sequelize } = require('sequelize');
-const env = process.env.NODE_ENV || 'development';
-const config = require('../config.js')[env];
+// back/src/models/index.js
+const { Sequelize, DataTypes } = require("sequelize");
+const env = process.env.NODE_ENV || "development";
+const config = require("../config.js")[env];
 
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
+const sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  config
+);
 
-const db = {};
-db.Sequelize = Sequelize; // Sequelize 클래스
-db.sequelize = sequelize; // Sequelize 연결 인스턴스 ← 반드시 있어야 app.js에서 sync 가능
+// 실제 파일명이 소문자라고 가정합니다.
+const User     = require("./user")(sequelize, DataTypes);
+const Story    = require("./story")(sequelize, DataTypes);
+const Note     = require("./note")(sequelize, DataTypes);
+const Language = require("./language")(sequelize, DataTypes);
+const Learn    = require("./learn")(sequelize, DataTypes);
 
-// 필요한 모델만 import
-db.User = require('./user')(sequelize, Sequelize.DataTypes);
-db.Story = require('./story')(sequelize, Sequelize.DataTypes);
-db.Note = require('./note')(sequelize, Sequelize.DataTypes);
-db.learn = require('./learn')(sequelize, Sequelize.DataTypes);
-db.storylearn = require('./learn')(sequelize, Sequelize.DataTypes); // storylearn 별칭 추가
-db.Language = require('./language')(sequelize, Sequelize.DataTypes);
-db.Tutor = require('./tutor')(sequelize, Sequelize.DataTypes);
+const db = {
+  Sequelize,
+  sequelize,
+  // 대문자 키(컨트롤러 호환)
+  User,
+  Story,
+  Note,
+  Language,
+  Learn,
+  // 소문자 별칭(안전장치)
+  user: User,
+  story: Story,
+  note: Note,
+  language: Language,
+  learn: Learn,
+};
 
-// 관계 설정
-db.User.hasMany(db.Note, { foreignKey: 'userid' })
-db.Note.belongsTo(db.User, { foreignKey: 'userid' });
+// 연관관계 (모든 FK 소문자 유지)
+db.User.hasMany(db.Note,   { foreignKey: "userid" });
+db.Note.belongsTo(db.User, { foreignKey: "userid" });
 
-db.Story.hasMany(db.Note, { foreignKey: 'storyid' });
-db.Note.belongsTo(db.Story, { foreignKey: 'storyid' });
+db.Story.hasMany(db.Note,   { foreignKey: "storyid" });
+db.Note.belongsTo(db.Story, { foreignKey: "storyid" });
 
-db.Story.hasMany(db.Language, { foreignKey: 'storyid' });
-db.Language.belongsTo(db.Story, { foreignKey: 'storyid' });
+db.Story.hasMany(db.Language,   { foreignKey: "storyid" });
+db.Language.belongsTo(db.Story, { foreignKey: "storyid" });
 
 module.exports = db;

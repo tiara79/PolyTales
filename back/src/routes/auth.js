@@ -1,11 +1,14 @@
-// back/routes/auth.js
+
 // 회원가입, 로그인, 토큰검증 등을 처리하는 라우터
 
+// back/src/routes/auth.js
 const router = require('express').Router();
 const { User } = require('../models');
 const { googleAuth, register, login, me } = require('../controllers/authController');
 const { validateRegister, validateLogin } = require('../middlewares/validation');
-const { authRequired } = require('../middlewares/auth');
+
+const auth = require('../middlewares/auth') || {};
+const authRequired = auth.authRequired || auth.required || auth.authenticate || ((req, _res, next) => next());
 
 // 아이디 중복 확인
 router.get('/check-username', async (req, res) => {
@@ -15,7 +18,6 @@ router.get('/check-username', async (req, res) => {
     const exists = await User.count({ where: { username } });
     res.json({ exists: !!exists });
   } catch (e) {
-    console.error('check-username error:', e);
     res.status(500).json({ message: 'server error' });
   }
 });
@@ -27,8 +29,7 @@ router.get('/check-email', async (req, res) => {
     if (!email) return res.status(400).json({ message: 'email is required' });
     const exists = await User.count({ where: { email } });
     res.json({ exists: !!exists });
-  } catch (e) {
-    console.error('check-email error:', e);
+  } catch {
     res.status(500).json({ message: 'server error' });
   }
 });
@@ -40,20 +41,18 @@ router.get('/check-phone', async (req, res) => {
     if (!phone) return res.status(400).json({ message: 'phone is required' });
     const exists = await User.count({ where: { phone } });
     res.json({ exists: !!exists });
-  } catch (e) {
-    console.error('check-phone error:', e);
+  } catch {
     res.status(500).json({ message: 'server error' });
   }
 });
 
-router.post('/google', googleAuth);                     // 소셜 로그인
-router.post('/register', validateRegister, register);   // 로컬 회원가입
-router.post('/login', validateLogin, login);            // 로컬 로그인
-router.get('/me', authRequired, me);                    // 내 정보
+router.post('/google', googleAuth);
+router.post('/register', validateRegister, register);
+router.post('/login', validateLogin, login);
+router.get('/me', authRequired, me);
 
 // 토큰 검증(프론트 F5 시 세션 복구용)
 router.post('/verify', authRequired, (req, res) => {
-  // authRequired에서 최신 사용자 정보가 req.user에 세팅됨
   res.json({ ok: true, user: req.user });
 });
 

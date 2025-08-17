@@ -1,54 +1,63 @@
+// back/src/middlewares/normalizeMedia.js
+// 간결 전역 미들웨어: 응답 객체 내 image/audio 경로를 pathFixers로 정규화
+// back/app.js
+// -----------------------------------------------------------------------------
+// 서버 부트스트랩
+// - 정적 폴더(/img, /audio, /caption) 서빙
+// - CORS 허용(프론트 3001)
+// - 응답 경로 정규화 미들웨어(normalizeMedia) 전역 적용
+// - 라우터 연결(프로젝트에 이미 있는 라우터 사용)
+// -----------------------------------------------------------------------------
 require('dotenv').config();
 const express = require('express');
-const cors = require("cors");
+const cors = require('cors');
 const path = require('path');
 const { sequelize } = require('./src/models');
 
-// 라우터
 const authRoutes = require('./src/routes/auth');
-const userRouter = require('./src/routes/users');
-const notesRouter = require("./src/routes/notes");
-const storiesRouter = require("./src/routes/story");
-const learnRouter = require('./src/routes/learn');
-const languageRouter = require('./src/routes/language');
-const verificationRouter = require('./src/routes/verification');
-// const uploadRouter = require('./src/routes/upload'); // 파일이 없으면 주석 처리
+const userRoutes = require('./src/routes/users');
+const notesRoutes = require('./src/routes/notes');
+const storyRoutes = require('./src/routes/story');
+const learnRoutes = require('./src/routes/learn');
+const languageRoutes = require('./src/routes/language');
+const verificationRoutes = require('./src/routes/verification');
+const tutorRoutes = require('./src/routes/tutor');
 
 const app = express();
 
-// CORS
 app.use(cors({
-  origin: ['http://localhost:3001'],
+  // origin: ['https://polytales.azurewebsites.net'],
+  origin: true,
   credentials: true,
   exposedHeaders: ['Authorization'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  methods: ['GET','POST','PUT','DELETE','OPTIONS','PATCH'],
+  allowedHeaders: ['Content-Type','Authorization','X-Requested-With']
 }));
 
-// Body parser
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// 정적 파일 (프론트 public 경로 기준)
+// 정적 폴더: front/public 기준
 app.use('/audio', express.static(path.join(__dirname, '../front/public/audio')));
 app.use('/img', express.static(path.join(__dirname, '../front/public/img')));
-app.use('/img/contents', express.static(path.join(__dirname, '../front/public/img/contents')));
-app.use('/img/uploads', express.static(path.join(__dirname, '../front/public/img/uploads')));
 app.use('/caption', express.static(path.join(__dirname, '../front/public/caption')));
 
-// 라우터 연결
-app.use('/auth', authRoutes);
-app.use('/users', userRouter);
-app.use("/notes", notesRouter);
-app.use("/stories", storiesRouter);
-app.use('/learn', learnRouter);
-app.use('/language', languageRouter);
-// app.use('/uploads', uploadRouter); // 프로필 업로드
-app.use('/verification', verificationRouter);
+// 응답 경로 정규화(이미지/오디오) — 전역 미들웨어
+app.use(require('./src/middlewares/normalizeMedia'));
 
-// 404
+// 라우터
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/notes', notesRoutes);
+app.use('/stories', storyRoutes);
+app.use('/learn', learnRoutes);
+app.use('/language', languageRoutes);
+app.use('/verification', verificationRoutes);
+app.use('/tutor', tutorRoutes);
+
+// 404 핸들러
 app.use((req, res) => {
-  res.status(404).json({ status: "Fail", message: "요청한 리소스를 찾을 수 없습니다." });
+  res.status(404).json({ status: 'Fail', message: '요청한 리소스를 찾을 수 없습니다.' });
 });
 
 // 서버 시작
@@ -57,9 +66,9 @@ const PORT = process.env.PORT || 3000;
   try {
     await sequelize.authenticate();
     console.log(`Connected DB: ${sequelize.config.database}`);
-    app.listen(PORT, () => console.log(` 서버가 http://localhost:${PORT} 에서 실행 중입니다.`));
+    app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
   } catch (err) {
-    console.error(" 서버 시작 실패:", err);
+    console.error('서버 시작 실패:', err);
     process.exit(1);
   }
 })();

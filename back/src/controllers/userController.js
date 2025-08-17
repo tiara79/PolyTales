@@ -1,10 +1,8 @@
 // src/controllers/userController.js
 
-// src/controllers/userController.js
-
 const { User } = require('../models');
 const bcrypt = require('bcryptjs');
-const { toImgUrl } = require('../utils/pathFixers');
+const { toImgUrl } = require('../util/pathFixers');
 
 // 전체 조회
 const getUsers = async (req, res) => {
