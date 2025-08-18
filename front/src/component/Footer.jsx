@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 import "../style/Footer.css";
 
@@ -23,8 +23,7 @@ export default function Footer() {
         </span>
       </div>
       <div className="footer-right">
-        {console.log("user.role:", user?.role)}
-        {true ? (
+        {user?.role === 'admin' ? (
           <img  
             src="/img/footer/admin.png" 
             alt="Admin" 

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { AuthContext } from "../context/AuthContext";
 
-import axios from "../api/axios";
+import axios, { API_URL } from "../api/axios";
 import "../style/Login.css";
 import JoinModal from "./JoinModal";
 import SignupForm from "./SignupForm";
@@ -12,6 +12,11 @@ export default function Login() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // 디버그: API URL 확인
+  useEffect(() => {
+    console.log("Current API_URL:", API_URL);
+  }, []);
 
   // 카카오 로그인
   const KAKAO_JS_KEY = process.env.REACT_APP_KAKAO_JS_KEY;
