@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>네이버 로그인 콜백</title>
+</head>
+<body>
+    <script>
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const error = urlParams.get('error');
+            
+            if (error) {
+                window.opener.postMessage({
+                    type: 'OAUTH_ERROR',
+                    error: error
+                }, window.location.origin);
+            } else if (code && state) {
+                window.opener.postMessage({
+                    type: 'NAVER_CODE',
+                    code: code,
+                    state: state
+                }, window.location.origin);
+            }
+            
+            window.close();
+        } catch (e) {
+            console.error('네이버 콜백 처리 중 오류:', e);
+            window.close();
+        }
+    </script>
+</body>
+</html>

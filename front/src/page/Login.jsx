@@ -5,12 +5,16 @@ import axios, { API_URL } from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import "../style/Login.css";
 import JoinModal from "./JoinModal";
-import SignUpForm from "./SignupForm";
+import SignUpForm from "./SignUpForm";
 
 export default function Login() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // 상태 관리
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   // 디버그: API URL 확인
   useEffect(() => {
@@ -54,48 +58,88 @@ export default function Login() {
 
   const handleKakaoLogin = () => {
     if (!window.Kakao) {
-      toast.error("카카오 SDK 로드 실패");
+      setError("카카오 SDK 로드 실패");
       console.error("[KAKAO DEBUG] window.Kakao is undefined");
       return;
     }
+    
+    setLoading(true);
+    setError('');
+    
     console.log("[KAKAO DEBUG] Kakao SDK version:", window.Kakao.VERSION);
     window.Kakao.Auth.login({
       scope: "profile_nickname,profile_image",
-      success: function (authObj) {
-        console.log("[KAKAO DEBUG] Auth success", authObj);
-        const access_token = authObj.access_token;
-        axios
-          .post(
+      success: async function (authObj) {
+        try {
+          console.log("[KAKAO DEBUG] Auth success", authObj);
+          const access_token = authObj.access_token;
+          
+          const res = await axios.post(
             "/auth/kakao",
             { access_token },
             { headers: { Authorization: undefined } }
-          )
-          .then((res) => {
-            console.log("[KAKAO DEBUG] Backend /auth/kakao response", res);
-            if (res.data && res.data.token) {
-              login(res.data.user, res.data.token);
-              navigate("/");
-            } else {
-              toast.error("카카오 로그인 실패");
-            }
-          })
-          .catch((e) => {
-            console.error("[KAKAO DEBUG] Backend /auth/kakao error", e);
-            toast.error(
-              "카카오 로그인 실패: " + (e.response?.data?.message || e.message)
-            );
-          });
+          );
+          
+          console.log("[KAKAO DEBUG] Backend /auth/kakao response", res);
+          if (res.data && res.data.token) {
+            await login(res.data.user, res.data.token);
+            navigate("/");
+          } else {
+            setError("카카오 로그인 실패");
+          }
+        } catch (e) {
+          console.error("[KAKAO DEBUG] Backend /auth/kakao error", e);
+          setError(
+            "카카오 로그인 실패: " + (e.response?.data?.message || e.message)
+          );
+        } finally {
+          setLoading(false);
+        }
       },
       fail: function (err) {
         console.error("[KAKAO DEBUG] Auth fail", err);
-        toast.error("카카오 인증 실패: " + JSON.stringify(err));
+        setError("카카오 인증 실패: " + JSON.stringify(err));
+        setLoading(false);
       },
     });
+  };
+
+  // 네이버 콜백 처리 함수
+  const handleNaverCallback = async (code, state) => {
+    try {
+      const response = await axios.post('/auth/naver', { code, state });
+      
+      if (response.data.token) {
+        login(response.data.user, response.data.token);
+        toast.success("네이버 로그인 성공!");
+        navigate("/");
+      } else {
+        toast.error("네이버 로그인 실패");
+      }
+    } catch (error) {
+      console.error("네이버 로그인 에러:", error);
+      toast.error("네이버 로그인 중 오류가 발생했습니다.");
+    }
   };
 
   // 네이버 인증 성공 시 자동 로그인 (중복 토스트 방지)
   useEffect(() => {
     let handled = false;
+    
+    // 팝업에서 온 메시지 처리
+    const handleMessage = (event) => {
+      if (event.origin !== window.location.origin) return;
+      
+      if (event.data.type === 'NAVER_CODE') {
+        handleNaverCallback(event.data.code, event.data.state);
+      } else if (event.data.type === 'OAUTH_ERROR') {
+        console.error('OAuth error from popup:', event.data.error);
+        toast.error('로그인 중 오류가 발생했습니다.');
+      }
+    };
+    
+    window.addEventListener('message', handleMessage);
+    
     const params = new URLSearchParams(location.search);
     if (params.get("naver") === "success" && !handled) {
       handled = true;
@@ -133,6 +177,11 @@ export default function Login() {
       setModalOpen(true);
       window.history.replaceState({}, document.title, "/login");
     }
+    
+    // 이벤트 리스너 정리
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
     // eslint-disable-next-line
   }, [location.search, login, navigate]);
 
@@ -302,7 +351,61 @@ const handleCredentialResponse = useCallback(async (response) => {
     const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&redirect_uri=${encodeURIComponent(
       NAVER_REDIRECT_URI
     )}&state=${state}`;
-    window.location.href = url;
+    
+    // 팝업 창 열기 - 크기 최적화
+    const popup = window.open(
+      url,
+      'NaverLogin',
+      'width=500,height=700,scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no'
+    );
+    
+    // 메시지 핸들러 등록
+    const messageHandler = async (event) => {
+      if (event.origin !== window.location.origin) return;
+
+      if (event.data.type === 'NAVER_CODE') {
+        try {
+          setLoading(true);
+          setError('');
+
+          const response = await axios.post('/auth/naver/callback', {
+            code: event.data.code,
+            state: event.data.state
+          });
+
+          if (response.data.token) {
+            await login(response.data.token, response.data.user);
+            navigate('/');
+          } else {
+            setError('로그인에 실패했습니다.');
+          }
+        } catch (error) {
+          console.error('네이버 로그인 오류:', error);
+          setError(error.response?.data?.message || '네이버 로그인에 실패했습니다.');
+        } finally {
+          setLoading(false);
+          window.removeEventListener('message', messageHandler);
+          if (popup && !popup.closed) popup.close();
+        }
+      } else if (event.data.type === 'OAUTH_ERROR') {
+        setError('네이버 로그인이 취소되었습니다.');
+        setLoading(false);
+        window.removeEventListener('message', messageHandler);
+        if (popup && !popup.closed) popup.close();
+      }
+    };
+
+    window.addEventListener('message', messageHandler);
+    
+    // 팝업 창 닫힘 감지 - 메모리 누수 방지
+    const checkClosed = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(checkClosed);
+        setLoading(false);
+        window.removeEventListener('message', messageHandler);
+        console.log('네이버 로그인 팝업이 닫혔습니다.');
+      }
+    }, 1000);
   }
 
   return (
@@ -343,7 +446,10 @@ const handleCredentialResponse = useCallback(async (response) => {
               </div>
             </div>
           </div>
-          <button type="submit">로그인</button>
+          {error && <div className="errMsg" style={{ marginTop: '10px', textAlign: 'center' }}>{error}</div>}
+          <button type="submit" disabled={loading}>
+            {loading ? '로그인 중...' : '로그인'}
+          </button>
         </form>
         <div className="signup-section">
           <p className="signup-text">계정이 없으신가요? 지금 가입해보세요</p>

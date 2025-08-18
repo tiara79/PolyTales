@@ -25,7 +25,8 @@ import Report from "./page/Report";
 import DetailRouter from "./route/DetailRouter";
 import MainRouter from "./route/MainRouter";
 import NoRouter from "./route/NoRouter";
-import SignUpForm from "./page/SignUpForm";
+import SignUpForm from "./page/SignupForm";
+import NaverCallback from "./page/NaverCallback";
 
 export default function App() {
   return (
