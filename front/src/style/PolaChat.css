@@ -1,7 +1,7 @@
 /* 튜터 채팅 컨테이너 */
 .div8 {
   grid-area: 2 / 10 / 5 / 13;
-  background: white;
+  background: rgba(249, 249, 249, 0.5);
   margin: 10px 20px 0 0;
   border-radius: 12px;
   display: flex;
@@ -13,52 +13,6 @@
   border: #33333313 2px solid;
   /* margin-bottom: 10px; */
   height: 97.4%;
-}
-
-/* 채팅 헤더 */
-.chat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid #e0e0e0;
-  margin-bottom: 0.5rem;
-}
-
-.chat-notice {
-  font-size: 0.75rem;
-  color: #888;
-}
-
-.note-transfer-btn {
-  background-color: #67b98a;
-  color: white;
-  border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.note-transfer-btn:hover {
-  background-color: #5aa378;
-}
-
-.note-transfer-btn:disabled,
-.note-transfer-btn.disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.note-transfer-btn:disabled:hover,
-.note-transfer-btn.disabled:hover {
-  background-color: #cccccc;
-}
-
-.pola-section {
-  padding: 0 0.5rem;
 }
 
 .tutor-lang-select {
@@ -131,7 +85,7 @@
   padding: 0.8rem 1.2rem;
   font-size: 0.9rem;
   line-height: 1;
-  word-wrap: break-word;
+  voca-wrap: break-voca;
   position: relative;
   margin-bottom: 10px;
 }

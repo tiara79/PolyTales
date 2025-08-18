@@ -23,7 +23,7 @@ export default function Footer() {
         </span>
       </div>
       <div className="footer-right">
-        {user?.role === 'admin' ? (
+        {user?.role === 1 ? (
           <img  
             src="/img/footer/admin.png" 
             alt="Admin" 

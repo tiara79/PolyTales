@@ -45,15 +45,25 @@ app.use('/caption', express.static(path.join(__dirname, '../front/public/caption
 // 응답 경로 정규화(이미지/오디오) — 전역 미들웨어
 app.use(require('./src/middlewares/normalizeMedia'));
 
-// 라우터
-app.use('/auth', authRoutes);
-app.use('/users', userRoutes);
-app.use('/notes', notesRoutes);
-app.use('/stories', storyRoutes);
-app.use('/learn', learnRoutes);
-app.use('/language', languageRoutes);
-app.use('/verification', verificationRoutes);
-app.use('/tutor', tutorRoutes);
+// 라우터 - /api prefix 추가
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/notes', notesRoutes);
+app.use('/api/stories', storyRoutes);
+app.use('/api/learn', learnRoutes);
+app.use('/api/language', languageRoutes);
+app.use('/api/verification', verificationRoutes);
+app.use('/api/tutor', tutorRoutes);
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', message: 'Server is running' });
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ status: 'OK', message: 'PolyTales Backend API', version: '1.0.0' });
+});
 
 // 404 핸들러
 app.use((req, res) => {

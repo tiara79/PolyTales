@@ -3,7 +3,7 @@
   grid-area: 3 / 7 / 9 / 10;
   background-color: #fefef8;
   margin: 10px 20px 0 20px;
-  border-radius: 10px 10px 0 0; /* 상단 왼쪽/오른쪽만 border-radius */
+  border-radius: 10px;
   border: #b7df9f 2px solid;
 }
 
@@ -11,6 +11,7 @@
 .note-box {
   display: flex;
   flex-direction: column;
+  gap: 0.6rem;
   background-color: #fefef8;
   border: 1px solid #cce5cc;
   border-radius: 1px;
@@ -35,33 +36,28 @@
   border-radius: 0px 0px 0 0;
   box-sizing: border-box;
   margin: -2rem -1rem 1rem -1rem;
+  /* border-bottom: 1px solid #76b187; */
 }
 
 /* Title Area */
 .note-title {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.4rem;
   background-color: #fefef8;
-  margin-bottom: 1rem;
 }
 
 /* Title Label Styling */
-.note-title label {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
+.underline-note {
   font-size: 1rem;
   color: #333;
+  margin-bottom: -2rem;
   background-color: #fefef8;
 }
 
 /* Input Field for Title */
 .note-input {
-  flex: 1;
+  width: 80%;
   font-size: 1rem;
   border: none;
   border-bottom: 1px solid #ccc;
@@ -71,6 +67,9 @@
   font-family: "Noto Sans KR", sans-serif;
   font-weight: bold;
   color: #333;
+  margin-left: 60px;
+  position: relative;
+  z-index: 2;
   cursor: text;
 }
 
@@ -83,8 +82,8 @@
 
 /* Textarea for Note Content */
 .note-content {
-  flex: 1;
   width: 100%;
+  height: 100%;
   resize: none;
   font-size: 0.9rem;
   border: none;
@@ -94,7 +93,7 @@
   opacity: 1;
   outline: none;
   padding: 0.5rem;
-  overflow-y: auto;
+  overflow-y: auto; /* 필요할 때만 스크롤바 표시 */
   font-family: "Noto Sans KR", sans-serif;
   color: #444;
   box-sizing: border-box;
