@@ -7,8 +7,8 @@ import { StoryContext } from "../context/StoryContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import "../style/StoryLearn.css";
-// import "../style/Learn.css";
+// import "../style/StoryLearn.css";
+import "../style/Learn.css";
 import "../style/Note.css";
 import "../style/PolaChat.css";
 
