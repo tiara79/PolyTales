@@ -31,7 +31,7 @@ export default function Home() {
       try {
         const L = String(level || "A1").toUpperCase();
         // const res = await api.get(`/stories/level/${L}`, { headers });
-        let list = Array.isArray(res.data?.data) ? res.data.data : (Array.isArray(res.data) ? res.data : []);
+        // let list = Array.isArray(res.data?.data) ? res.data.data : (Array.isArray(res.data) ? res.data : []);
 
         if (!list || list.length === 0) {
           setStories([FALLBACK_CARD]);
