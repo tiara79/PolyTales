@@ -5,7 +5,7 @@ import axios, { API_URL } from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import "../style/Login.css";
 import JoinModal from "./JoinModal";
-import SignupForm from "./SignupForm";
+import SignUpForm from "../SignUpForm.jsx";
 
 export default function Login() {
   const { login } = useContext(AuthContext);
@@ -244,12 +244,12 @@ export default function Login() {
         password,
       });
 
-      console.log("✅ 로그인 성공:", response.data);
+      console.log(" 로그인 성공:", response.data);
       login(response.data.user, response.data.token);
       toast.success("로그인이 완료되었습니다!");
       navigate("/");
     } catch (error) {
-      console.error("❌ 로그인 실패:", {
+      console.error(" 로그인 실패:", {
         status: error.response?.status,
         statusText: error.response?.statusText,
         data: error.response?.data,
