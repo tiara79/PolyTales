@@ -121,7 +121,13 @@ function Learn() {
   };
 
   const currentPage = pages[pageNum - 1] || {};
-  const image = currentPage?.imagepath || "/img/home/no_image.png";
+  // 여러 필드에서 이미지 경로 우선적으로 선택
+  const image =
+    currentPage?.image ||
+    currentPage?.imagepath ||
+    currentPage?.storycoverpath ||
+    currentPage?.thumbnail_url ||
+    "/img/home/no_image.png";
   const audio = currentPage?.audio;
   const caption = currentPage?.caption || ""; // 자막 항상 표시
 
@@ -135,7 +141,12 @@ function Learn() {
 
       <div className="div3">
         <div className="story-image-container">
-          <img className="story-img" src={image} alt={`page-${pageNum}`} />
+          <img
+            className="story-img"
+            src={image}
+            alt={`page-${pageNum}`}
+            onError={e => { e.currentTarget.src = "/img/home/no_image.png"; }}
+          />
           {/* 페이지 진행률 프로그래스바 */}
           <input
             type="range"
@@ -174,10 +185,23 @@ function Learn() {
       </div>
 
       <div className="div6 lang-select">
-        {["ko", "fr", "ja", "en", "es", "de"].map((code) => (
+        {[
+          { code: "ko", label: "한국어" },
+          { code: "fr", label: "프랑스어" },
+          { code: "ja", label: "일본어" },
+          { code: "en", label: "영어" },
+          { code: "es", label: "스페인어" },
+          { code: "de", label: "독일어" },
+        ].map(({ code, label }) => (
           <label key={code}>
-            <input type="radio" name="option" value={code} checked={lang === code} onChange={() => setLang(code)} />
-            {code}
+            <input
+              type="radio"
+              name="option"
+              value={code}
+              checked={lang === code}
+              onChange={() => setLang(code)}
+            />
+            {label}
           </label>
         ))}
       </div>

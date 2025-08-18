@@ -77,24 +77,24 @@ export default function Home() {
       {!loading && stories.length === 0 && <div className="empty">해당 레벨의 스토리가 없습니다.</div>}
 
       <div className="image-grid">
-        {stories.map((s) => {
-          // locked 처리 제거
-          return (
-            <div
-              key={`${s.storyid}-${s.langlevel}-${s.storytitle}`}
-              className="image-card-container"
-              onClick={() => onClickStory(s)}
-              style={{ cursor: "pointer" }}
-            >
-              <img
-                className="image-card"
-                src={s.storycoverpath || "/img/home/no_image.png"}
-                alt={s.storytitle || "Story"}
-              />
-              <div className="image-title">{s.storytitle}</div>
-            </div>
-          );
-        })}
+        {stories.map((s) => (
+          <div
+            key={s.storyid}
+            className="image-box"
+            onClick={() => navigate(`/detail?storyid=${s.storyid}&level=${selected}`)}
+            style={{ cursor: "pointer" }}
+          >
+            <img
+              className="story-image"
+              src={s.storycoverpath || "/img/home/no_image.png"}
+              alt={s.storytitle || "Story"}
+              onError={(e) => {
+                e.currentTarget.src = "/img/home/no_image.png";
+              }}
+            />
+            <div className="image-title">{s.storytitle}</div>
+          </div>
+        ))}
       </div>
     </section>
   );
