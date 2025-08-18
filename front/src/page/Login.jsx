@@ -1,11 +1,11 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
-import { AuthContext } from "../context/AuthContext";
-import SignUpForm from "./SignUpForm";
 import axios, { API_URL } from "../api/axios";
+import { AuthContext } from "../context/AuthContext";
 import "../style/Login.css";
 import JoinModal from "./JoinModal";
+import SignUpForm from "./SignupForm";
 
 export default function Login() {
   const { login } = useContext(AuthContext);
@@ -259,16 +259,37 @@ const handleCredentialResponse = useCallback(async (response) => {
   // Google Sign-In 초기화
   useEffect(() => {
     window.handleCredentialResponse = handleCredentialResponse;
+    
+    const initializeGoogleSignIn = () => {
+      if (window.google) {
+        try {
+          window.google.accounts.id.initialize({
+            client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID || "1091328318644-87kerghdtm0kibacghdtiejadv36hqqe.apps.googleusercontent.com",
+            callback: handleCredentialResponse,
+          });
+          
+          const googleDiv = document.getElementById("googleSignInDiv");
+          if (googleDiv) {
+            window.google.accounts.id.renderButton(googleDiv, {
+              type: "icon",
+              theme: "outline", 
+              shape: "circle",
+              size: "large"
+            });
+          }
+        } catch (error) {
+          console.error("Google Sign-In 초기화 실패:", error);
+        }
+      }
+    };
+
+    // Google SDK가 이미 로드되었다면 즉시 초기화
     if (window.google) {
-      window.google.accounts.id.initialize({
-        client_id:
-          "985549267807-mu62klcok2e4q3su4qbfqklmb0n5b990.apps.googleusercontent.com",
-        callback: handleCredentialResponse,
-      });
-      window.google.accounts.id.renderButton(
-        document.getElementById("googleSignInDiv"),
-        { type: "icon", theme: "outline", shape: "circle", size: "large" }
-      );
+      initializeGoogleSignIn();
+    } else {
+      // 아니면 조금 기다렸다가 다시 시도
+      const timer = setTimeout(initializeGoogleSignIn, 1000);
+      return () => clearTimeout(timer);
     }
   }, [handleCredentialResponse]);
 
@@ -351,7 +372,7 @@ const handleCredentialResponse = useCallback(async (response) => {
         )}
         <div
           id="g_id_onload"
-          data-client_id="985549267807-mu62klcok2e4q3su4qbfqklmb0n5b990.apps.googleusercontent.com"
+          data-client_id="1091328318644-87kerghdtm0kibacghdtiejadv36hqqe.apps.googleusercontent.com"
           data-context="signin"
           data-ux_mode="popup"
           data-callback="handleCredentialResponse"
