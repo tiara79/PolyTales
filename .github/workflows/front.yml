@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd ${{ env.APP_LOCATION }}
-          npm ci
+          npm install
 
       - name: Build frontend
         run: |
