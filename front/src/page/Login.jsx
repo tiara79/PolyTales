@@ -1,11 +1,11 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
-import { AuthContext } from "../context/AuthContext";
-import SignUpForm from "./SignupForm";
 import axios, { API_URL } from "../api/axios";
+import { AuthContext } from "../context/AuthContext";
 import "../style/Login.css";
 import JoinModal from "./JoinModal";
+import SignUpForm from "./SignUpForm";
 
 export default function Login() {
   const { login } = useContext(AuthContext);
@@ -226,7 +226,7 @@ const handleCredentialResponse = useCallback(async (response) => {
       if (window.google) {
         try {
           window.google.accounts.id.initialize({
-            client_id: "985549267807-mu62klcok2e4q3su4qbfqklmb0n5b990.apps.googleusercontent.com",
+            client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
             callback: handleCredentialResponse,
           });
           
@@ -334,7 +334,7 @@ const handleCredentialResponse = useCallback(async (response) => {
         )}
         <div
           id="g_id_onload"
-          data-client_id="985549267807-mu62klcok2e4q3su4qbfqklmb0n5b990.apps.googleusercontent.com"
+          data-client_id={process.env.REACT_APP_GOOGLE_CLIENT_ID}
           data-context="signin"
           data-ux_mode="popup"
           data-callback="handleCredentialResponse"

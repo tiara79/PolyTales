@@ -1,5 +1,6 @@
 // src/context/StoryContext.jsx
 import { createContext, useEffect, useState } from "react";
+import axios from "../api/axios";
 
 export const StoryContext = createContext({
   stories: [],
@@ -13,8 +14,6 @@ export const StoryProvider = ({ children }) => {
   const [currentStory, setCurrentStory] = useState(null); // 현재 선택된 스토리
   const [loading, setLoading] = useState(false);
 
-  const API = process.env.REACT_APP_API_URL;
-
   // 안전한 응답 파싱 유틸
   const parseList = (payload) => {
     if (Array.isArray(payload)) return payload;
@@ -25,27 +24,21 @@ export const StoryProvider = ({ children }) => {
 
   // 스토리 목록 불러오기
   useEffect(() => {
-    const ac = new AbortController();
-    const { signal } = ac;
-
-    setLoading(true);
-    fetch(`${API}/stories`, { signal })
-      .then((res) => res.json().catch(() => ({})))
-      .then((result) => {
-        if (signal.aborted) return;
-        setStories(parseList(result));
-      })
-      .catch(() => {
-        if (signal.aborted) return;
+    const fetchStories = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get('/stories');
+        setStories(parseList(response.data));
+      } catch (error) {
+        console.error('Stories fetch error:', error);
         setStories([]);
-      })
-      .finally(() => {
-        if (signal.aborted) return;
+      } finally {
         setLoading(false);
-      });
+      }
+    };
 
-    return () => ac.abort();
-  }, [API]);
+    fetchStories();
+  }, []);
 
 
 
