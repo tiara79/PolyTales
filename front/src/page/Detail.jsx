@@ -1,5 +1,5 @@
 // src/page/Detail.jsx
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/axios";
 
@@ -28,13 +28,37 @@ const dedupe = (arr) => {
 function FallbackImage({ candidates, alt }) {
   const [idx, setIdx] = useState(0);
   const src = candidates[idx] || "/img/home/no_image.png";
+
+  const handleImageError = useCallback(() => {
+    const nextIdx = idx + 1;
+    // DEBUG: 이미지 로딩 실패
+    console.warn("[Detail FallbackImage] 이미지 로딩 실패:", {
+      failedSrc: src,
+      currentIndex: idx,
+      nextIndex: nextIdx,
+      hasNextCandidate: nextIdx < candidates.length,
+      remainingCandidates: candidates.slice(nextIdx)
+    });
+    if (nextIdx < candidates.length) {
+      setIdx(nextIdx);
+    }
+  }, [idx, candidates, src]);
+
+  const handleImageLoad = useCallback(() => {
+    // DEBUG: 이미지 로딩 성공
+    console.log("[Detail FallbackImage] 이미지 로딩 성공:", {
+      successSrc: src,
+      index: idx,
+      triedCandidates: candidates.slice(0, idx + 1)
+    });
+  }, [src, idx, candidates]);
+
   return (
     <img
       src={src}
       alt={alt}
-      onError={() => {
-        if (idx < candidates.length - 1) setIdx(idx + 1);
-      }}
+      onError={handleImageError}
+      onLoad={handleImageLoad}
     />
   );
 }
@@ -67,9 +91,32 @@ export default function Detail() {
     const level = String(searchParams.get("level") || "A1").toUpperCase();
     (async () => {
       try {
-        const res = await api.get(`${process.env.REACT_APP_API_URL}/stories/${level}/detail/${storyid}`);
+        // DEBUG: Detail API 호출 정보
+        console.log("[Detail.jsx] API 호출 시작:", {
+          storyid,
+          level,
+          endpoint: `/stories/${level}/detail/${storyid}`,
+          fullURL: `${api.defaults.baseURL}/stories/${level}/detail/${storyid}`
+        });
+        const res = await api.get(`/stories/${level}/detail/${storyid}`);
+        // DEBUG: Detail API 응답
+        console.log("[Detail.jsx] API 응답:", {
+          status: res.status,
+          data: res.data?.data,
+          rawResponse: res.data
+        });
         setStory(res.data?.data || null);
-      } catch {
+      } catch (error) {
+        // DEBUG: Detail API 에러
+        console.error("[Detail.jsx] API 호출 실패:", {
+          error: error.message,
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          responseData: error.response?.data,
+          requestURL: error.config?.url,
+          requestMethod: error.config?.method,
+          requestBaseURL: error.config?.baseURL
+        });
         setStory(null);
       }
     })();
