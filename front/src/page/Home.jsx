@@ -32,13 +32,13 @@ const buildSrcCandidates = (s) => {
 
   const rawPaths = [s?.thumbnail_url, s?.storycoverpath, s?.storycover_path, s?.thumbnail].filter(Boolean);
 
-  // 1) 로컬 정적 경로 후보(파일명 기준) — 최우선
+  // 1) 로컬 정적 경로 호분(파일명 기준) — 최우선
   const rawNames = rawPaths.map(baseName).filter(Boolean);
   localFirst.push(...rawNames.map((n) => `/img/contents/${n}`));
   localFirst.push(...rawNames.map((n) => `/img/detail/${n}`));
   localFirst.push(...rawNames.flatMap((n) => wrapToLocal(n, s?.langlevel)));
 
-  // 2) 원래 들어온 경로들 (절대/상대 섞임)
+  // 2) 원래 들어온 경로들 (절보/사본 섞임)
   later.push(...rawPaths);
 
   // 중복 제거 및 정규화
@@ -58,7 +58,6 @@ const buildSrcCandidates = (s) => {
 function FallbackImage({ story, alt }) {
   const candidates = useMem(() => {
     const result = buildSrcCandidates(story);
-    // console.log("[FallbackImage] 후보:", result);
     return result;
   }, [story]);
 
@@ -106,23 +105,18 @@ export default function Home() {
       setLoading(true);
       try {
         const L = String(level || "A1").toUpperCase();
-
-        // 레벨별 호출
         const res = await api.get(`/stories/level/${L}`, { headers });
         let list = Array.isArray(res.data?.data) ? res.data.data : (Array.isArray(res.data) ? res.data : []);
-
-        // 조건 맞지 않거나 빈 결과면 => 전체 리스트로 대체
         if (!Array.isArray(list) || list.length === 0) {
           list = await fetchAllStories();
         }
         setStories(list);
       } catch (error) {
-        // 실패해도 전체 리스트로 대체
         try {
           const list = await fetchAllStories();
           setStories(list);
         } catch {
-          setStories([]); // 최후 안전
+          setStories([]);
         }
       } finally {
         setLoading(false);
