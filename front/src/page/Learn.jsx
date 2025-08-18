@@ -35,7 +35,6 @@ function Learn() {
   const storyid = searchParams.get("storyid") || 1;
   const currentStory = stories.find((s) => s.storyid === Number(storyid));
   const currentLangLevel = currentStory?.langlevel || "A1";
-  // 
 
   const handleCloseClick = () => navigate("/");
   const handleReadFromStart = () => setPageNum(1);
@@ -43,7 +42,7 @@ function Learn() {
   const goNext = () => setPageNum((p) => Math.min(p + 1, pages.length));
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/learn/${storyid}?lang=${lang}`)
+    fetch(`${process.env.REACT_APP_API_URL}/learn/${storyid}?lang=${currentLangLevel}`)
     // fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/learn/${storyid}?lang=${lang}`)
       .then((res) => res.json())
       .then((result) => {
