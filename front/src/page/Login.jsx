@@ -5,7 +5,7 @@ import axios, { API_URL } from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import "../style/Login.css";
 import JoinModal from "./JoinModal";
-import SignUpForm from "./SignUpForm";
+// import SignUpForm from "./SignUpForm";
 
 export default function Login() {
   const { login } = useContext(AuthContext);
