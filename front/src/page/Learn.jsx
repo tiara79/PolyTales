@@ -22,7 +22,7 @@ function Learn() {
 
   const [pages, setPages] = useState([]);
   const [pageNum, setPageNum] = useState(1);
-  const [caption, setCaption] = useState("");
+  // const [caption, setCaption] = useState("");
   const [lang, setLang] = useState("ko");
 
   const [languageData, setLanguageData] = useState([]);
