@@ -10,8 +10,8 @@ const LEVEL_LABELS = { A1: "초급", A2: "초중급", B1: "중급", B2: "중고�
 
 const FALLBACK_CARD = {
   storyid: 1,
-  storytitle: "Red Riding Hood",
-  storycoverpath: "/style/img/contents/red_riding_hood.jpg",
+  storytitle: "Lily's happy day",
+  storycoverpath: "/style/img/contents/lilys_happy_day.png",
   langlevel: "A1",
   can_access: true
 };
@@ -25,15 +25,6 @@ export default function Home() {
 
   const headers = useMemo(() => (token ? { Authorization: `Bearer ${token}` } : undefined), [token]);
 
-  const fetchAllStories = useCallback(async () => {
-    try {
-      const all = await api.get(`/stories`, { headers });
-      return Array.isArray(all.data?.data) ? all.data.data : (Array.isArray(all.data) ? all.data : []);
-    } catch {
-      return []; // 실패 시 [] 반환
-    }
-  }, [headers]);
-
   const fetchStories = useCallback(
     async (level) => {
       setLoading(true);
@@ -43,22 +34,18 @@ export default function Home() {
         let list = Array.isArray(res.data?.data) ? res.data.data : (Array.isArray(res.data) ? res.data : []);
 
         if (!list || list.length === 0) {
-          list = await fetchAllStories();
-        }
-
-        if (!list || list.length === 0) {
           setStories([FALLBACK_CARD]);
         } else {
           setStories(list);
         }
       } catch {
-        // 에러 발생 시 기본 카드 출력
+        // 실패 시 fallback 카드만 표시
         setStories([FALLBACK_CARD]);
       } finally {
         setLoading(false);
       }
     },
-    [headers, fetchAllStories]
+    [headers]
   );
 
   useEffect(() => {
