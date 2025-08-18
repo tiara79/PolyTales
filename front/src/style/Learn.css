@@ -69,39 +69,58 @@ body {
 .div4 {
   grid-area: 4 / 1 / 5 / 4;
   margin-left: 20px;
-  background-color: #fefbe0;
-  border: 2px solid #fdf5a9;
-  overflow-y: auto;
+  background-color: #fefef8;
+  border: 2px solid #b7df9f;
+  border-radius: 10px;
+  overflow: visible;
   max-height: 330px;
-  padding-bottom: 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .div5 {
   grid-area: 4 / 4 / 5 / 7;
   margin: 10px 15px 0px 20px;
-  background-color: #fefbe0;
-  border: 2px solid #fdf5a9;
-  overflow-y: auto;
+  background-color: #fefef8;
+  border: 2px solid #b7df9f;
+  border-radius: 10px;
+  overflow: visible;
   max-height: 330px;
-  padding-bottom: 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 문법, 단어 공통 스타일 */
 .grammar h4,
 .voca h4 {
-  color: #4caf50;
-  margin: 10px 20px 20px 20px;
-  border-bottom: 1px solid #ccc;
+  color: #4d4d4d;
+  background-color: #67b98a;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  border-radius: 8px 8px 0 0;
   font-weight: bold;
+  font-size: 1rem;
+  border-bottom: none;
+}
+
+.grammar-list,
+.voca-list {
+  padding: 1rem;
+  flex: 1;
+  overflow-y: auto;
+  background-color: #fefef8;
+  border-radius: 0 0 8px 8px;
 }
 
 .grammar p,
 .voca p {
   font-size: 0.95rem;
-  color: #766b6b;
-  margin-left: 20px;
+  color: #444;
+  margin: 0 0 0.5rem 0;
   font-weight: 550;
-  margin-bottom: 0.5rem;
+  line-height: 1.4;
 }
 
 /* 언어 선택 */

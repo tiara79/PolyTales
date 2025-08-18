@@ -69,9 +69,22 @@ function Learn() {
     const title = noteTitleRef.current?.value.trim();
     const content = noteContentRef.current?.value.trim();
     
-    if (!title || !content) {
-      toast.warn("제목과 내용을 입력하세요.");
+    // 제목과 내용이 모두 비어있을 때
+    if (!title && !content) {
+      toast.warn("제목 또는 내용을 입력해주세요.");
       return;
+    }
+
+    // 내용만 있고 제목이 없을 때는 기본 제목 사용
+    const finalTitle = title || `스토리 노트 - ${new Date().toLocaleDateString()}`;
+    
+    // 노트 내용이 있고 div8(채팅) 내용이 없을 시 [] 추가
+    let finalContent = content;
+    if (content && chatMessages.length === 0) {
+      finalContent = content + "\n\n[]";
+    } else if (!content) {
+      // 내용이 없으면 기본 메시지
+      finalContent = "내용이 비어있습니다.";
     }
 
     const noteData = {
@@ -79,8 +92,8 @@ function Learn() {
       storyid,
       langlevel: currentLangLevel,
       lang,
-      title,
-      content,
+      title: finalTitle,
+      content: finalContent,
     };
 
     try {
@@ -90,13 +103,30 @@ function Learn() {
         body: JSON.stringify(noteData),
       });
       
-      if (!res.ok) throw new Error("노트 저장 실패");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "노트 저장 실패");
+      }
       
       toast.success("노트가 저장되었습니다!");
       noteTitleRef.current.value = "";
       noteContentRef.current.value = "";
     } catch (err) {
-      toast.error(err.message || "노트 저장 중 오류가 발생했습니다.");
+      console.error("노트 저장 오류:", err);
+      
+      // 네트워크 오류 또는 서버 응답 없음
+      if (!navigator.onLine) {
+        toast.error("인터넷 연결을 확인해주세요.");
+      } else if (err.name === 'TypeError' || err.message.includes('fetch')) {
+        toast.error("서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.");
+      } else if (err.message.includes("401") || err.message.includes("인증")) {
+        toast.error("로그인이 만료되었습니다. 다시 로그인해주세요.");
+      } else if (err.message.includes("500") || err.message.includes("서버")) {
+        toast.error("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      } else {
+        // 저장 에러 시 입력한 text 그대로 유지
+        toast.error("저장 중 오류가 발생했습니다. 내용을 확인하고 다시 시도해주세요.");
+      }
     }
   };
 
@@ -143,6 +173,90 @@ function Learn() {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleChatSend();
+    }
+  };
+
+  const handleNoteTransfer = async () => {
+    if (!isAuthenticated) {
+      toast.info("로그인하면 노트로 전송할 수 있습니다.");
+      return;
+    }
+
+    if (chatMessages.length === 0) {
+      toast.warn("전송할 채팅 내역이 없습니다.");
+      return;
+    }
+
+    // 채팅 내역을 노트 형태로 변환
+    const chatHistory = chatMessages
+      .map((msg, index) => `${msg.type === 'user' ? '나' : 'AI tutor Pola'}: ${msg.content}`)
+      .join('\n\n');
+
+    // 기존 노트 내용 확인
+    const existingTitle = noteTitleRef.current?.value.trim() || "";
+    const existingContent = noteContentRef.current?.value.trim() || "";
+
+    // 노트 제목 설정 (기존 제목이 없으면 새로 생성)
+    if (!existingTitle) {
+      noteTitleRef.current.value = `AI 튜터 대화 기록 - ${new Date().toLocaleString()}`;
+    }
+
+    // 노트 내용 설정 (기존 내용이 있다면 아래에 추가)
+    let newContent = chatHistory;
+    if (existingContent) {
+      newContent = `${existingContent}\n\n=== AI 튜터 대화 기록 ===\n${chatHistory}`;
+    }
+    
+    noteContentRef.current.value = newContent;
+
+    toast.success("채팅 내역이 노트로 전송되었습니다!");
+
+    // 자동 저장 실행
+    try {
+      const noteData = {
+        userid: user.userid,
+        storyid,
+        langlevel: currentLangLevel,
+        lang,
+        title: noteTitleRef.current.value.trim() || "AI 튜터 대화 기록",
+        content: newContent,
+      };
+
+      const res = await fetch(`${API_URL}/notes`, {
+        method: "POST",
+        headers: createApiHeaders(),
+        body: JSON.stringify(noteData),
+      });
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "노트 저장 실패");
+      }
+      
+      toast.success("노트가 저장되었습니다!");
+      
+      // 저장 후 채팅 내역 초기화 여부를 사용자에게 물어보기
+      const shouldClearChat = window.confirm("채팅 내역을 초기화하시겠습니까?");
+      if (shouldClearChat) {
+        setChatMessages([]);
+        toast.info("채팅 내역이 초기화되었습니다.");
+      }
+    } catch (err) {
+      console.error("노트 저장 오류:", err);
+      
+      // 네트워크 오류 또는 서버 응답 없음
+      if (!navigator.onLine) {
+        toast.error("인터넷 연결을 확인해주세요.");
+      } else if (err.name === 'TypeError' || err.message.includes('fetch')) {
+        toast.error("서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.");
+      } else if (err.message.includes("401") || err.message.includes("인증")) {
+        toast.error("로그인이 만료되었습니다. 다시 로그인해주세요.");
+      } else if (err.message.includes("500") || err.message.includes("서버")) {
+        toast.error("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      } else {
+        // 저장 에러 시 입력한 text 그대로 유지
+        toast.error("채팅 내역 저장 중 오류가 발생했습니다. 내용을 확인하고 다시 시도해주세요.");
+      }
     }
   };
 
@@ -248,6 +362,17 @@ function Learn() {
       {/* AI 튜터 채팅 - 항상 표시하되 로그인 상태에 따라 기능 제한 */}
       <div className="div8">
         <div className="chat-header">
+          <div className="chat-notice">채팅내역은 저장되지 않습니다.</div>
+          <button 
+            className={`note-transfer-btn ${!isAuthenticated ? 'disabled' : ''}`}
+            onClick={handleNoteTransfer}
+            disabled={!isAuthenticated}
+          >
+            노트로 저장
+          </button>
+        </div>
+        
+        <div className="pola-section">
           <div className="pola-badge">
             <span className="tutor-ai">AI tutor Pola</span>
             <img src="/img/learn/pola.png" alt="pola" className="tutor-icon" />
