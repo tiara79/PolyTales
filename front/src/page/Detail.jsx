@@ -67,7 +67,7 @@ export default function Detail() {
     const level = String(searchParams.get("level") || "A1").toUpperCase();
     (async () => {
       try {
-        const res = await api.get(`/stories/${level}/detail/${storyid}`);
+        const res = await api.get(`${process.env.REACT_APP_API_URL}/stories/${level}/detail/${storyid}`);
         setStory(res.data?.data || null);
       } catch {
         setStory(null);
