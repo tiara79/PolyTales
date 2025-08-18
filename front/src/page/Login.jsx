@@ -1,16 +1,136 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { AuthContext } from "../context/AuthContext";
 
 import axios from "../api/axios";
 import "../style/Login.css";
 import JoinModal from "./JoinModal";
-import SignUpForm from "./SignUpForm";
+import SignupForm from "./SignupForm";
 
 export default function Login() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 카카오 로그인
+  const KAKAO_JS_KEY = process.env.REACT_APP_KAKAO_JS_KEY;
+  function loadKakaoSdk() {
+    console.log("[KAKAO DEBUG] JS KEY:", KAKAO_JS_KEY);
+    console.log(
+      "[KAKAO DEBUG] window.location.origin:",
+      window.location.origin
+    );
+    if (!window.Kakao && KAKAO_JS_KEY) {
+      if (!document.getElementById("kakao-sdk")) {
+        const script = document.createElement("script");
+        script.id = "kakao-sdk";
+        script.src = "https://developers.kakao.com/sdk/js/kakao.js";
+        script.onload = () => {
+          console.log("[KAKAO DEBUG] kakao.js loaded");
+          if (window.Kakao && !window.Kakao.isInitialized()) {
+            window.Kakao.init(KAKAO_JS_KEY);
+            console.log("[KAKAO DEBUG] Kakao.init called");
+          }
+        };
+        document.body.appendChild(script);
+      }
+    } else if (window.Kakao && !window.Kakao.isInitialized()) {
+      window.Kakao.init(KAKAO_JS_KEY);
+      console.log("[KAKAO DEBUG] Kakao.init called (already loaded)");
+    } else if (window.Kakao && window.Kakao.isInitialized()) {
+      console.log("[KAKAO DEBUG] Kakao SDK already initialized");
+    }
+  }
+
+  useEffect(() => {
+    loadKakaoSdk();
+    // eslint-disable-next-line
+  }, []);
+
+  const handleKakaoLogin = () => {
+    if (!window.Kakao) {
+      toast.error("카카오 SDK 로드 실패");
+      console.error("[KAKAO DEBUG] window.Kakao is undefined");
+      return;
+    }
+    console.log("[KAKAO DEBUG] Kakao SDK version:", window.Kakao.VERSION);
+    window.Kakao.Auth.login({
+      scope: "profile_nickname,profile_image",
+      success: function (authObj) {
+        console.log("[KAKAO DEBUG] Auth success", authObj);
+        const access_token = authObj.access_token;
+        axios
+          .post(
+            "/auth/kakao",
+            { access_token },
+            { headers: { Authorization: undefined } }
+          )
+          .then((res) => {
+            console.log("[KAKAO DEBUG] Backend /auth/kakao response", res);
+            if (res.data && res.data.token) {
+              login(res.data.user, res.data.token);
+              navigate("/");
+            } else {
+              toast.error("카카오 로그인 실패");
+            }
+          })
+          .catch((e) => {
+            console.error("[KAKAO DEBUG] Backend /auth/kakao error", e);
+            toast.error(
+              "카카오 로그인 실패: " + (e.response?.data?.message || e.message)
+            );
+          });
+      },
+      fail: function (err) {
+        console.error("[KAKAO DEBUG] Auth fail", err);
+        toast.error("카카오 인증 실패: " + JSON.stringify(err));
+      },
+    });
+  };
+
+  // 네이버 인증 성공 시 자동 로그인 (중복 토스트 방지)
+  useEffect(() => {
+    let handled = false;
+    const params = new URLSearchParams(location.search);
+    if (params.get("naver") === "success" && !handled) {
+      handled = true;
+      const token = params.get("token");
+      const accessToken = params.get("access_token");
+      if (token) {
+        localStorage.setItem("token", token);
+        if (accessToken) {
+          localStorage.setItem("naver_token", accessToken);
+        }
+        (async () => {
+          try {
+            const res = await axios.get("/auth/me", {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (res.data && res.data.user) {
+              login(res.data.user, token);
+              // 쿼리스트링 완전 제거 (history.replaceState)
+              window.history.replaceState({}, document.title, "/");
+              navigate("/", { replace: true });
+            } else {
+              toast.error("유저 정보 조회 실패");
+            }
+          } catch (e) {
+            toast.error(
+              "자동 로그인 실패: " + (e.response?.data?.message || e.message)
+            );
+          }
+        })();
+      }
+      // else { 토큰 없을 때 토스트 생략 }
+    }
+    // 최초 진입시 회원가입 모달 자동 오픈 (예시: 쿼리 ?signup=1)
+    if (params.get("signup") === "1") {
+      setModalOpen(true);
+      window.history.replaceState({}, document.title, "/login");
+    }
+    // eslint-disable-next-line
+  }, [location.search, login, navigate]);
 
   // 모달 상태 관리
   const [modalOpen, setModalOpen] = useState(false);
@@ -86,11 +206,11 @@ const handleCredentialResponse = useCallback(async (response) => {
     const responsePayload = decodeJwtResponse(response.credential);
 
     const loginData = {
-      oauthProvider: "google",
-      oauthId: responsePayload.sub,
+      oauthprovider: "google",
+      oauthid: responsePayload.sub,
       email: responsePayload.email,
-      nickName: responsePayload.name,
-      profImg: responsePayload.picture,
+      nickname: responsePayload.name,
+      profimg: responsePayload.picture,
     };
 
     const apiResponse = await axios.post("/auth/google", loginData);
@@ -142,6 +262,18 @@ const handleCredentialResponse = useCallback(async (response) => {
     }
   }, [handleCredentialResponse]);
 
+  // 네이버 로그인
+  const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_CLIENT_ID;
+  const NAVER_REDIRECT_URI = process.env.REACT_APP_NAVER_REDIRECT_URI;
+
+  function handleNaverLogin() {
+    const state = Math.random().toString(36).substring(2); // CSRF 방지용
+    const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&redirect_uri=${encodeURIComponent(
+      NAVER_REDIRECT_URI
+    )}&state=${state}`;
+    window.location.href = url;
+  }
+
   return (
     <div className="login-page">
       <div>
@@ -190,17 +322,21 @@ const handleCredentialResponse = useCallback(async (response) => {
         </div>
         <div className="social-login-section">
           <div className="social-login-buttons">
-            <button
-              className="social-btn google-btn"
-              onClick={handleGoogleLogin}
-            >
-              <img src="/img/login/google.png" alt="구글 로그인" />
+            <div
+              id="googleSignInDiv"
+              className="google-signin-btn"
+            ></div>
+            <button className="social-btn naver-btn" onClick={handleNaverLogin}>
+              <img src="/img/login/naver.png" alt="네이버 로그인" />
+            </button>
+            <button className="social-btn kakao-btn" onClick={handleKakaoLogin}>
+              <img src="/img/login/kakao.png" alt="카카오 로그인" />
             </button>
           </div>
         </div>
         {modalOpen && (
           <JoinModal onClose={() => setModalOpen(false)}>
-            <SignUpForm onSubmit={handleSignup} />
+            <SignupForm onSubmit={handleSignup} />
           </JoinModal>
         )}
         <div

@@ -51,11 +51,28 @@ function Learn() {
       .catch((e) => console.error("데이터 로딩 오류:", e));
   }, [lang, storyid]);
 
+  // ===== 유틸리티 함수 최적화 =====
+  const isAuthenticated = Boolean(user?.userid);
+  
+  const createApiHeaders = () => {
+    const headers = { "Content-Type": "application/json" };
+    if (token) headers.Authorization = `Bearer ${token}`;
+    return headers;
+  };
+
   const saveNote = async () => {
+    if (!isAuthenticated) {
+      toast.error("로그인이 필요합니다.");
+      return;
+    }
+
     const title = noteTitleRef.current?.value.trim();
     const content = noteContentRef.current?.value.trim();
-    if (!title || !content) return toast.warn("제목과 내용을 입력하세요.");
-    if (!user?.userid) return toast.error("로그인이 필요합니다.");
+    
+    if (!title || !content) {
+      toast.warn("제목과 내용을 입력하세요.");
+      return;
+    }
 
     const noteData = {
       userid: user.userid,
@@ -65,47 +82,58 @@ function Learn() {
       title,
       content,
     };
+
     try {
-      const headers = { "Content-Type": "application/json" };
-      if (token) headers.Authorization = `Bearer ${token}`;
       const res = await fetch(`${process.env.REACT_APP_API_URL}/notes`, {
-      // const res = await fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/notes`, {
         method: "POST",
-        headers,
+        headers: createApiHeaders(),
         body: JSON.stringify(noteData),
       });
+      
       if (!res.ok) throw new Error("노트 저장 실패");
+      
       toast.success("노트가 저장되었습니다!");
       noteTitleRef.current.value = "";
       noteContentRef.current.value = "";
     } catch (err) {
-      toast.error(err.message);
+      toast.error(err.message || "노트 저장 중 오류가 발생했습니다.");
     }
   };
 
   const handleChatSend = async () => {
+    if (!isAuthenticated) {
+      toast.error("로그인이 필요합니다.");
+      return;
+    }
+
     const msg = chatInputRef.current?.value.trim();
-    if (!msg) return toast.warn("메시지를 입력하세요.");
-    if (!user?.userid) return toast.error("로그인이 필요합니다.");
+    if (!msg) {
+      toast.warn("메시지를 입력하세요.");
+      return;
+    }
 
     setChatMessages((prev) => [...prev, { type: "user", content: msg }]);
     chatInputRef.current.value = "";
     setIsChatLoading(true);
 
     try {
-      const headers = { "Content-Type": "application/json" };
-      if (token) headers.Authorization = `Bearer ${token}`;
-      // const res = await fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/tutor/chat`, {
       const res = await fetch(`${process.env.REACT_APP_API_URL}/tutor/chat`, {
         method: "POST",
-        headers,
+        headers: createApiHeaders(),
         body: JSON.stringify({ userid: user.userid, storyid, message: msg, lang }),
       });
+      
       const data = await res.json();
-      setChatMessages((prev) => [...prev, { type: "tutor", content: data.response || "응답 없음" }]);
+      setChatMessages((prev) => [...prev, { 
+        type: "tutor", 
+        content: data.response || "응답 없음" 
+      }]);
     } catch (err) {
-      setChatMessages((prev) => [...prev, { type: "tutor", content: "서비스 오류" }]);
-      toast.error("tutor service error");
+      setChatMessages((prev) => [...prev, { 
+        type: "tutor", 
+        content: "서비스 오류가 발생했습니다." 
+      }]);
+      toast.error("AI 튜터 서비스 오류");
     } finally {
       setIsChatLoading(false);
     }
@@ -179,51 +207,92 @@ function Learn() {
         })}
       </div>
 
-      {/* 노트 기능 - 로그인된 사용자에게만 표시 */}
-      {user?.userid && (
-        <div className="div7 note-box">
-          <div className="note-head">
-            <strong>Note</strong>
-            <img src="/img/learn/disk_icon.png" alt="save" className="save-note" onClick={saveNote} />
-          </div>
-          <div className="note-title">
-            <label>Title: <input ref={noteTitleRef} type="text" className="note-input underline" /></label>
-          </div>
-          <textarea className="note-content" ref={noteContentRef} />
+      {/* 노트 기능 - 항상 표시하되 로그인 상태에 따라 기능 제한 */}
+      <div className="div7 note-box">
+        <div className="note-head">
+          <strong>Note</strong>
+          <img 
+            src="/img/learn/disk_icon.png" 
+            alt="save" 
+            className={`save-note ${!isAuthenticated ? 'disabled' : ''}`}
+            onClick={isAuthenticated ? saveNote : () => toast.info("로그인하면 노트를 저장할 수 있습니다.")}
+          />
         </div>
-      )}
+        <div className="note-title">
+          <label>
+            Title: 
+            <input 
+              ref={noteTitleRef} 
+              type="text" 
+              className="note-input underline" 
+              disabled={!isAuthenticated}
+              placeholder={!isAuthenticated ? "로그인하면 노트를 작성할 수 있습니다" : "노트 제목을 입력하세요"}
+            />
+          </label>
+        </div>
+        <textarea 
+          className="note-content" 
+          ref={noteContentRef} 
+          disabled={!isAuthenticated}
+          placeholder={!isAuthenticated ? "로그인하면 노트를 작성할 수 있습니다" : "노트 내용을 입력하세요"}
+        />
+        {!isAuthenticated && (
+          <div className="login-prompt">
+            <button onClick={() => navigate('/login')} className="login-button">
+              로그인하여 노트 기능 사용하기
+            </button>
+          </div>
+        )}
+      </div>
 
-      {/* AI 튜터 채팅 - 로그인된 사용자에게만 표시 */}
-      {user?.userid && (
-        <div className="div8">
-          <div className="chat-header">
-            <div className="pola-badge">
-              <span className="tutor-ai">AI tutor Pola</span>
-              <img src="/img/learn/pola.png" alt="pola" className="tutor-icon" />
+      {/* AI 튜터 채팅 - 항상 표시하되 로그인 상태에 따라 기능 제한 */}
+      <div className="div8">
+        <div className="chat-header">
+          <div className="pola-badge">
+            <span className="tutor-ai">AI tutor Pola</span>
+            <img src="/img/learn/pola.png" alt="pola" className="tutor-icon" />
+          </div>
+        </div>
+
+        <div className="chat-messages">
+          {!isAuthenticated && (
+            <div className="message tutor welcome">
+              안녕하세요! AI 튜터 Pola입니다. 로그인하시면 궁금한 것을 언제든 물어보실 수 있어요! 📚✨
             </div>
-          </div>
-
-          <div className="chat-messages">
-            {chatMessages.map((msg, i) => <div key={i} className={`message ${msg.type}`}>{msg.content}</div>)}
-            {isChatLoading && <div className="message tutor">응답 생성 중...</div>}
-          </div>
-
-          <div className="chat-input-box">
-            <textarea ref={chatInputRef} onKeyDown={handleChatKeyDown} className="chat-input" disabled={isChatLoading} />
-            <button className="chat-send" onClick={handleChatSend} disabled={isChatLoading}><img src="/img/learn/send.png" alt="send" /></button>
-          </div>
+          )}
+          {chatMessages.map((msg, i) => (
+            <div key={i} className={`message ${msg.type}`}>
+              {msg.content}
+            </div>
+          ))}
+          {isChatLoading && <div className="message tutor">응답 생성 중...</div>}
         </div>
-      )}
 
-      {/* 비로그인 사용자를 위한 안내 메시지 */}
-      {!user?.userid && (
-        <div className="login-required-message">
-          <p>노트 저장과 AI 튜터 기능을 사용하려면 로그인이 필요합니다.</p>
-          <button onClick={() => navigate('/login')} className="login-button">
-            로그인하기
+        <div className="chat-input-box">
+          <textarea 
+            ref={chatInputRef} 
+            onKeyDown={handleChatKeyDown} 
+            className="chat-input" 
+            disabled={!isAuthenticated || isChatLoading}
+            placeholder={!isAuthenticated ? "로그인하면 AI 튜터와 대화할 수 있습니다" : "궁금한 것을 물어보세요..."}
+          />
+          <button 
+            className={`chat-send ${!isAuthenticated ? 'disabled' : ''}`}
+            onClick={isAuthenticated ? handleChatSend : () => toast.info("로그인하면 AI 튜터와 대화할 수 있습니다.")}
+            disabled={!isAuthenticated || isChatLoading}
+          >
+            <img src="/img/learn/send.png" alt="send" />
           </button>
         </div>
-      )}
+        
+        {!isAuthenticated && (
+          <div className="login-prompt">
+            <button onClick={() => navigate('/login')} className="login-button">
+              로그인하여 AI 튜터와 대화하기
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

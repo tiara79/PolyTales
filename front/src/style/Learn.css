@@ -197,3 +197,61 @@ body {
 }
 .learn-btn img { width: 24px; height: 24px; display: block; }
 
+/* ===== 게스트 사용자 비활성화 스타일 ===== */
+.save-note.disabled,
+.chat-send.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(50%);
+}
+
+.note-input:disabled,
+.note-content:disabled,
+.chat-input:disabled {
+  background-color: #f5f5f5;
+  color: #888;
+  border-color: #ddd;
+  cursor: not-allowed;
+}
+
+.note-input:disabled::placeholder,
+.note-content:disabled::placeholder,
+.chat-input:disabled::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* 로그인 프롬프트 스타일 */
+.login-prompt {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.login-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.login-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* AI 튜터 환영 메시지 */
+.message.tutor.welcome {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  border-left: 4px solid #ff8a80;
+  color: #333;
+  font-weight: 500;
+}
+

@@ -2,7 +2,7 @@
 const jwt = require("jsonwebtoken");
 const SECRET = process.env.JWT_SECRET || "dev_secret";
 
-exports.required = (req, res, next) => {
+const authRequired = (req, res, next) => {
   const auth = req.get("Authorization") || "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
   if (!token) return res.status(401).json({ message: "unauthorized" });
@@ -20,7 +20,18 @@ exports.required = (req, res, next) => {
   }
 };
 
-exports.adminOnly = (req, res, next) => {
+const adminOnly = (req, res, next) => {
   if (req.user?.role === 1) return next();
   return res.status(403).json({ message: "forbidden" });
+};
+
+// 호환성을 위한 alias들
+const required = authRequired;
+const onlyAdmin = adminOnly;
+
+module.exports = {
+  authRequired,
+  required,
+  adminOnly,
+  onlyAdmin
 };

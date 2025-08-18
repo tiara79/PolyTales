@@ -1,13 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../style/ProfileMenu.css";
 
-export default function ProfileMenu({ username, userid, userProfileImg, onLogout }) {
+export default function ProfileMenu({ username, userid, profimg, onLogout }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
   const navigate = useNavigate();
 
-  // 바깥 클릭 시 드롭다운 닫기
   useEffect(() => {
     const handleClick = (e) => {
       if (open && menuRef.current && !menuRef.current.contains(e.target)) {
@@ -22,7 +21,7 @@ export default function ProfileMenu({ username, userid, userProfileImg, onLogout
     <div ref={menuRef} className="profile-menu-wrap">
       <div className="profile-btn" onClick={() => setOpen((v) => !v)}>
         <img
-          src={userProfileImg || "/img/login/prof_img.png"}
+          src={profimg || "/img/login/prof_img.png"}
           alt="profile-image"
           className="profile-img"
           onError={(e) => {
@@ -37,7 +36,7 @@ export default function ProfileMenu({ username, userid, userProfileImg, onLogout
             X
           </button>
           <img
-            src={userProfileImg || "/img/login/prof_img.png"}
+            src={profimg || "/img/login/prof_img.png"}
             alt="profile-image"
             className="dropdown-profile-img"
             onError={(e) => {
@@ -49,10 +48,9 @@ export default function ProfileMenu({ username, userid, userProfileImg, onLogout
           </div>
           <div className="button-container">
             <button
-              className="profile-btn"
-              
+              className="mypage-btn"
               onClick={() => {
-                navigate("/MyPage");
+                navigate("/mypage");
                 setOpen(false);
               }}
             >

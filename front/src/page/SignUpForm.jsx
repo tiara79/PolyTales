@@ -193,57 +193,62 @@ export default function SignUpForm({ onSubmit }) {
     };
   }, [emailTimer, phoneTimer]);
 
-// 아이디 중복 확인
-const handleCheckUsername = async () => {
-  if (!form.username) { setCheckMsg("아이디를 입력하세요."); setCheckMsgType("error"); return; }
-  try {
-    const res = await fetch(`${API}/auth/check-username?username=${encodeURIComponent(form.username)}`);
-    if (!res.ok) throw new Error('서버 오류');
-    const data = await res.json();
-    if (data.exists) { setCheckMsg("이미 사용 중인 아이디입니다."); setCheckMsgType("error"); }
-    else { setCheckMsg("아이디를 사용할 수 있습니다."); setCheckMsgType("success"); }
-  } catch {
-    setCheckMsg("서버 오류"); setCheckMsgType("error");
-  }
-};
+  // 공통 중복 확인 함수
+  const handleDuplicateCheck = async (field, value, setMessage, setType, setStatus = null) => {
+    if (!value) {
+      setMessage(`✖ ${field === 'username' ? '아이디' : field === 'email' ? '이메일' : '전화번호'}를 입력하세요.`);
+      setType("error");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API}/auth/check-${field}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [field]: value })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessage(`✔ ${data.message || '사용 가능합니다.'}`);
+        setType("success");
+        if (setStatus) {
+          setStatus(prev => ({ ...prev, [`${field}DuplicateChecked`]: true }));
+        }
+      } else {
+        setMessage(`✖ ${data.message || '이미 사용 중입니다.'}`);
+        setType("error");
+        if (setStatus) {
+          setStatus(prev => ({ ...prev, [`${field}DuplicateChecked`]: false }));
+        }
+      }
+    } catch (error) {
+      console.error(`${field} 중복 확인 오류:`, error);
+      setMessage("✖ 중복 확인 중 오류가 발생했습니다.");
+      setType("error");
+      if (setStatus) {
+        setStatus(prev => ({ ...prev, [`${field}DuplicateChecked`]: false }));
+      }
+    }
+  };
+
+  // 아이디 중복 확인
+  const handleCheckUsername = () => {
+    handleDuplicateCheck('username', form.username, setCheckMsg, setCheckMsgType);
+  };
 
   // 이메일 중복 확인
-  const handleCheckEmail = async () => {
-  if (!form.email || errors.email) return;
-  try {
-    const res = await fetch(`${API}/auth/check-email?email=${encodeURIComponent(form.email)}`);
-    const data = await res.json();
-    if (res.ok && !data.exists) {
-      setEmailCheckMsg("✔ 사용 가능한 이메일입니다."); setEmailCheckType("success");
-      setVerificationStatus(prev => ({ ...prev, emailDuplicateChecked: true }));
-    } else {
-      setEmailCheckMsg("✖ 이미 가입된 이메일입니다."); setEmailCheckType("error");
-      setVerificationStatus(prev => ({ ...prev, emailDuplicateChecked: false }));
-    }
-  } catch {
-    setEmailCheckMsg("✖ 서버 오류"); setEmailCheckType("error");
-    setVerificationStatus(prev => ({ ...prev, emailDuplicateChecked: false }));
-  }
-};
+  const handleCheckEmail = () => {
+    if (errors.email) return;
+    handleDuplicateCheck('email', form.email, setEmailCheckMsg, setEmailCheckType, setVerificationStatus);
+  };
 
   // 전화번호 중복 확인
-const handleCheckPhone = async () => {
-  if (!form.phone || errors.phone) return;
-  try {
-    const res = await fetch(`${API}/auth/check-phone?phone=${encodeURIComponent(form.phone)}`);
-    const data = await res.json();
-    if (res.ok && !data.exists) {
-      setPhoneCheckMsg("✔ 사용 가능한 전화번호입니다."); setPhoneCheckType("success");
-      setVerificationStatus(prev => ({ ...prev, phoneDuplicateChecked: true }));
-    } else {
-      setPhoneCheckMsg("✖ 이미 가입된 전화번호입니다."); setPhoneCheckType("error");
-      setVerificationStatus(prev => ({ ...prev, phoneDuplicateChecked: false }));
-    }
-  } catch {
-    setPhoneCheckMsg("✖ 서버 오류"); setPhoneCheckType("error");
-    setVerificationStatus(prev => ({ ...prev, phoneDuplicateChecked: false }));
-  }
-};
+  const handleCheckPhone = () => {
+    if (errors.phone) return;
+    handleDuplicateCheck('phone', form.phone, setPhoneCheckMsg, setPhoneCheckType, setVerificationStatus);
+  };
   // 이메일 인증번호 발송
   const handleSendEmailCode = async () => {
     try {
