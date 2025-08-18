@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "polytales-be/**"
+      - "back/**"
       - ".github/workflows/back.yml"
 
 env:
@@ -26,12 +26,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd polytales-be
+          cd back
           npm ci
 
       - name: Generate .env.production
         run: |
-          cd polytales-be
+          cd back
           echo "PORT=3000" > .env.production
           echo "CLIENT_URL=https://polytales.z01.web.core.windows.net" >> .env.production
           echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env.production
@@ -58,13 +58,13 @@ jobs:
 
       - name: Build backend
         run: |
-          cd polytales-be
+          cd back
           npm run build || echo "No build step defined"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: polytales
+          app-name: back
           slot-name: production
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: polytales-be
+          package: back
