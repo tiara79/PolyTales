@@ -1,8 +1,7 @@
 // src/pages/Learn.jsx
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import axios from "../api/axios";
-import AudioPlayer from "../component/AudioPlayer";
+import { AuthContext } from "../context/AuthContext";
 import { StoryContext } from "../context/StoryContext";
 
 import { toast } from "react-toastify";
@@ -13,187 +12,195 @@ import "../style/Note.css";
 import "../style/PolaChat.css";
 import "../style/StoryLearn.css";
 
-export default function Learn() {
+function Learn() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-
-  const [pages, setPages] = useState([]);
-  const [pageNum, setPageNum] = useState(1);
-  const [languageData, setLanguageData] = useState([]);
-  const [isChatLoading, setIsChatLoading] = useState(false);
 
   const noteTitleRef = useRef(null);
   const noteContentRef = useRef(null);
   const chatInputRef = useRef(null);
 
+  const [pages, setPages] = useState([]);
+  const [pageNum, setPageNum] = useState(1);
+  // const [caption, setCaption] = useState("");
+  const [lang, setLang] = useState("ko");
+
+  const [languageData, setLanguageData] = useState([]);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [isChatLoading, setIsChatLoading] = useState(false);
+
+  const { user, token } = useContext(AuthContext);
   const { stories } = useContext(StoryContext);
 
-  const storyid = useMemo(() => searchParams.get("storyid") || 1, [searchParams]);
-  const currentStory = useMemo(() => stories.find((s) => s.storyid === Number(storyid)), [stories, storyid]);
-  const currentLangLevel = useMemo(() => currentStory?.langlevel || "A1", [currentStory]);
+  const storyid = searchParams.get("storyid") || 1;
+  const currentStory = stories.find((s) => s.storyid === Number(storyid));
+  const currentLangLevel = currentStory?.langlevel || "A1";
+  // 
 
-  const currentPage = useMemo(() => pages[pageNum - 1] || {}, [pages, pageNum]);
-  const image = useMemo(() => currentPage?.imagepath || "/img/home/no_image.png", [currentPage?.imagepath]);
-
-  const handleCloseClick = useCallback(() => navigate("/"), [navigate]);
-  const handleReadFromStart = useCallback(() => setPageNum(1), []);
+  const handleCloseClick = () => navigate("/");
+  const handleReadFromStart = () => setPageNum(1);
+  const goPrev = () => setPageNum((p) => Math.max(1, p - 1));
+  const goNext = () => setPageNum((p) => Math.min(p + 1, pages.length));
 
   useEffect(() => {
-    const fetchLearnData = async () => {
-      try {
-        const response = await axios.get(`/learn/${storyid}?lang=ko`);
-        setPages(response.data.pages || []);
-        setLanguageData(response.data.language || []);
-      } catch (error) {
-        setPages([
-          {
-            imagepath: "/img/a1/lily/lily_1.png",
-            audio: "",
-            caption: "",
-          },
-        ]);
-        setLanguageData([]);
-      }
-    };
-    fetchLearnData();
-  }, [storyid]);
+    fetch(`${process.env.REACT_APP_API_URL}/learn/${storyid}?lang=${lang}`)
+    // fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/learn/${storyid}?lang=${lang}`)
+      .then((res) => res.json())
+      .then((result) => {
+        setPages(result.pages || []);
+        setLanguageData(result.language || []);
+      })
+      .catch((e) => console.error("데이터 로딩 오류:", e));
+  }, [lang, storyid]);
 
-  const saveNote = useCallback(async () => {
+  const saveNote = async () => {
     const title = noteTitleRef.current?.value.trim();
     const content = noteContentRef.current?.value.trim();
+    if (!title || !content) return toast.warn("제목과 내용을 입력하세요.");
+    if (!user?.userid) return toast.error("로그인이 필요합니다.");
 
-    if (!title || !content) {
-      toast.warn("제목과 내용을 입력하세요.");
-      return;
-    }
+    const noteData = {
+      userid: user.userid,
+      storyid,
+      langlevel: currentLangLevel,
+      lang,
+      title,
+      content,
+    };
     try {
-      const noteData = { storyid: Number(storyid), title, content };
-      await axios.post("/notes", noteData);
-      toast.success("노트가 저장되었습니다.");
+      const headers = { "Content-Type": "application/json" };
+      if (token) headers.Authorization = `Bearer ${token}`;
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/notes`, {
+      // const res = await fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/notes`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(noteData),
+      });
+      if (!res.ok) throw new Error("노트 저장 실패");
+      toast.success("노트가 저장되었습니다!");
       noteTitleRef.current.value = "";
       noteContentRef.current.value = "";
-    } catch (e) {
-      toast.error("노트 저장 실패");
+    } catch (err) {
+      toast.error(err.message);
     }
-  }, [storyid]);
+  };
 
-  const [chatMessages, setChatMessages] = useState([]);
-  const handleChatSend = useCallback(async () => {
-    const text = chatInputRef.current?.value.trim();
-    if (!text) return;
+  const handleChatSend = async () => {
+    const msg = chatInputRef.current?.value.trim();
+    if (!msg) return toast.warn("메시지를 입력하세요.");
+    if (!user?.userid) return toast.error("로그인이 필요합니다.");
 
-    const next = [...chatMessages, { type: "user", content: text }];
-    setChatMessages(next);
+    setChatMessages((prev) => [...prev, { type: "user", content: msg }]);
     chatInputRef.current.value = "";
     setIsChatLoading(true);
 
     try {
-      const response = await axios.post("/tutor/chat", {
-        storyid: Number(storyid),
-        prompt: text,
+      const headers = { "Content-Type": "application/json" };
+      if (token) headers.Authorization = `Bearer ${token}`;
+      // const res = await fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/tutor/chat`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/tutor/chat`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ userid: user.userid, storyid, message: msg, lang }),
       });
-      const reply = response.data?.reply || "답변을 가져오지 못했어요.";
-      setChatMessages((prev) => [...prev, { type: "tutor", content: reply }]);
-    } catch (e) {
-      toast.error("AI 튜터 서비스 오류");
+      const data = await res.json();
+      setChatMessages((prev) => [...prev, { type: "tutor", content: data.response || "응답 없음" }]);
+    } catch (err) {
+      setChatMessages((prev) => [...prev, { type: "tutor", content: "서비스 오류" }]);
+      toast.error("tutor service error");
     } finally {
       setIsChatLoading(false);
     }
-  }, [chatMessages, storyid]);
+  };
 
-  const handleChatKeyDown = useCallback(
-    (e) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        handleChatSend();
-      }
-    },
-    [handleChatSend]
-  );
+  const handleChatKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleChatSend();
+    }
+  };
 
-  const languageSelector = useMemo(
-    () => (
-      <div className="div6">
-        <select value="ko" onChange={() => {}} className="language-select">
-          <option value="ko">한국어</option>
-        </select>
-      </div>
-    ),
-    []
-  );
+  const currentPage = pages[pageNum - 1] || {};
+  const image = currentPage?.imagepath || "/img/home/no_image.png";
+  const audio = currentPage?.audio;
 
   return (
-    <section className="learn-section">
-      <button className="close-button" onClick={handleCloseClick}>
-        <img src="/img/learn/close.png" alt="close" />
-      </button>
-
-      <div className="div1" onClick={handleReadFromStart}>
-        <span className="read-start">처음부터 읽기</span>
-      </div>
-
+    <div className="parent">
+      <div className="div1" onClick={handleReadFromStart}><span className="read-start">처음부터 읽기</span></div>
       <div className="div2">
-        <h3 className="story-title">{currentStory?.storytitle || "Story"}</h3>
-        <span className="level-badge">{currentLangLevel}</span>
+        <h2 className="story-title">{currentStory?.storytitle || "제목 없음"}</h2>
+        <button className="close-button" onClick={handleCloseClick}><img src="/img/learn/close.png" alt="close" /></button>
       </div>
 
       <div className="div3">
         <div className="story-image-container">
-          <img className="story-img" src={image} alt="page" />
+          <img className="story-img" src={image} alt={`page-${pageNum}`} />
+          <div className="caption-text">{currentPage.caption || ""}</div>
+          <div className="caption-box">
+            <div className="control-btns">
+              <button onClick={goPrev}><img src="/img/learn/prev.png" alt="prev" /></button>
+              <button onClick={() => document.querySelector("audio")?.play()}><img src="/img/learn/play.png" alt="play" /></button>
+              <button onClick={goNext}><img src="/img/learn/next.png" alt="next" /></button>
+            </div>
+          </div>
+          {audio && <audio src={audio} hidden autoPlay />}
         </div>
-        <AudioPlayer pages={pages} pageNum={pageNum} setPageNum={setPageNum} autoAdvance />
       </div>
 
-      <div className="div4">
+      <div className="div4 grammar">
         <h4>문법</h4>
         <div className="grammar-list">
-          {(languageData || []).map((g, i) => (
-            <p key={i}>{g?.grammar || ""}</p>
-          ))}
+          {lang === "ko" ? <p>한국어는 자막만 제공합니다.</p> : languageData.map((d, i) => <p key={i}>{d.grammar}</p>)}
         </div>
       </div>
 
       <div className="div5 voca">
         <h4>단어</h4>
         <div className="voca-list">
-          {(languageData || []).map((v, i) => (
-            <p key={i}>{v?.word || ""}</p>
-          ))}
+          {lang === "ko" ? <p>한국어는 자막만 제공합니다.</p> : languageData.map((d, i) => <p key={i}>{d.word}</p>)}
         </div>
       </div>
 
-      {languageSelector}
+      <div className="div6 lang-select">
+        {["ko", "fr", "ja", "en", "es", "de"].map((code) => (
+          <label key={code}>
+            <input type="radio" name="option" value={code} checked={lang === code} onChange={() => setLang(code)} />
+            {code}
+          </label>
+        ))}
+      </div>
 
-      <div className="div7">
-        <div className="note-box">
-          <div className="title-row">
-            <h4 className="note-title">노트</h4>
-            <input ref={noteTitleRef} className="note-input" placeholder="노트 제목을 입력하세요" />
-          </div>
-          <textarea ref={noteContentRef} className="note-textarea" placeholder="노트 내용을 입력하세요" />
-          <button className="save-note" onClick={saveNote}>노트 저장</button>
+      <div className="div7 note-box">
+        <div className="note-head">
+          <strong>Note</strong>
+          <img src="/img/learn/disk_icon.png" alt="save" className="save-note" onClick={saveNote} />
         </div>
+        <div className="note-title">
+          <label>Title: <input ref={noteTitleRef} type="text" className="note-input underline" /></label>
+        </div>
+        <textarea className="note-content" ref={noteContentRef} />
       </div>
 
       <div className="div8">
-        <div className="chat-box">
-          <div className="chat-messages">
-            {chatMessages.map((m, i) => (
-              <div key={i} className={`chat-bubble ${m.type}`}>{m.content}</div>
-            ))}
-          </div>
-          <div className="chat-input-row">
-            <textarea
-              ref={chatInputRef}
-              className="chat-input"
-              placeholder="궁금한 것을 물어보세요..."
-              onKeyDown={handleChatKeyDown}
-              disabled={isChatLoading}
-            />
-            <button className="chat-send" onClick={handleChatSend} disabled={isChatLoading}>보내기</button>
+        <div className="chat-header">
+          <div className="pola-badge">
+            <span className="tutor-ai">AI tutor Pola</span>
+            <img src="/img/learn/pola.png" alt="pola" className="tutor-icon" />
           </div>
         </div>
+
+        <div className="chat-messages">
+          {chatMessages.map((msg, i) => <div key={i} className={`message ${msg.type}`}>{msg.content}</div>)}
+          {isChatLoading && <div className="message tutor">응답 생성 중...</div>}
+        </div>
+
+        <div className="chat-input-box">
+          <textarea ref={chatInputRef} onKeyDown={handleChatKeyDown} className="chat-input" disabled={isChatLoading} />
+          <button className="chat-send" onClick={handleChatSend} disabled={isChatLoading}><img src="/img/learn/send.png" alt="send" /></button>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }
+
+export default Learn;

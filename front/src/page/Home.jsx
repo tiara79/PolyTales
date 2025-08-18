@@ -13,8 +13,19 @@ const norm = (p = "") => String(p).replace(/\\/g, "/").replace(/([^:]\/)\/+/g, "
 const baseName = (p = "") => {
   const s = norm(String(p));
   const i = s.lastIndexOf("/");
-  if (i < 0) return s;
-  return s.slice(i + 1);
+  return i >= 0 ? s.slice(i + 1) : s;
+};
+
+const slugifyTitle = (title = "") => {
+  const s = String(title)
+    .toLowerCase()
+    .replace(/'/g, "")
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+  const under = s.replace(/\s+/g, "_");
+  const hyphen = s.replace(/\s+/g, "-");
+  return Array.from(new Set([under, hyphen]));
 };
 
 const wrapToLocal = (name, level) => {
@@ -32,19 +43,36 @@ const buildSrcCandidates = (s) => {
 
   const rawPaths = [s?.thumbnail_url, s?.storycoverpath, s?.storycover_path, s?.thumbnail].filter(Boolean);
 
-  // 1) 로컬 정적 경로 호분(파일명 기준) — 최우선
-  const rawNames = rawPaths.map(baseName).filter(Boolean);
-  localFirst.push(...rawNames.map((n) => `/img/contents/${n}`));
-  localFirst.push(...rawNames.map((n) => `/img/detail/${n}`));
-  localFirst.push(...rawNames.flatMap((n) => wrapToLocal(n, s?.langlevel)));
+  // 1) 로컬 정적 경로 후보(파일명 기준) — 최우선
+  const names = new Set(rawPaths.map(baseName).filter(Boolean));
+  for (const t of slugifyTitle(s?.storytitle)) {
+    names.add(`${t}.jpg`);
+    names.add(`${t}.png`);
+    names.add(`${t}.webp`);
+  }
+  for (const n of names) {
+    localFirst.push(...wrapToLocal(n, s?.langlevel));
+  }
 
-  // 2) 원래 들어온 경로들 (절보/사본 섞임)
-  later.push(...rawPaths);
+  // 2) 서버가 준 경로들 중에서 루트(/)나 /img로 시작하는 것은 그 자체로 시도
+  for (const p of rawPaths) {
+    const v = String(p);
+    if (v.startsWith("/img/") || v.startsWith("/style/img/") || v.startsWith("/audio/") || v.startsWith("/")) {
+      localFirst.push(norm(v.replace(/^\/style\/img\//i, "/img/")));
+    }
+  }
 
-  // 중복 제거 및 정규화
-  const seen = new Set();
+  // 3) 절대 URL(Blob 등)은 마지막에 시도
+  for (const p of rawPaths) {
+    if (isAbs(p)) later.push(norm(p));
+  }
+
+  // 4) 최종 폴백
+  const all = [...localFirst, ...later, "/img/home/no_image.png"];
+
+  // 중복 제거(앞쪽 우선)
   const uniq = [];
-  const all = [...localFirst, ...later];
+  const seen = new Set();
   for (const u of all) {
     const key = isAbs(u) ? u : norm(u);
     if (!seen.has(key)) {
@@ -56,32 +84,18 @@ const buildSrcCandidates = (s) => {
 };
 
 function FallbackImage({ story, alt }) {
-  const candidates = useMem(() => {
-    const result = buildSrcCandidates(story);
-    return result;
-  }, [story]);
-
-  const [src, setSrc] = useState(candidates[0] || "/img/home/no_image.png");
-
-  useEffect(() => {
-    setSrc(candidates[0] || "/img/home/no_image.png");
-  }, [candidates]);
-
-  const handleImageError = useCallback(() => {
-    const idx = candidates.indexOf(src);
-    const next = candidates[idx + 1];
-    setSrc(next || "/img/home/no_image.png");
-  }, [candidates, src]);
-
-  const handleImageLoad = useCallback(() => {}, []);
+  const candidates = useMem(() => buildSrcCandidates(story), [story]);
+  const [idx, setIdx] = useState(0);
+  const src = candidates[idx] || "/img/home/no_image.png";
 
   return (
     <img
-      className="image-card"
+      className="story-image"
       src={src}
       alt={alt}
-      onError={handleImageError}
-      onLoad={handleImageLoad}
+      onError={() => {
+        if (idx < candidates.length - 1) setIdx(idx + 1);
+      }}
     />
   );
 }
@@ -94,35 +108,21 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   const headers = useMemo(() => (token ? { Authorization: `Bearer ${token}` } : undefined), [token]);
-
-  const fetchAllStories = useCallback(async () => {
-    const all = await api.get(`/stories`, { headers });
-    return Array.isArray(all.data?.data) ? all.data.data : (Array.isArray(all.data) ? all.data : []);
-  }, [headers]);
-
+  
   const fetchStories = useCallback(
     async (level) => {
       setLoading(true);
       try {
         const L = String(level || "A1").toUpperCase();
-        const res = await api.get(`/stories/level/${L}`, { headers });
-        let list = Array.isArray(res.data?.data) ? res.data.data : (Array.isArray(res.data) ? res.data : []);
-        if (!Array.isArray(list) || list.length === 0) {
-          list = await fetchAllStories();
-        }
-        setStories(list);
-      } catch (error) {
-        try {
-          const list = await fetchAllStories();
-          setStories(list);
-        } catch {
-          setStories([]);
-        }
+        const res = await api.get(`${process.env.REACT_APP_API_URL}/stories/level/${L}`, { headers });
+        setStories(Array.isArray(res.data?.data) ? res.data.data : []);
+      } catch {
+        setStories([]);
       } finally {
         setLoading(false);
       }
-    },
-    [headers, fetchAllStories]
+    },  
+    [headers]
   );
 
   useEffect(() => {
@@ -139,7 +139,7 @@ export default function Home() {
         {LEVELS.map((lv) => (
           <button
             key={lv}
-            className={`level-button ${selected === lv ? "active" : ""}`}
+            className={`level-btn ${lv} ${selected === lv ? "selected" : ""}`}
             onClick={() => setSelected(lv)}
           >
             <span className="lv-en">{lv}</span>
@@ -156,7 +156,11 @@ export default function Home() {
         {stories.map((s) => {
           const locked = !s.can_access;
           return (
-            <div key={`${s.storyid}-${s.langlevel}-${s.storytitle}`} className={`image-card-container ${locked ? "locked" : ""}`} onClick={() => onClickStory(s)}>
+            <div
+              key={s.storyid}
+              className={`image-box ${locked ? "locked-image" : ""}`}
+              onClick={() => onClickStory(s)}
+            >
               <FallbackImage story={s} alt={s.storytitle || "Story"} />
               {locked && (
                 <>
