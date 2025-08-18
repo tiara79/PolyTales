@@ -3,6 +3,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { StoryContext } from "../context/StoryContext";
+import AudioPlayer from "../component/AudioPlayer";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -42,7 +43,7 @@ function Learn() {
   const goNext = () => setPageNum((p) => Math.min(p + 1, pages.length));
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/learn/${storyid}?lang=${langlevel}`)
+    fetch(`${process.env.REACT_APP_API_URL}/learn/${storyid}?lang=${lang}`)
     // fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/learn/${storyid}?lang=${lang}`)
       .then((res) => res.json())
       .then((result) => {
@@ -134,16 +135,18 @@ function Learn() {
       <div className="div3">
         <div className="story-image-container">
           <img className="story-img" src={image} alt={`page-${pageNum}`} />
-          <div className="caption-text">{currentPage.caption || ""}</div>
-          <div className="caption-box">
-            <div className="control-btns">
-              <button onClick={goPrev}><img src="/img/learn/prev.png" alt="prev" /></button>
-              <button onClick={() => document.querySelector("audio")?.play()}><img src="/img/learn/play.png" alt="play" /></button>
-              <button onClick={goNext}><img src="/img/learn/next.png" alt="next" /></button>
-            </div>
-          </div>
-          {audio && <audio src={audio} hidden autoPlay />}
+          <div className="caption-text" dangerouslySetInnerHTML={{
+            __html: (currentPage.caption || "").replace(/\n/g, '<br>')
+          }}></div>
         </div>
+        
+        {/* 오디오 플레이어는 항상 이미지 아래 고정 위치에 표시 */}
+        <AudioPlayer 
+          pages={pages} 
+          pageNum={pageNum} 
+          setPageNum={setPageNum}
+          autoAdvance={false}
+        />
       </div>
 
       <div className="div4 grammar">
@@ -156,17 +159,27 @@ function Learn() {
       <div className="div5 voca">
         <h4>단어</h4>
         <div className="voca-list">
-          {lang === "ko" ? <p>한국어는 자막만 제공합니다.</p> : languageData.map((d, i) => <p key={i}>{d.word}</p>)}
+          {lang === "ko" ? <p>한국어는 자막만 제공합니다.</p> : languageData.map((d, i) => <p key={i}>{d.voca}</p>)}
         </div>
       </div>
 
       <div className="div6 lang-select">
-        {["ko", "fr", "ja", "en", "es", "de"].map((code) => (
-          <label key={code}>
-            <input type="radio" name="option" value={code} checked={lang === code} onChange={() => setLang(code)} />
-            {code}
-          </label>
-        ))}
+        {["ko", "fr", "ja", "en", "es", "de"].map((code) => {
+          const languageNames = {
+            ko: "한국어",
+            fr: "프랑스어", 
+            ja: "일본어",
+            en: "영어",
+            es: "스페인어",
+            de: "독일어"
+          };
+          return (
+            <label key={code}>
+              <input type="radio" name="option" value={code} checked={lang === code} onChange={() => setLang(code)} />
+              {languageNames[code]}
+            </label>
+          );
+        })}
       </div>
 
       <div className="div7 note-box">

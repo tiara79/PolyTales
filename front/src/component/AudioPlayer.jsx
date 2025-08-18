@@ -56,37 +56,39 @@ export default function AudioPlayer({
 
   return (
     <div className="learn-audio-panel">
-      {src ? (
-        <>
-          <audio
-            ref={audioRef}
-            src={src}
-            onLoadedMetadata={onLoaded}
-            onTimeUpdate={onTimeUpdate}
-            onEnded={onEnded}
-          />
-          <div className="learn-audio-controls">
-            <button className="learn-btn" type="button" onClick={() => setPageNum(Math.max(1, pageNum - 1))}>
-              <img src="/img/learn/prev.png" alt="prev" />
-            </button>
-            <button className="learn-btn" type="button" onClick={toggle}>
-              <img src={playing ? "/img/learn/pause.png" : "/img/learn/play.png"} alt="play/pause" />
-            </button>
-            <button className="learn-btn" type="button" onClick={() => setPageNum(Math.min(total, pageNum + 1))}>
-              <img src="/img/learn/next.png" alt="next" />
-            </button>
-            <input
-              type="range"
-              min={0}
-              max={Math.max(0, Math.floor(dur))}
-              value={Math.floor(cur)}
-              onChange={onSeek}
-              className="learn-audio-progress"
-            />
-            <span>{Math.floor(cur)}/{Math.floor(dur)}s</span>
-          </div>
-        </>
-      ) : (
+      {src && (
+        <audio
+          ref={audioRef}
+          src={src}
+          onLoadedMetadata={onLoaded}
+          onTimeUpdate={onTimeUpdate}
+          onEnded={onEnded}
+        />
+      )}
+      
+      <div className="learn-audio-controls">
+        <button className="learn-btn" type="button" onClick={() => setPageNum(Math.max(1, pageNum - 1))}>
+          <img src="/img/learn/prev.png" alt="prev" />
+        </button>
+        <button className="learn-btn" type="button" onClick={toggle} disabled={!src}>
+          <img src={playing ? "/img/learn/pause.png" : "/img/learn/play.png"} alt="play/pause" />
+        </button>
+        <button className="learn-btn" type="button" onClick={() => setPageNum(Math.min(total, pageNum + 1))}>
+          <img src="/img/learn/next.png" alt="next" />
+        </button>
+        <input
+          type="range"
+          min={0}
+          max={Math.max(0, Math.floor(dur))}
+          value={Math.floor(cur)}
+          onChange={onSeek}
+          className="learn-audio-progress"
+          disabled={!src}
+        />
+        <span>{Math.floor(cur)}/{Math.floor(dur)}s</span>
+      </div>
+      
+      {!src && (
         <div className="learn-audio--empty">오디오가 없습니다.</div>
       )}
     </div>
