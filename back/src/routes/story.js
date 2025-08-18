@@ -18,8 +18,8 @@ const softAuth = (req, _res, next) => {
 };
 
 router.get('/', storyController.getStories);
-router.get('/levels', storyController.getAllLevels);
 router.get('/level/:level', softAuth, storyController.getStoryByLevel);
+router.get('/levels', storyController.getAllLevels);
 router.get('/:level/detail/:id', storyController.getStoryById);
 
 router.post('/', required, storyController.createStory);

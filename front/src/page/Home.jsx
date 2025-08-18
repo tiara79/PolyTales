@@ -1,8 +1,8 @@
 // Home.jsx
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
-import { AuthContext } from "../context/AuthContext";
+// import api from "../api/axios";
+// import { AuthContext } from "../context/AuthContext";
 import "../style/Home.css";
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
