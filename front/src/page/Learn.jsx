@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "r
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "../api/axios";
 import AudioPlayer from "../component/AudioPlayer";
-import { AuthContext } from "../context/AuthContext";
+// import { AuthContext } from "../context/AuthContext";
 import { StoryContext } from "../context/StoryContext";
 
 import { toast } from "react-toastify";
@@ -27,7 +27,7 @@ export default function Learn() {
   const noteContentRef = useRef(null);
   const chatInputRef = useRef(null);
 
-  const { user } = useContext(AuthContext);
+  // const { user } = useContext(AuthContext);
   const { stories } = useContext(StoryContext);
 
   // 메모값들
@@ -39,7 +39,7 @@ export default function Learn() {
   const currentLangLevel = useMemo(() => currentStory?.langlevel || "A1", [currentStory]);
 
   // role 활성화
-  const isAuthenticated = true;
+  // const isAuthenticated = true;
 
   const currentPage = useMemo(() => pages[pageNum - 1] || {}, [pages, pageNum]);
   const image = useMemo(
