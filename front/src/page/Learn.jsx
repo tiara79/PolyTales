@@ -39,8 +39,6 @@ function Learn() {
 
   const handleCloseClick = () => navigate("/");
   const handleReadFromStart = () => setPageNum(1);
-  const goPrev = () => setPageNum((p) => Math.max(1, p - 1));
-  const goNext = () => setPageNum((p) => Math.min(p + 1, pages.length));
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/learn/${storyid}?lang=${lang}`)
@@ -122,7 +120,6 @@ function Learn() {
 
   const currentPage = pages[pageNum - 1] || {};
   const image = currentPage?.imagepath || "/img/home/no_image.png";
-  const audio = currentPage?.audio;
 
   return (
     <div className="parent">
@@ -182,35 +179,51 @@ function Learn() {
         })}
       </div>
 
-      <div className="div7 note-box">
-        <div className="note-head">
-          <strong>Note</strong>
-          <img src="/img/learn/disk_icon.png" alt="save" className="save-note" onClick={saveNote} />
+      {/* 노트 기능 - 로그인된 사용자에게만 표시 */}
+      {user?.userid && (
+        <div className="div7 note-box">
+          <div className="note-head">
+            <strong>Note</strong>
+            <img src="/img/learn/disk_icon.png" alt="save" className="save-note" onClick={saveNote} />
+          </div>
+          <div className="note-title">
+            <label>Title: <input ref={noteTitleRef} type="text" className="note-input underline" /></label>
+          </div>
+          <textarea className="note-content" ref={noteContentRef} />
         </div>
-        <div className="note-title">
-          <label>Title: <input ref={noteTitleRef} type="text" className="note-input underline" /></label>
-        </div>
-        <textarea className="note-content" ref={noteContentRef} />
-      </div>
+      )}
 
-      <div className="div8">
-        <div className="chat-header">
-          <div className="pola-badge">
-            <span className="tutor-ai">AI tutor Pola</span>
-            <img src="/img/learn/pola.png" alt="pola" className="tutor-icon" />
+      {/* AI 튜터 채팅 - 로그인된 사용자에게만 표시 */}
+      {user?.userid && (
+        <div className="div8">
+          <div className="chat-header">
+            <div className="pola-badge">
+              <span className="tutor-ai">AI tutor Pola</span>
+              <img src="/img/learn/pola.png" alt="pola" className="tutor-icon" />
+            </div>
+          </div>
+
+          <div className="chat-messages">
+            {chatMessages.map((msg, i) => <div key={i} className={`message ${msg.type}`}>{msg.content}</div>)}
+            {isChatLoading && <div className="message tutor">응답 생성 중...</div>}
+          </div>
+
+          <div className="chat-input-box">
+            <textarea ref={chatInputRef} onKeyDown={handleChatKeyDown} className="chat-input" disabled={isChatLoading} />
+            <button className="chat-send" onClick={handleChatSend} disabled={isChatLoading}><img src="/img/learn/send.png" alt="send" /></button>
           </div>
         </div>
+      )}
 
-        <div className="chat-messages">
-          {chatMessages.map((msg, i) => <div key={i} className={`message ${msg.type}`}>{msg.content}</div>)}
-          {isChatLoading && <div className="message tutor">응답 생성 중...</div>}
+      {/* 비로그인 사용자를 위한 안내 메시지 */}
+      {!user?.userid && (
+        <div className="login-required-message">
+          <p>노트 저장과 AI 튜터 기능을 사용하려면 로그인이 필요합니다.</p>
+          <button onClick={() => navigate('/login')} className="login-button">
+            로그인하기
+          </button>
         </div>
-
-        <div className="chat-input-box">
-          <textarea ref={chatInputRef} onKeyDown={handleChatKeyDown} className="chat-input" disabled={isChatLoading} />
-          <button className="chat-send" onClick={handleChatSend} disabled={isChatLoading}><img src="/img/learn/send.png" alt="send" /></button>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
