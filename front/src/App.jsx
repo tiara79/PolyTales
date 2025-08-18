@@ -22,7 +22,7 @@ import MyNotes from "./page/MyNotes";
 import MyPage from "./page/MyPage";
 import Plan from "./page/Plan";
 import Report from "./page/Report";
-// import SignUpForm from "./page/SignUpForm";
+import SignUpForm from "./SignUpForm";
 import DetailRouter from "./route/DetailRouter";
 import MainRouter from "./route/MainRouter";
 import NoRouter from "./route/NoRouter";
