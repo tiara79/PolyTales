@@ -4,7 +4,7 @@
 // back/src/routes/auth.js
 const router = require('express').Router();
 const { User } = require('../models');
-const { googleAuth, naverAuth, naverCallback, kakaoAuth, register, login, me, naverUnlink } = require('../controllers/authController');
+const { googleAuth, naverAuth, naverCallback, kakaoAuth, kakaoCallback, register, login, me, naverUnlink } = require('../controllers/authController');
 const { validateRegister, validateLogin } = require('../middlewares/validation');
 const { authRequired } = require('../middlewares/auth');
 
@@ -53,6 +53,7 @@ router.post('/naver', naverAuth);                       // 네이버 소셜 로�
 router.get('/naver/callback', naverCallback);           // 네이버 콜백(GET)
 router.post('/naver/unlink', naverUnlink);              // 네이버 연결 해제(언링크)
 router.post('/kakao', kakaoAuth);                       // 카카오 소셜 로그인
+router.get('/kakao/callback', kakaoCallback);           // 카카오 콜백(GET)
 router.post('/register', validateRegister, register);   // 로컬 회원가입
 router.post('/login', validateLogin, login);            // 로컬 로그인
 router.get('/me', authRequired, me);                    // 내 정보

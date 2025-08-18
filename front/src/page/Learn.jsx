@@ -1,5 +1,5 @@
 // src/pages/Learn.jsx
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AudioPlayer from "../component/AudioPlayer";
 import { API_URL } from "../config/AppConfig";
@@ -34,12 +34,31 @@ function Learn() {
   const { user, token } = useContext(AuthContext);
   const { stories } = useContext(StoryContext);
 
-  const storyid = searchParams.get("storyid") || 1;
-  const currentStory = stories.find((s) => s.storyid === Number(storyid));
-  const currentLangLevel = currentStory?.langlevel || "A1";
+  // 메모이제이션된 계산 값들
+  const storyid = useMemo(() => searchParams.get("storyid") || 1, [searchParams]);
+  const currentStory = useMemo(() => 
+    stories.find((s) => s.storyid === Number(storyid)), 
+    [stories, storyid]
+  );
+  const currentLangLevel = useMemo(() => 
+    currentStory?.langlevel || "A1", 
+    [currentStory]
+  );
+  const isAuthenticated = useMemo(() => 
+    Boolean(user?.userid), 
+    [user?.userid]
+  );
+  const currentPage = useMemo(() => 
+    pages[pageNum - 1] || {}, 
+    [pages, pageNum]
+  );
+  const image = useMemo(() => 
+    currentPage?.imagepath || "/img/home/no_image.png", 
+    [currentPage?.imagepath]
+  );
 
-  const handleCloseClick = () => navigate("/");
-  const handleReadFromStart = () => setPageNum(1);
+  const handleCloseClick = useCallback(() => navigate("/"), [navigate]);
+  const handleReadFromStart = useCallback(() => setPageNum(1), []);
 
   useEffect(() => {
     fetch(`${API_URL}/api/learn/${storyid}?lang=${lang}`)
@@ -53,15 +72,13 @@ function Learn() {
   }, [lang, storyid]);
 
   // ===== 유틸리티 함수 최적화 =====
-  const isAuthenticated = Boolean(user?.userid);
-  
-  const createApiHeaders = () => {
+  const createApiHeaders = useCallback(() => {
     const headers = { "Content-Type": "application/json" };
     if (token) headers.Authorization = `Bearer ${token}`;
     return headers;
-  };
+  }, [token]);
 
-  const saveNote = async () => {
+  const saveNote = useCallback(async () => {
     if (!isAuthenticated) {
       toast.error("로그인이 필요합니다.");
       return;
@@ -99,9 +116,9 @@ function Learn() {
     } catch (err) {
       toast.error(err.message || "노트 저장 중 오류가 발생했습니다.");
     }
-  };
+  }, [isAuthenticated, user?.userid, storyid, currentLangLevel, lang, createApiHeaders]);
 
-  const handleChatSend = async () => {
+  const handleChatSend = useCallback(async () => {
     if (!isAuthenticated) {
       toast.error("로그인이 필요합니다.");
       return;
@@ -138,17 +155,39 @@ function Learn() {
     } finally {
       setIsChatLoading(false);
     }
-  };
+  }, [isAuthenticated, user?.userid, storyid, lang, createApiHeaders]);
 
-  const handleChatKeyDown = (e) => {
+  const handleChatKeyDown = useCallback((e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleChatSend();
     }
-  };
+  }, [handleChatSend]);
 
-  const currentPage = pages[pageNum - 1] || {};
-  const image = currentPage?.imagepath || "/img/home/no_image.png";
+  // 언어 선택 컴포넌트 메모이제이션
+  const languageSelector = useMemo(() => {
+    const languageNames = {
+      ko: "한국어",
+      fr: "프랑스어", 
+      ja: "일본어",
+      en: "영어",
+      es: "스페인어",
+      de: "독일어"
+    };
+
+    return ["ko", "fr", "ja", "en", "es", "de"].map((code) => (
+      <label key={code}>
+        <input 
+          type="radio" 
+          name="option" 
+          value={code} 
+          checked={lang === code} 
+          onChange={() => setLang(code)} 
+        />
+        {languageNames[code]}
+      </label>
+    ));
+  }, [lang]);
 
   return (
     <div className="parent">
@@ -190,22 +229,7 @@ function Learn() {
       </div>
 
       <div className="div6 lang-select">
-        {["ko", "fr", "ja", "en", "es", "de"].map((code) => {
-          const languageNames = {
-            ko: "한국어",
-            fr: "프랑스어", 
-            ja: "일본어",
-            en: "영어",
-            es: "스페인어",
-            de: "독일어"
-          };
-          return (
-            <label key={code}>
-              <input type="radio" name="option" value={code} checked={lang === code} onChange={() => setLang(code)} />
-              {languageNames[code]}
-            </label>
-          );
-        })}
+        {languageSelector}
       </div>
 
       {/* 노트 기능 - 항상 표시하되 로그인 상태에 따라 기능 제한 */}

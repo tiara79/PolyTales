@@ -17,86 +17,20 @@ export default function Login() {
     console.log("Current API_URL:", API_URL);
   }, []);
 
-  // 카카오 로그인
-  const KAKAO_JS_KEY = process.env.REACT_APP_KAKAO_JS_KEY;
-  function loadKakaoSdk() {
-    console.log("[KAKAO DEBUG] JS KEY:", KAKAO_JS_KEY);
-    console.log(
-      "[KAKAO DEBUG] window.location.origin:",
-      window.location.origin
-    );
-    if (!window.Kakao && KAKAO_JS_KEY) {
-      if (!document.getElementById("kakao-sdk")) {
-        const script = document.createElement("script");
-        script.id = "kakao-sdk";
-        script.src = "https://developers.kakao.com/sdk/js/kakao.js";
-        script.onload = () => {
-          console.log("[KAKAO DEBUG] kakao.js loaded");
-          if (window.Kakao && !window.Kakao.isInitialized()) {
-            window.Kakao.init(KAKAO_JS_KEY);
-            console.log("[KAKAO DEBUG] Kakao.init called");
-          }
-        };
-        document.body.appendChild(script);
-      }
-    } else if (window.Kakao && !window.Kakao.isInitialized()) {
-      window.Kakao.init(KAKAO_JS_KEY);
-      console.log("[KAKAO DEBUG] Kakao.init called (already loaded)");
-    } else if (window.Kakao && window.Kakao.isInitialized()) {
-      console.log("[KAKAO DEBUG] Kakao SDK already initialized");
-    }
-  }
-
-  useEffect(() => {
-    loadKakaoSdk();
-    // eslint-disable-next-line
-  }, []);
-
+  // 카카오 로그인 (서버 사이드 방식)
   const handleKakaoLogin = () => {
-    if (!window.Kakao) {
-      toast.error("카카오 SDK 로드 실패");
-      console.error("[KAKAO DEBUG] window.Kakao is undefined");
-      return;
-    }
-    console.log("[KAKAO DEBUG] Kakao SDK version:", window.Kakao.VERSION);
-    window.Kakao.Auth.login({
-      scope: "profile_nickname,profile_image",
-      success: function (authObj) {
-        console.log("[KAKAO DEBUG] Auth success", authObj);
-        const access_token = authObj.access_token;
-        axios
-          .post(
-            "/auth/kakao",
-            { access_token },
-            { headers: { Authorization: undefined } }
-          )
-          .then((res) => {
-            console.log("[KAKAO DEBUG] Backend /auth/kakao response", res);
-            if (res.data && res.data.token) {
-              login(res.data.user, res.data.token);
-              navigate("/");
-            } else {
-              toast.error("카카오 로그인 실패");
-            }
-          })
-          .catch((e) => {
-            console.error("[KAKAO DEBUG] Backend /auth/kakao error", e);
-            toast.error(
-              "카카오 로그인 실패: " + (e.response?.data?.message || e.message)
-            );
-          });
-      },
-      fail: function (err) {
-        console.error("[KAKAO DEBUG] Auth fail", err);
-        toast.error("카카오 인증 실패: " + JSON.stringify(err));
-      },
-    });
+    const KAKAO_REST_API_KEY = process.env.REACT_APP_KAKAO_JS_KEY;
+    const REDIRECT_URI = `${process.env.REACT_APP_API_URL}/api/auth/kakao/callback`;
+    const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+    window.location.href = kakaoURL;
   };
 
-  // 네이버 인증 성공 시 자동 로그인 (중복 토스트 방지)
+  // 네이버/카카오 인증 성공 시 자동 로그인 (중복 토스트 방지)
   useEffect(() => {
     let handled = false;
     const params = new URLSearchParams(location.search);
+    
+    // 네이버 로그인 성공 처리
     if (params.get("naver") === "success" && !handled) {
       handled = true;
       const token = params.get("token");
@@ -126,8 +60,36 @@ export default function Login() {
           }
         })();
       }
-      // else { 토큰 없을 때 토스트 생략 }
     }
+    
+    // 카카오 로그인 성공 처리
+    if (params.get("kakao") === "success" && !handled) {
+      handled = true;
+      const token = params.get("token");
+      if (token) {
+        localStorage.setItem("token", token);
+        (async () => {
+          try {
+            const res = await axios.get("/auth/me", {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (res.data && res.data.user) {
+              login(res.data.user, token);
+              // 쿼리스트링 완전 제거 (history.replaceState)
+              window.history.replaceState({}, document.title, "/");
+              navigate("/", { replace: true });
+            } else {
+              toast.error("유저 정보 조회 실패");
+            }
+          } catch (e) {
+            toast.error(
+              "자동 로그인 실패: " + (e.response?.data?.message || e.message)
+            );
+          }
+        })();
+      }
+    }
+    
     // 최초 진입시 회원가입 모달 자동 오픈 (예시: 쿼리 ?signup=1)
     if (params.get("signup") === "1") {
       setModalOpen(true);

@@ -205,6 +205,71 @@ async function naverUnlink(req, res) {
   }
 }
 
+// 카카오 OAuth 콜백(GET)
+async function kakaoCallback(req, res) {
+  try {
+    const { code } = req.query;
+    if (!code) return res.status(400).send('Missing code');
+
+    // 1. 카카오 토큰 요청
+    const tokenRes = await axios.post('https://kauth.kakao.com/oauth/token', {
+      grant_type: 'authorization_code',
+      client_id: process.env.KAKAO_REST_API_KEY,
+      client_secret: process.env.KAKAO_CLIENT_SECRET,
+      redirect_uri: process.env.KAKAO_REDIRECT_URI,
+      code,
+    }, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
+    
+    const access_token = tokenRes.data.access_token;
+    if (!access_token) return res.status(400).send('No access_token from Kakao');
+
+    // 2. 카카오 사용자 정보 요청
+    const profileRes = await axios.get('https://kapi.kakao.com/v2/user/me', {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+    const kakaoUser = profileRes.data;
+    if (!kakaoUser || !kakaoUser.id) return res.status(400).send('No user info from Kakao');
+
+    // 3. DB 저장/갱신
+    let user = await User.findOne({ where: { oauthprovider: 'kakao', oauthid: String(kakaoUser.id) } });
+    const kakaoAccount = kakaoUser.kakao_account || {};
+    if (!user) {
+      user = await User.create({
+        oauthprovider: 'kakao',
+        oauthid: String(kakaoUser.id),
+        email: kakaoAccount.email ?? null,
+        nickname: kakaoAccount.profile?.nickname || kakaoAccount.email?.split('@')[0] || null,
+        profimg: kakaoAccount.profile?.profile_image_url ?? null,
+        status: 1,
+        role: 2,
+        plan: 1,
+      });
+      user = await User.findOne({ where: { oauthprovider: 'kakao', oauthid: String(kakaoUser.id) } });
+    } else {
+      let changed = false;
+      if (kakaoAccount.profile?.profile_image_url && user.profimg !== kakaoAccount.profile.profile_image_url) {
+        user.profimg = kakaoAccount.profile.profile_image_url;
+        changed = true;
+      }
+      if (kakaoAccount.profile?.nickname && user.nickname !== kakaoAccount.profile.nickname) {
+        user.nickname = kakaoAccount.profile.nickname;
+        changed = true;
+      }
+      if (changed) await user.save();
+    }
+
+    // 4. JWT 발급 및 프론트엔드로 리디렉션
+    const token = generateAccessToken(user);
+    return res.redirect(`${process.env.CLIENT_URL || 'http://localhost:3001'}/login?kakao=success&token=${token}`);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).send('Kakao login error');
+  }
+}
+
+
 // 카카오 OAuth
 async function kakaoAuth(req, res) {
   try {
@@ -317,4 +382,4 @@ async function me(req, res) {
   return res.json({ user: toSafe(user) });
 }
 
-module.exports = { googleAuth, naverAuth, naverCallback, kakaoAuth, register, login, me, naverUnlink };
+module.exports = { googleAuth, naverAuth, naverCallback, kakaoAuth, kakaoCallback, register, login, me, naverUnlink };
