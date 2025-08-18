@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { AuthContext } from "../context/AuthContext";
-import SignUpForm from "./SignupForm";
+import SignUpForm from "./SignUpForm";
 import axios, { API_URL } from "../api/axios";
 import "../style/Login.css";
 import JoinModal from "./JoinModal";
