@@ -1,11 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import { sendEmailVerification, sendPhoneVerification, verifyEmailCode, verifyPhoneCode } from "../api/verification";
+import { API_URL } from "../config/AppConfig";
 import "../style/SignUpForm.css";
-
-const API = (process.env.REACT_APP_API_URL || 'http://localhost:3000')
-  .trim()
-  .replace(/\/+$/, '');
 
 
 // 키보드 레이아웃 정의 (연속 문자/숫자 검사용)
@@ -202,7 +199,7 @@ export default function SignUpForm({ onSubmit }) {
     }
 
     try {
-      const response = await fetch(`${API}/auth/check-${field}`, {
+      const response = await fetch(`${API_URL}/auth/check-${field}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ [field]: value })

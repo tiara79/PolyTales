@@ -1,9 +1,10 @@
 // src/pages/Learn.jsx
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import AudioPlayer from "../component/AudioPlayer";
+import { API_URL } from "../config/AppConfig";
 import { AuthContext } from "../context/AuthContext";
 import { StoryContext } from "../context/StoryContext";
-import AudioPlayer from "../component/AudioPlayer";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -41,8 +42,7 @@ function Learn() {
   const handleReadFromStart = () => setPageNum(1);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/learn/${storyid}?lang=${lang}`)
-    // fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/learn/${storyid}?lang=${lang}`)
+    fetch(`${API_URL}/learn/${storyid}?lang=${lang}`)
       .then((res) => res.json())
       .then((result) => {
         setPages(result.pages || []);
@@ -84,7 +84,7 @@ function Learn() {
     };
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/notes`, {
+      const res = await fetch(`${API_URL}/notes`, {
         method: "POST",
         headers: createApiHeaders(),
         body: JSON.stringify(noteData),
@@ -117,7 +117,7 @@ function Learn() {
     setIsChatLoading(true);
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/tutor/chat`, {
+      const res = await fetch(`${API_URL}/tutor/chat`, {
         method: "POST",
         headers: createApiHeaders(),
         body: JSON.stringify({ userid: user.userid, storyid, message: msg, lang }),

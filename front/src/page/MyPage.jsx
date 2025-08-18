@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import { StoryContext } from "../context/StoryContext";
-import { getProfileImageUrl } from "../util/imageUtil";
 import "../style/MyPage.css";
+import { getProfileImageUrl } from "../util/imageUtil";
 
 // ===== 이미지 유틸 최적화 =====
 const imageUtils = {

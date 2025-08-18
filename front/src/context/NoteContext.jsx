@@ -1,12 +1,13 @@
 // src/context/NoteContext.jsx
 import {
-  createContext,
-  useContext,
-  useState,
-  useMemo,
-  useCallback,
-  useEffect,
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
 } from "react";
+import { API_URL } from "../config/AppConfig";
 import { AuthContext } from "./AuthContext";
 
 /*
@@ -38,9 +39,7 @@ export function NoteProvider({ children }) {
   const [error, setError] = useState(null);
 
   // API 엔드포인트
-  const API = process.env.REACT_APP_API_URL;
-  // 필요 시 라우트만 교체 (예: `${API}/learn/notes`)
-  const NOTES_URL = `${API}/notes`;
+  const NOTES_URL = `${API_URL}/notes`;
 
   // 사용자 식별자 통일
   const userId = user?.userid ?? user?.userId ?? null;
