@@ -1,5 +1,5 @@
 // src/pages/Learn.jsx
-import { useEffect, useRef, useState, useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { StoryContext } from "../context/StoryContext";
@@ -7,10 +7,10 @@ import { StoryContext } from "../context/StoryContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import "../style/StoryLearn.css";
 import "../style/Learn.css";
 import "../style/Note.css";
 import "../style/PolaChat.css";
+import "../style/StoryLearn.css";
 
 function Learn() {
   const navigate = useNavigate();
@@ -43,7 +43,8 @@ function Learn() {
   const goNext = () => setPageNum((p) => Math.min(p + 1, pages.length));
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/learn/${storyid}?lang=${lang}`)
+    fetch(`${process.env.REACT_APP_API_URL}/learn/${storyid}?lang=${lang}`)
+    // fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/learn/${storyid}?lang=${lang}`)
       .then((res) => res.json())
       .then((result) => {
         setPages(result.pages || []);
@@ -69,7 +70,8 @@ function Learn() {
     try {
       const headers = { "Content-Type": "application/json" };
       if (token) headers.Authorization = `Bearer ${token}`;
-      const res = await fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/notes`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/notes`, {
+      // const res = await fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/notes`, {
         method: "POST",
         headers,
         body: JSON.stringify(noteData),
@@ -95,7 +97,8 @@ function Learn() {
     try {
       const headers = { "Content-Type": "application/json" };
       if (token) headers.Authorization = `Bearer ${token}`;
-      const res = await fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/tutor/chat`, {
+      // const res = await fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/tutor/chat`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/tutor/chat`, {
         method: "POST",
         headers,
         body: JSON.stringify({ userid: user.userid, storyid, message: msg, lang }),
