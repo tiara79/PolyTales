@@ -179,6 +179,21 @@ export default function Login() {
     }
   };
 
+  // Google 로그인 - 수동 트리거
+  const handleGoogle = useCallback(() => {
+    if (window.google && window.google.accounts && window.google.accounts.id) {
+      try {
+        window.google.accounts.id.prompt();
+      } catch (error) {
+        console.error("Google 로그인 트리거 실패:", error);
+        toast.error("Google 로그인을 사용할 수 없습니다.");
+      }
+    } else {
+      console.error("Google SDK가 로드되지 않았습니다.");
+      toast.error("Google 로그인이 준비되지 않았습니다.");
+    }
+  }, []);
+
   // Google 로그인
 const handleCredentialResponse = useCallback(async (response) => {
   try {
@@ -315,16 +330,21 @@ const handleCredentialResponse = useCallback(async (response) => {
         </div>
         <div className="social-login-section">
           <div className="social-login-buttons">
-            <div
-              id="googleSignInDiv"
-              className="google-signin-btn"
-            ></div>
+            <button className="social-btn google-btn" onClick={handleGoogle}>
+              <img src="/img/login/google.png" alt="구글 로그인" />
+            </button>
             <button className="social-btn naver-btn" onClick={handleNaverLogin}>
               <img src="/img/login/naver.png" alt="네이버 로그인" />
             </button>
             <button className="social-btn kakao-btn" onClick={handleKakaoLogin}>
               <img src="/img/login/kakao.png" alt="카카오 로그인" />
             </button>
+            {/* Google SDK 버튼 - 숨김 처리하되 기능은 유지 */}
+            <div
+              id="googleSignInDiv"
+              className="google-signin-btn"
+              style={{ display: "none" }}
+            ></div>
           </div>
         </div>
         {modalOpen && (

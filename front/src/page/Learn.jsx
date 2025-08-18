@@ -1,8 +1,8 @@
 // src/pages/Learn.jsx
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import axios from "../api/axios";
 import AudioPlayer from "../component/AudioPlayer";
-import { API_URL } from "../config/AppConfig";
 import { AuthContext } from "../context/AuthContext";
 import { StoryContext } from "../context/StoryContext";
 
@@ -31,7 +31,7 @@ function Learn() {
   const [chatMessages, setChatMessages] = useState([]);
   const [isChatLoading, setIsChatLoading] = useState(false);
 
-  const { user, token } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { stories } = useContext(StoryContext);
 
   // 메모이제이션된 계산 값들
@@ -61,22 +61,19 @@ function Learn() {
   const handleReadFromStart = useCallback(() => setPageNum(1), []);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/learn/${storyid}?lang=${lang}`)
-      .then((res) => res.json())
-      .then((result) => {
-        console.log("Learn data:", result); // 디버깅용
-        setPages(result.pages || []);
-        setLanguageData(result.language || []);
-      })
-      .catch((e) => console.error("데이터 로딩 오류:", e));
-  }, [lang, storyid]);
+    const fetchLearnData = async () => {
+      try {
+        const response = await axios.get(`/learn/${storyid}?lang=${lang}`);
+        console.log("Learn data:", response.data); // 디버깅용
+        setPages(response.data.pages || []);
+        setLanguageData(response.data.language || []);
+      } catch (error) {
+        console.error("데이터 로딩 오류:", error);
+      }
+    };
 
-  // ===== 유틸리티 함수 최적화 =====
-  const createApiHeaders = useCallback(() => {
-    const headers = { "Content-Type": "application/json" };
-    if (token) headers.Authorization = `Bearer ${token}`;
-    return headers;
-  }, [token]);
+    fetchLearnData();
+  }, [lang, storyid]);
 
   const saveNote = useCallback(async () => {
     if (!isAuthenticated) {
@@ -102,21 +99,15 @@ function Learn() {
     };
 
     try {
-      const res = await fetch(`${API_URL}/api/notes`, {
-        method: "POST",
-        headers: createApiHeaders(),
-        body: JSON.stringify(noteData),
-      });
-      
-      if (!res.ok) throw new Error("노트 저장 실패");
-      
+      await axios.post('/notes', noteData);
       toast.success("노트가 저장되었습니다!");
       noteTitleRef.current.value = "";
       noteContentRef.current.value = "";
-    } catch (err) {
-      toast.error(err.message || "노트 저장 중 오류가 발생했습니다.");
+    } catch (error) {
+      console.error("노트 저장 오류:", error);
+      toast.error("노트 저장 중 오류가 발생했습니다.");
     }
-  }, [isAuthenticated, user?.userid, storyid, currentLangLevel, lang, createApiHeaders]);
+  }, [isAuthenticated, user?.userid, storyid, currentLangLevel, lang]);
 
   const handleChatSend = useCallback(async () => {
     if (!isAuthenticated) {
@@ -135,18 +126,19 @@ function Learn() {
     setIsChatLoading(true);
 
     try {
-      const res = await fetch(`${API_URL}/api/tutor/chat`, {
-        method: "POST",
-        headers: createApiHeaders(),
-        body: JSON.stringify({ userid: user.userid, storyid, message: msg, lang }),
+      const response = await axios.post('/tutor/chat', {
+        userid: user.userid, 
+        storyid, 
+        message: msg, 
+        lang
       });
       
-      const data = await res.json();
       setChatMessages((prev) => [...prev, { 
         type: "tutor", 
-        content: data.response || "응답 없음" 
+        content: response.data.response || "응답 없음" 
       }]);
-    } catch (err) {
+    } catch (error) {
+      console.error("채팅 오류:", error);
       setChatMessages((prev) => [...prev, { 
         type: "tutor", 
         content: "서비스 오류가 발생했습니다." 
@@ -155,7 +147,7 @@ function Learn() {
     } finally {
       setIsChatLoading(false);
     }
-  }, [isAuthenticated, user?.userid, storyid, lang, createApiHeaders]);
+  }, [isAuthenticated, user?.userid, storyid, lang]);
 
   const handleChatKeyDown = useCallback((e) => {
     if (e.key === "Enter" && !e.shiftKey) {
