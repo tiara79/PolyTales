@@ -141,22 +141,6 @@ const NoContent = ({ type }) => {
   );
 };
 
-function BookMarkCover({ candidates, alt }) {
-  const list = useMemo(() => imageUtils.deduplicate(candidates), [candidates]);
-  const [i, setI] = useState(0);
-  const src = list[i] || "/img/mypage/no_bookmark.png";
-  return (
-    <img
-      className="books-cover-img"
-      src={src}
-      alt={alt}
-      onError={() => {
-        if (i < list.length - 1) setI(i + 1);
-      }}
-    />
-  );
-}
-
 export default function MyPage() {
   // ===== Hooks 및 Context =====
   const navigate = useNavigate();
@@ -214,8 +198,6 @@ export default function MyPage() {
     };
     fetchReadBooks();
   }, [user?.userid]);
-
-  const goBack = () => navigate(-1);
 
   const handleProfileImageClick = () => fileInputRef.current?.click();
 

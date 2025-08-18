@@ -6,7 +6,7 @@ import { AuthContext } from "../context/AuthContext";
 import axios, { API_URL } from "../api/axios";
 import "../style/Login.css";
 import JoinModal from "./JoinModal";
-import SignupForm from "./SignupForm";
+import SignUpForm from "./SignUpForm";
 
 export default function Login() {
   const { login } = useContext(AuthContext);
@@ -229,13 +229,6 @@ const handleCredentialResponse = useCallback(async (response) => {
   }
 }, [login, navigate]);
 
-  // Google 아이콘 클릭 시 Google 로그인 실행
-  const handleGoogleLogin = () => {
-    if (window.google) {
-      window.google.accounts.id.prompt();
-    }
-  };
-
   // JWT 토큰 디코딩 함수
   function decodeJwtResponse(token) {
     const base64Url = token.split(".")[1];
@@ -341,7 +334,7 @@ const handleCredentialResponse = useCallback(async (response) => {
         </div>
         {modalOpen && (
           <JoinModal onClose={() => setModalOpen(false)}>
-            <SignupForm onSubmit={handleSignup} />
+            <SignUpForm onSubmit={handleSignup} />
           </JoinModal>
         )}
         <div

@@ -128,3 +128,6 @@ npm install
 mkdir -p polytales-be
 cd polytales-be
 
+# node_modules와 빌드 캐시를 정리
+rm -rf node_modules package-lock.json && npm install
+npm run build
