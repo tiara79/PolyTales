@@ -1,0 +1,277 @@
+/* 폼 전체 스타일 */
+form {
+    display: flex;
+    flex-direction: column;
+    min-width: 350px;
+    padding: 0 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    color/* 제출 버튼 스타일 */
+button[type="submit"] {
+    width: 280px;
+    height: 35px;
+    background: #f68d4e;
+    color: #fff;
+    padding: 5px;
+    margin: 15px 0 5px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}  z-index: 999999;
+}
+
+/* 폼 제목 스타일 */
+form h2 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 20px;
+    text-align: center;
+    color: #747474;
+}
+
+/* 입력 컨테이너 ----------------- */
+.input-context {
+    display: flex;
+    flex-direction: column;
+    margin: 5px 0 3px 0;
+}
+
+/* 라벨 스타일 */
+.input-context label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 3px;
+    color: #7c7c7c;
+    display: block;
+}
+
+/* 인풋과 버튼 간격 조정 */
+.input-area {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+/* 입력 필드 공통 스타일 */
+.input-area input {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #3a3a3a;
+    height: 30px;
+    margin-top: 2px;
+    padding: 0 8px;
+}
+
+/* 입력 필드 포커스 스타일 */
+.input-area input:focus {
+    outline: none;
+    background: #fdf2eb;
+    border: 1.5px solid #fcb78c;
+}
+
+/* 중복확인/인증요청 버튼 ------------- */
+.id-check,
+.email-check {
+    height: 30px;
+    min-width: 90px;
+    padding: 0 8px;
+    font-size: 11px;
+    color: #747474;
+    border-radius: 4px;
+    border: none;
+    background: #eee;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 약관영역---------------------------- */
+.terms-area {
+    border-radius: 6px;
+    font-size: 11px;
+    margin-top: 0.5rem;
+    color: #797979;
+    width: 100%;
+    text-align: left;
+}
+
+/* 약관 체크박스: 체크박스와 텍스트 사이 여백 및 정렬 */
+.terms-area label {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* 약관 체크박스: 체크박스와 텍스트 사이 여백 */
+.terms-area input[type="checkbox"] {
+    margin-right: 0.3rem;
+    accent-color: #fdd9c2;
+    /* background-color: transparent; */
+    width: 13px;
+    height: 13px;
+}
+
+/* 필수약관 헤드 강조 */
+.required-text {
+    font-weight: 600;
+    padding-right: 0.2rem;
+    color: rgb(65, 78, 255);
+}
+
+/* 필수약관 문구 강조 */
+.policy-signup,
+.required-text2 {
+    font-weight: 600;
+    padding-right: 0.2rem;
+    color: #f68d4e !important;
+}
+
+/* 선택 약관 헤드 강조 */
+.optional-text {
+    font-weight: 600;
+    padding-right: 0.2rem;
+    color: #8f8f8f;
+}
+
+
+
+/* 안내 메시지 ------------------ */
+/* 기본 노출 메시지 스타일 */
+.guideMsg {
+    color: #9b9b9b;
+    font-size: 10px !important;
+    margin-top: 3px;
+}
+
+/* 에러 메시지 스타일 */
+.errMsg {
+    color: #e53935;
+    font-size: 10px !important;
+    margin-top: 3px;
+}
+
+/* 성공 메시지 스타일 */
+.successMsg {
+    color: #19b76e;
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+/* 가입하기 버튼 --------------------------  */
+/* 활성화된 중복확인 버튼 (연보라, enabled) */
+.id-check.active:not(:disabled),
+.email-check.active:not(:disabled) {
+    background: #f68d4e;
+    color: #fff !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+}
+
+/* 비활성화된 중복확인 버튼 (회색, disabled) */
+.id-check.active:disabled,
+.email-check.active:disabled {
+    background: #e0e0e0 !important;
+    color: #bdbdbd !important;
+    cursor: not-allowed !important;
+    opacity: 0.7 !important;
+}
+
+/* 제출 버튼 스타일 */
+button[type="submit"] {
+    width: 100%;
+    height: 35px;
+    background: #67b98a;
+    color: #fff;
+    padding: 5px;
+    margin: 15px 0 5px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* 제출 버튼 호버 효과 */
+button[type="submit"]:hover {
+    background: #c1eed5;
+    color: #67b98a;
+}
+
+/* 비활성화 버튼 스타일 */
+button.dimmed,
+button:disabled {
+    background: #ccc !important;
+    color: #fff !important;
+    cursor: default !important;
+    opacity: 0.7;
+}
+
+/* 인증번호 입력 필드 스타일 */
+.verification-code-input {
+    flex: 1 !important;
+    min-width: 0 !important;
+    font-size: 16px !important;
+    color: #747474 !important;
+    height: 30px !important;
+    padding: 0 8px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    background: #fff !important;
+    margin-top: 2px !important;
+    box-sizing: border-box !important;
+}
+
+/* 인증번호 입력 영역 간격 조정 */
+.verification-input-area {
+    margin-top: 5px !important;
+}
+
+/* 인증번호 입력 필드 포커스 스타일 */
+.verification-code-input:focus {
+    outline: none !important;
+    background: #fdf2eb !important;
+    border: 1.5px solid #fcb78c !important;
+    color: #747474 !important;
+}
+
+/* 인증번호 입력 필드 플레이스홀더 스타일 */
+.verification-code-input::placeholder {
+    color: #9b9b9b !important;
+    font-size: 12px !important;
+}
+
+/* 타이머 스타일 */
+.timer-display {
+    font-size: 16px;
+    color: #f68d4e;
+    font-weight: 600;
+    min-width: 45px;
+    text-align: center;
+}
+
+/* 타이머 전용 div 스타일 */
+.timer-only-display {
+    height: 30px;
+    min-width: 90px;
+    padding: 0 8px;
+    font-size: 20px;
+    color: #868686;
+    font-weight: 600;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 만료 메시지 스타일 */
+.expired-msg {
+    color: #e53935;
+    font-size: 10px;
+    margin-top: 3px;
+}
