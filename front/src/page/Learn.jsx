@@ -42,7 +42,7 @@ function Learn() {
   const goNext = () => setPageNum((p) => Math.min(p + 1, pages.length));
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/learn/${storyid}?lang=${currentLangLevel}`)
+    fetch(`${process.env.REACT_APP_API_URL}/learn/${storyid}?lang=${langlevel}`)
     // fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/learn/${storyid}?lang=${lang}`)
       .then((res) => res.json())
       .then((result) => {
