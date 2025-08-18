@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { BookMarkContext } from "../context/BookmarkContext";
 import { StoryContext } from "../context/StoryContext";
-// import "../style/Bookmark.css";
+import "../style/Bookmark.css";
 import "../style/History.css"; // 헤더(뒤로가기/제목) 스타일 재사용
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
