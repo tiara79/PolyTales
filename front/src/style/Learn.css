@@ -1,0 +1,199 @@
+body {
+  background-color: #ffffff;
+  margin: 0;
+  font-family: "Noto Sans KR", sans-serif;
+  overflow: hidden;
+}
+
+.parent {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto auto 1fr 1fr auto auto;
+  height: 100vh;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.parent > div {
+  border-radius: 12px;
+  margin-top: 0;
+}
+
+/* 처음부터 읽기 */
+.div1 {
+  grid-area: 1 / 1 / 2 / 4;
+}
+
+.read-start {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #137dfe;
+  padding: 0px 20px 9px 20px;
+  cursor: pointer;
+  position: relative;
+  top: 30px;
+  left: 5px;
+}
+
+/* 헤더 타이틀 */
+.div2 {
+  grid-area: 1 / 1 / 2 / 13;
+  background: #fffac7;
+  height: 70px;
+  margin-bottom: 20px;
+}
+
+.story-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 20px;
+}
+
+.close-button img {
+  width: 15px;
+  height: auto;
+}
+
+/* 문법 영역 */
+.div4 {
+  grid-area: 4 / 1 / 5 / 4;
+  margin-left: 20px;
+  background-color: #fefbe0;
+  border: 2px solid #fdf5a9;
+  overflow-y: auto;
+  max-height: 330px;
+  padding-bottom: 1rem;
+}
+
+.div5 {
+  grid-area: 4 / 4 / 5 / 7;
+  margin: 10px 15px 0px 20px;
+  background-color: #fefbe0;
+  border: 2px solid #fdf5a9;
+  overflow-y: auto;
+  max-height: 330px;
+  padding-bottom: 1rem;
+}
+
+/* 문법, 단어 공통 스타일 */
+.grammar h4,
+.voca h4 {
+  color: #4caf50;
+  margin: 10px 20px 20px 20px;
+  border-bottom: 1px solid #ccc;
+  font-weight: bold;
+}
+
+.grammar p,
+.voca p {
+  font-size: 0.95rem;
+  color: #766b6b;
+  margin-left: 20px;
+  font-weight: 550;
+  margin-bottom: 0.5rem;
+}
+
+/* 언어 선택 */
+.div6 {
+  grid-area: 2 / 7 / 2 / 10;
+  background: #dbe9d3;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* gap: 0.7rem; */
+  flex-wrap: wrap;
+  margin: 0px 20px 20px 0px;
+  border-radius: 12px;
+  border: #cde7be 1px solid;
+}
+
+.lang-select {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 0rem 1rem;
+  justify-content: center;
+}
+
+.lang-select label {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lang-select input[type="radio"] {
+  appearance: none;
+  width: 17px;
+  height: 17px;
+  border: 1.5px solid #67b98a;
+  border-radius: 50%;
+  background-color: #f7f7ee;
+  cursor: pointer;
+  position: relative;
+}
+
+.lang-select input[type="radio"]:checked {
+  border-color: #67b98a;
+}
+
+.lang-select input[type="radio"]:checked::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #67b98a;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* 래퍼: 이미지/오디오가 div4 안에서 세로 스택 */
+.learn-media-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* 이미지 패널 */
+.learn-image-container { position: relative; width: 100%; }
+.learn-image { width: 100%; height: auto; display: block; object-fit: contain; }
+.learn-image--empty { padding: 2rem; text-align: center; color: #888; border: 1px dashed #ccc; border-radius: 12px; }
+.learn-caption { background: #ffffff6d; font-weight: 700; }
+
+/* 이미지 네비게이션 */
+.learn-image-nav {
+  position: absolute; top: 8px; right: 8px;
+  display: flex; align-items: center; gap: .5rem;
+}
+.learn-page-indicator { font-size: .9rem; color: #333; }
+
+/* 오디오 패널 */
+.learn-audio-panel {
+  background: #fff; border: 1px solid #e8e8e8; border-radius: 12px; padding: .75rem 1rem;
+}
+.learn-audio-controls { display: flex; align-items: center; gap: .75rem; }
+.learn-audio-progress { flex: 1; }
+.learn-audio--empty { padding: .75rem; text-align: center; color: #777; }
+
+/* 공통 버튼 */
+.learn-btn {
+  border: none; background: #fff; border-radius: 12px; cursor: pointer;
+  width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+}
+.learn-btn img { width: 24px; height: 24px; display: block; }
+
