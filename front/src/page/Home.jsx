@@ -18,7 +18,7 @@ const FALLBACK_CARD = {
 
 export default function Home() {
   const navigate = useNavigate();
-  const { token } = useContext(AuthContext) || {};
+  // const { token } = useContext(AuthContext) || {};
   const [selected, setSelected] = useState("A1");
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(false);
