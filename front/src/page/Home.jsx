@@ -52,8 +52,6 @@ export default function Home() {
     fetchStories(selected);
   }, [selected, fetchStories]);
 
-  const openDetailIds = [1, 10, 15, 17, 19, 29, 30, 38];
-
   const onClickStory = (s) => {
     // storyid 제한 없이 항상 이동
     navigate(`/detail?storyid=${s.storyid}&level=${selected}`);
