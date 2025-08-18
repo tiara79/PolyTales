@@ -123,6 +123,7 @@ function Learn() {
   const currentPage = pages[pageNum - 1] || {};
   const image = currentPage?.imagepath || "/img/home/no_image.png";
   const audio = currentPage?.audio;
+  const caption = currentPage?.caption || ""; // 자막 항상 표시
 
   return (
     <div className="parent">
@@ -135,7 +136,18 @@ function Learn() {
       <div className="div3">
         <div className="story-image-container">
           <img className="story-img" src={image} alt={`page-${pageNum}`} />
-          <div className="caption-text">{currentPage.caption || ""}</div>
+          {/* 페이지 진행률 프로그래스바 */}
+          <input
+            type="range"
+            min={1}
+            max={pages.length || 1}
+            value={pageNum}
+            className="learn-audio-progress"
+            style={{ width: "100%", margin: "12px 0" }}
+            readOnly
+          />
+          {/* 자막 항상 표시 */}
+          <div className="caption-text">{caption}</div>
           <div className="caption-box">
             <div className="control-btns">
               <button onClick={goPrev}><img src="/img/learn/prev.png" alt="prev" /></button>
@@ -143,7 +155,7 @@ function Learn() {
               <button onClick={goNext}><img src="/img/learn/next.png" alt="next" /></button>
             </div>
           </div>
-          {audio && <audio src={audio} hidden autoPlay />}
+          <audio src={audio || ""} controls style={{ width: "100%" }} />
         </div>
       </div>
 
