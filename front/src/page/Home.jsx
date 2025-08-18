@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState, useContext, useCallback, useMemo as useMem } from "react";
+import { useCallback, useContext, useEffect, useMemo as useMem, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
 import api from "../api/axios";
+import { AuthContext } from "../context/AuthContext";
 import "../style/Home.css";
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
@@ -108,20 +108,20 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   const headers = useMemo(() => (token ? { Authorization: `Bearer ${token}` } : undefined), [token]);
-
+  
   const fetchStories = useCallback(
     async (level) => {
       setLoading(true);
       try {
         const L = String(level || "A1").toUpperCase();
-        const res = await api.get(`/stories/level/${L}`, { headers });
+        const res = await api.get(`${process.env.REACT_APP_API_URL}/stories/level/${L}`, { headers });
         setStories(Array.isArray(res.data?.data) ? res.data.data : []);
       } catch {
         setStories([]);
       } finally {
         setLoading(false);
       }
-    },
+    },  
     [headers]
   );
 
