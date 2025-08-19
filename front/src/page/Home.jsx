@@ -52,9 +52,8 @@ export default function Home() {
     fetchStories(selected);
   }, [selected, fetchStories]);
 
-  const onClickStory = (s) => {
-    // storyid 제한 없이 항상 이동
-    navigate(`/detail?storyid=${s.storyid}&level=${selected}`);
+  const onClickStory = (story) => {
+    navigate(`/detail?storyid=${story.storyid}&level=${selected}`);
   };
 
   return (
@@ -81,7 +80,7 @@ export default function Home() {
           <div
             key={s.storyid}
             className="image-box"
-            onClick={() => navigate(`/detail?storyid=${s.storyid}&level=${selected}`)}
+            onClick={() => onClickStory(s)}
             style={{ cursor: "pointer" }}
           >
             <img
@@ -99,3 +98,4 @@ export default function Home() {
     </section>
   );
 }
+
