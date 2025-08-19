@@ -1,5 +1,5 @@
 // src/pages/Learn.jsx
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { StoryContext } from "../context/StoryContext";
@@ -11,6 +11,10 @@ import "../style/Learn.css";
 import "../style/Note.css";
 import "../style/PolaChat.css";
 import "../style/StoryLearn.css";
+import ImageViewer from "../components/ImageViewer";
+import AudioPlayer from "../components/AudioPlayer";
+import pause from "../style/img/learn/button/pause.png";
+import play from "../style/img/learn/button/play.png";
 
 function Learn() {
   const navigate = useNavigate();
@@ -24,6 +28,7 @@ function Learn() {
   const [pageNum, setPageNum] = useState(1);
   // const [caption, setCaption] = useState("");
   const [lang, setLang] = useState("ko");
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const [languageData, setLanguageData] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
@@ -119,16 +124,47 @@ function Learn() {
     }
   };
 
+  // 이미지/오디오 경로 최적화
+  function getValidPath(path, fallback) {
+    if (!path) return fallback;
+    return path.startsWith("/") ? path : `/${path}`;
+  }
+
+  // formatCaption 함수 추가 (자막 포맷팅, 필요시 커스텀)
+  function formatCaption(caption) {
+    return caption || "";
+  }
+
+  const togglePlay = useCallback(() => {
+    const audioEl = document.querySelector("audio");
+    if (audioEl) {
+      if (audioEl.paused) {
+        audioEl.play();
+        setIsPlaying(true);
+      } else {
+        audioEl.pause();
+        setIsPlaying(false);
+      }
+    }
+  }, []);
+
   const currentPage = pages[pageNum - 1] || {};
-  // 여러 필드에서 이미지 경로 우선적으로 선택
   const image =
-    currentPage?.image ||
-    currentPage?.imagepath ||
-    currentPage?.storycoverpath ||
-    currentPage?.thumbnail_url ||
-    "/img/home/no_image.png";
-  const audio = currentPage?.audio;
-  const caption = currentPage?.caption || ""; // 자막 항상 표시
+    getValidPath(
+      currentPage.image ||
+      currentPage.imagepath ||
+      currentPage.storycoverpath ||
+      currentPage.thumbnail_url,
+      "/img/home/no_image.png"
+    );
+  const audio =
+    getValidPath(
+      currentPage.audio ||
+      currentPage.audiopath ||
+      currentPage.storyaudiopath,
+      ""
+    );
+  const caption = currentPage.caption || ""; // 자막 항상 표시
 
   return (
     <div className="parent">
@@ -138,37 +174,49 @@ function Learn() {
         <button className="close-button" onClick={handleCloseClick}><img src="/img/learn/close.png" alt="close" /></button>
       </div>
 
+      {/* 이미지 및 자막 영역 */}
       <div className="div3">
         <div className="story-image-container">
-          <img
-            className="story-img"
-            src={image}
-            alt={`page-${pageNum}`}
-            onError={e => { e.currentTarget.src = "/img/home/no_image.png"; }}
-          />
-          {/* 페이지 진행률 프로그래스바 */}
-          <input
-            type="range"
-            min={1}
-            max={pages.length || 1}
-            value={pageNum}
-            className="learn-audio-progress"
-            style={{ width: "100%", margin: "12px 0" }}
-            readOnly
-          />
-          {/* 자막 항상 표시 */}
-          <div className="caption-text">{caption}</div>
-          <div className="caption-box">
-            <div className="control-btns">
-              <button onClick={goPrev}><img src="/img/learn/prev.png" alt="prev" /></button>
-              <button onClick={() => document.querySelector("audio")?.play()}><img src="/img/learn/play.png" alt="play" /></button>
-              <button onClick={goNext}><img src="/img/learn/next.png" alt="next" /></button>
-            </div>
-          </div>
-          <audio src={audio || ""} controls style={{ width: "100%" }} />
+          {pages.length > 0 && (
+            <>
+              <img
+                src={pages[pageNum - 1]?.imagepath || "/img/home/no_image.png"}
+                alt={`Page ${pageNum}`}
+                className="story-img"
+                onError={e => { e.currentTarget.src = "/img/home/no_image.png"; }}
+              />
+              <div className="caption-text">{formatCaption(pages[pageNum - 1]?.caption)}</div>
+              <div className="caption-box">
+                <div className="control-btns">
+                  <button onClick={goPrev} disabled={pageNum === 1} className="btn Text">
+                    <span className="icon" />
+                    <span>이전 문장</span>
+                  </button>
+                  <button onClick={togglePlay} className="btn pause">
+                    <img src={isPlaying ? pause : play} alt="play/pause" />
+                  </button>
+                  <button onClick={goNext} disabled={pageNum === pages.length} className="btn Text">
+                    <span className="icon" />
+                    <span>다음 문장</span>
+                  </button>
+                </div>
+              </div>
+              <div className="progress-bar">
+                <div className="progress" style={{ width: `${(pageNum / pages.length) * 100}%` }} />
+              </div>
+              {/* 오디오 태그는 숨김 처리 또는 필요시 추가 */}
+              <audio
+                src={pages[pageNum - 1]?.audio || ""}
+                style={{ display: "none" }}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+              />
+            </>
+          )}
         </div>
       </div>
 
+         {/* 문법/단어 영역 */}
       <div className="div4 grammar">
         <h4>문법</h4>
         <div className="grammar-list">

@@ -1,9 +1,14 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
+import addbtn from '../style/img/admin/addbtn.png';
+import emptydata from '../style/img/admin/emptydata.png';
+import findglass from '../style/img/admin/findglass.png';
 import '../style/AdmHome.css';
 
 export default function Admin() {
+    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [content, setContent] = useState('');
     const [searchFilter, setSearchFilter] = useState('타이틀');
@@ -21,15 +26,40 @@ export default function Admin() {
         '한국레벨',
         '토픽'
     ];
-    
 
     // 테스트 데이터 배열
-    const testDataList = useMemo(() => [
-  { storyid: 1, thumbnail: "lilys_happy_day.jpg", storytitle: "Lily's Happy Day" },
-  { storyid: 2, thumbnail: "lion.png", storytitle: "Lion Story" },
-  { storyid: 3, thumbnail: "cat.png", storytitle: "Cat Story" },
-  { storyid: 4, thumbnail: "tiger.png", storytitle: "Tiger Story" }
-], []);
+    const testDataList = [
+        {
+            storyId: '01',
+            title: "Lily's Happy Day",
+            imagePath: 'http://cdn.polytales.kr/lilystory.png',
+            thumbnail: '썸네일1.jpg',
+            video: 'lilys_happy_day_video.mp4',
+            description: '릴리의 행복한 하루를 따라가며, 친구들과 함께하는 즐거운 이야기',
+            koreanLevel: '초급',
+            topic: '일상'
+        },
+        {
+            storyId: '02',
+            title: 'Adventure Story',
+            imagePath: 'http://cdn.polytales.kr/adventure.png',
+            thumbnail: '썸네일2.jpg',
+            video: 'adventure_video.mp4',
+            description: '모험을 떠나는 친구들의 신나는 이야기',
+            koreanLevel: '중급',
+            topic: '모험'
+        },
+        {
+            storyId: '03',
+            title: 'Magic Forest',
+            imagePath: 'http://cdn.polytales.kr/forest.png',
+            thumbnail: '썸네일3.jpg',
+            video: 'magic_forest_video.mp4',
+            description: '마법의 숲에서 벌어지는 환상적인 이야기',
+            koreanLevel: '초급',
+            topic: '판타지'
+        }
+    ];
 
 
     // localStorage에서 story_로 시작하는 데이터 읽어오기
@@ -59,7 +89,7 @@ export default function Admin() {
             }
         });
         setContentList(merged);
-    }, [showTestData, testDataList]);
+    }, [showTestData]);
 
     // 검색 필터링 로직
     const getFilteredData = () => {
@@ -106,7 +136,7 @@ export default function Admin() {
     });
 
     // 페이지네이션 로직 (필터링된 데이터 기준)
-    const totalpage = Math.ceil(filteredData.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentItems = filteredData.slice(startIndex, endIndex);
@@ -134,7 +164,16 @@ export default function Admin() {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [testDataList]);
+    }, []);
+
+    // 어드민 접근 자격(role=1) 검증
+    // useEffect(() => {
+    //     // 로그인하지 않았거나 role이 1이 아닌 경우
+    //     if (!user || user.role !== 1) {
+    //         toast.error('관리자 외 진입 불가합니다.');
+    //         navigate('/'); // 랜딩페이지로 리다이렉트
+    //     }
+    // }, [user, navigate]);
 
     // // role이 1이 아닌 경우 아무것도 렌더링하지 않음
     // if (!user || user.role !== 1) {
@@ -202,12 +241,12 @@ export default function Admin() {
                                 placeholder="컨텐츠를 검색해 보세요"
                                 className='search-input'
                             />
-                            <img  src="/img/admin/find_glass.png" alt="Search" className='search-icon' />
+                            <img src={findglass} alt="Search" className='search-icon' />
                         </div>
                     </div>
                     <img
-                        src="/img/admin/edit_btn.png"
-                        alt="edit-btn"
+                        src={addbtn}
+                        alt="Add-btn"
                         className='add-icon'
                         onClick={handleAddContent}
                         title="컨텐츠 추가"
@@ -237,7 +276,7 @@ export default function Admin() {
                                 <tr>
                                     <td colSpan="8" className='empty-table-cell'>
                                         <div className='empty-state'>
-                                            <img  src="/img/admin/empty_data.png" alt="No data" className='empty-icon' />
+                                            <img src={emptydata} alt="No data" className='empty-icon' />
                                             <p className='empty-message'>
                                                 {content.trim() ? '검색 결과가 없습니다.' : '아직 어떤 컨텐츠도 없습니다. 컨텐츠를 작성해 주세요.'}
                                             </p>
@@ -269,9 +308,9 @@ export default function Admin() {
                 </div>
 
                 {/* 페이지네이션 */}
-                {totalpage > 1 && (
+                {totalPages > 1 && (
                     <div className='pagination'>
-                        {Array.from({ length: totalpage }, (_, i) => i + 1).map(pageNumber => (
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNumber => (
                             <button
                                 key={pageNumber}
                                 className={`pagination-btn ${currentPage === pageNumber ? 'active' : ''}`}
