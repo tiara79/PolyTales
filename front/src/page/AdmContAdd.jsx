@@ -67,9 +67,9 @@ export default function AdmContAdd() {
             }
         }
         const newId = (maxId + 1).toString().padStart(2, '0');
-        const newContent = { ...form, storyId: newId };
+        const newContent = { ...form, storyid: newId }; // storyId → storyid
         localStorage.setItem(`story_${newId}`, JSON.stringify(newContent));
-        navigate(`/admcontdetail/${newId}`); // storyId → storyid (newId는 그대로 사용)
+        navigate(`/admcontdetail/${newId}`);
     };
 
     return (

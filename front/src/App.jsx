@@ -12,7 +12,7 @@ import AdmContAdd from "./page/AdmContAdd";
 import AdmContDetail from "./page/AdmContDetail";
 import AdmContEdit from "./page/AdmContEdit";
 import AdmHome from "./page/AdmHome";
-import BookMark from "./page/BookMark";
+import BookMark from "./page/Bookmark";
 import Detail from "./page/Detail";
 import History from "./page/History";
 import Home from "./page/Home";

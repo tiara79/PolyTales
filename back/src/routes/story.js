@@ -31,4 +31,15 @@ router.post('/', required, storyController.createStory);
 router.put('/:level/detail/:id', required, storyController.updateStory);
 router.delete('/:level/detail/:id', required, storyController.deleteStory);
 
+// 변경 또는 추가된 부분
+router.get('/story/langlevel/:langlevel', async (req, res) => {
+  try {
+    const langlevel = req.params.langlevel;
+    const stories = await Story.findAll({ where: { langlevel } });
+    res.json({ data: stories });
+  } catch (e) {
+    res.status(500).json({ message: 'Failed to fetch story', error: e.message });
+  }
+});
+
 module.exports = router;

@@ -78,7 +78,7 @@ const updateNote = async (req, res) => {
   try {
     if (!req.user?.userid) return res.status(401).json({ message: "unauthorized" });
 
-    const noteid = Number(req.params.noteid); // 변수명도 noteid로 변경
+    const noteid = Number(req.params.noteid);
     const { title, content } = req.body || {};
     if (!title || !content) return res.status(400).json({ message: "Both title and content are required." });
 
@@ -99,7 +99,7 @@ const deleteNote = async (req, res) => {
   try {
     if (!req.user?.userid) return res.status(401).json({ message: "unauthorized" });
 
-    const noteid = Number(req.params.noteid); // 변수명도 noteid로 변경
+    const noteid = Number(req.params.noteid);
     const note = await Note.findByPk(noteid);
     if (!note) return res.status(404).json({ message: "Note not found." });
     if (note.userid !== req.user.userid && req.user.role !== 1) return res.status(403).json({ message: "forbidden" });

@@ -105,17 +105,16 @@ export default function BookMark() {
   const navigate = useNavigate();
   const { BookMarks } = useContext(BookMarkContext);
   const storyContext = useContext(StoryContext);
-
-  const [selected, setSelected] = useState("A1");
-
-  //  경고 해결: stories를 먼저 분리해서 의존성 안정화
-  const stories = storyContext?.stories;
+  // stories → story
+  const story = storyContext?.story;
   const byId = useMemo(() => {
-    const arr = stories || [];
+    const arr = story || [];
     const m = new Map();
     arr.forEach((s) => m.set(String(s.storyid), s));
     return m;
-  }, [stories]);
+  }, [story]);
+
+  const [selected, setSelected] = useState("A1");
 
   const filtered = useMemo(() => {
     const list = Array.isArray(BookMarks) ? BookMarks : [];
@@ -178,4 +177,5 @@ export default function BookMark() {
       </div>
     </div>
   );
+}
 }

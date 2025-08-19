@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import '../style/AdmContEdit.css';
 
 export default function AdmContEdit() {
-    const { storyid } = useParams(); // storyId → storyid
+    const { storyid } = useParams();
     const navigate = useNavigate();
     const goBack = () => navigate(-1);
 
@@ -24,17 +24,17 @@ export default function AdmContEdit() {
         // 없으면 기존 테스트 데이터 사용
         const testDataList = [
             {
-                storyId: '01',
+                storyid: '01',
                 title: "Lily's Happy Day",
-                imagePath: 'http://cdn.polytales.kr/lilystory.png',
-                thumbnail: '썸네일1.jpg',
+                imagePath: '/img/contents/lilys_happy_day.jpg',
+                thumbnail: 'lilys_happy_day.jpg',
                 video: 'lilys_happy_day_video.mp4',
                 description: '릴리의 행복한 하루를 따라가며, 친구들과 함께하는 즐거운 이야기',
                 koreanLevel: '초급',
                 topic: '일상'
             },
             {
-                storyId: '02',
+                storyid: '02',
                 title: 'Adventure Story',
                 imagePath: 'http://cdn.polytales.kr/adventure.png',
                 thumbnail: '썸네일2.jpg',
@@ -44,7 +44,7 @@ export default function AdmContEdit() {
                 topic: '모험'
             },
             {
-                storyId: '03',
+                storyid: '03',
                 title: 'Magic Forest',
                 imagePath: 'http://cdn.polytales.kr/forest.png',
                 thumbnail: '썸네일3.jpg',
@@ -54,7 +54,7 @@ export default function AdmContEdit() {
                 topic: '판타지'
             }
         ];
-        const foundContent = testDataList.find(item => item.storyId === storyid);
+        const foundContent = testDataList.find(item => item.storyid === storyid);
         if (foundContent) {
             setContentData(foundContent);
         } else {

@@ -4,7 +4,7 @@ import '../style/AdmContDetail.css'; // 스타일 파일 임포트
  // 수정 버튼 이미지 임포트
 
 export default function AdmContDetail() {
-    const { storyid } = useParams(); // storyId → storyid
+    const { storyid } = useParams();
     const navigate = useNavigate();
     const goBack = () => navigate(storyid ? "/admhome" : -1);
 
@@ -22,7 +22,7 @@ export default function AdmContDetail() {
         // 없으면 기존 테스트 데이터 사용
         const testDataList = [
             {
-                storyId: '01',
+                storyid: '01',
                 title: "Lily's Happy Day",
                 imagePath: '/img/contents/lilys_happy_day.jpg',
                 thumbnail: 'lilys_happy_day.jpg',
@@ -32,7 +32,7 @@ export default function AdmContDetail() {
                 topic: '일상'
             },
             {
-                storyId: '02',
+                storyid: '02',
                 title: 'Cute Wolf reads fairy tales',
                 imagePath: '/img/contents/cute_wolf_reads_fairy_tales.jpg',
                 thumbnail: 'cute_wolf_reads_fairy_tales.jpg',
@@ -42,7 +42,7 @@ export default function AdmContDetail() {
                 topic: '동화'
             },
             {
-                storyId: '03',
+                storyid: '03',
                 title: 'Cinderella',
                 imagePath: '/img/contents/cinderella.jpg',
                 thumbnail: 'cinderella.jpg',
@@ -52,7 +52,7 @@ export default function AdmContDetail() {
                 topic: '동화'
             }
         ];
-        const foundContent = testDataList.find(item => item.storyId === storyid);
+        const foundContent = testDataList.find(item => item.storyid === storyid);
         if (foundContent) {
             setContentData(foundContent);
         } else {
