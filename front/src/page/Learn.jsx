@@ -11,8 +11,6 @@ import "../style/Learn.css";
 import "../style/Note.css";
 import "../style/PolaChat.css";
 import "../style/StoryLearn.css";
-import ImageViewer from "../components/ImageViewer";
-import AudioPlayer from "../components/AudioPlayer";
 import pause from "../style/img/learn/button/pause.png";
 import play from "../style/img/learn/button/play.png";
 
