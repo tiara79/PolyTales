@@ -20,7 +20,7 @@ export default function MyNotes() {
     (async () => {
       try {
         // GET /note/:userid
-        const res = await api.get(`/note/${user.userid}`);
+        const res = await api.get(`/note/${user.userid}`); 
         const list = Array.isArray(res.data?.data) ? res.data.data : [];
         // 날짜 내림차순
         list.sort((a, b) => new Date(b.createdat) - new Date(a.createdat));

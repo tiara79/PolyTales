@@ -31,7 +31,7 @@ function Learn() {
   const [isChatLoading, setIsChatLoading] = useState(false);
 
   const { user, token } = useContext(AuthContext);
-  const { story } = useContext(StoryContext); // stories → story
+  const { story } = useContext(StoryContext); 
 
   const storyid = searchParams.get("storyid") || 1;
   const currentStory = story.find((s) => s.storyid === Number(storyid));
@@ -51,7 +51,7 @@ function Learn() {
   }
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/storylearn/${storyid}?lang=${lang}`) // /learn → /storylearn
+    fetch(`${process.env.REACT_APP_API_URL}/storylearn/${storyid}?nation=${lang}`) // lang → nation
       .then((res) => res.json())
       .then((result) => {
         setPages(result.pages || []);
@@ -83,8 +83,7 @@ function Learn() {
     try {
       const headers = { "Content-Type": "application/json" };
       if (token) headers.Authorization = `Bearer ${token}`;
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/notes`, {
-        method: "POST",
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/note`, { 
         headers,
         body: JSON.stringify(noteData),
       });

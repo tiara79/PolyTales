@@ -1,5 +1,5 @@
 // back/src/controllers/learnController.js
-const { learn } = require('../models');
+const { storylearn } = require('../models');
 
 
 // img : img\a1\lily
@@ -9,10 +9,10 @@ const { learn } = require('../models');
 
 const getLearnpage = async (req, res) => {
   const { storyid } = req.params;
-  const { lang } = req.query;
+  const nation = req.query.nation || 'ko'; // lang → nation
   try {
-    const rows = await learn.findAll({
-      where: { storyid, nation: lang || 'ko' },
+    const rows = await storylearn.findAll({
+      where: { storyid, nation },
       order: [['pagenumber', 'ASC']],
     });
 
@@ -20,7 +20,7 @@ const getLearnpage = async (req, res) => {
     const data = rows.map(r => r.toJSON());
     return res.json(data);
   } catch (err) {
-    console.error('learn fetch error:', err);
+    console.error('storylearn fetch error:', err);
     return res.status(500).json({ message: 'Server Error' });
   }
 };

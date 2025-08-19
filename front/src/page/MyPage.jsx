@@ -8,82 +8,82 @@ import { StoryContext } from "../context/StoryContext";
 import "../style/MyPage.css";
 import { getProfileImageUrl } from "../util/imageUtil";
 
-// ===== 이미지 유틸 최적화 =====
-const imageUtils = {
-  isAbsolute: (url) => /^https?:\/\//i.test(String(url || "")),
-  normalize: (path = "") => String(path).replace(/\\/g, "/").replace(/([^:]\/)\/+/g, "$1"),
-  getBaseName: (path = "") => {
-    const normalized = imageUtils.normalize(String(path));
-    const lastIndex = normalized.lastIndexOf("/");
-    return lastIndex >= 0 ? normalized.slice(lastIndex + 1) : normalized;
-  },
-  slugifyTitle: (title = "") => {
-    const slug = String(title)
-      .toLowerCase()
-      .replace(/'/g, "")
-      .replace(/&/g, "and")
-      .replace(/[^a-z0-9]+/g, " ")
-      .trim();
-    return Array.from(new Set([
-      slug.replace(/\s+/g, "_"), 
-      slug.replace(/\s+/g, "-")
-    ]));
-  },
-  getLocalPaths: (name, level) => {
-    const baseName = imageUtils.getBaseName(name);
-    if (!baseName) return [];
-    
-    const levelLower = String(level || "").toLowerCase();
-    const paths = [`/img/contents/${baseName}`, `/img/detail/${baseName}`];
-    if (levelLower) paths.push(`/img/${levelLower}/${baseName}`);
-    return paths;
-  },
-  deduplicate: (urls) => {
-    const result = [];
-    const seen = new Set();
-    
-    for (const url of (urls || []).filter(Boolean)) {
-      const key = imageUtils.isAbsolute(url) ? url : imageUtils.normalize(url);
-      if (!seen.has(key)) {
-        seen.add(key);
-        result.push(key);
-      }
-    }
-    return result;
-  }
+// ===== 이미지 유틸 최적화 (통합) =====
+const getImageCandidates = (item, story, fallbackImage) => {
+  const isAbs = (u) => /^https?:\/\//i.test(String(u || ""));
+  const norm = (p = "") => String(p).replace(/\\/g, "/").replace(/([^:]\/)\/+/g, "$1");
+  const baseName = (p = "") => {
+    const s = norm(String(p));
+    const i = s.lastIndexOf("/");
+    return i >= 0 ? s.slice(i + 1) : s;
+  };
+  const slugify = (title = "") => {
+    const s = String(title).toLowerCase().replace(/'/g, "").replace(/&/g, "and").replace(/[^a-z0-9]+/g, " ").trim();
+    return Array.from(new Set([s.replace(/\s+/g, "_"), s.replace(/\s+/g, "-")]));
+  };
+
+  const level = story?.langlevel || item.langlevel;
+  const title = story?.storytitle || item.storytitle;
+
+  // 후보 이미지 경로 모으기
+  const candidates = [
+    ...(Array.isArray(story?.cover_candidates) ? story.cover_candidates : []),
+    story?.thumbnail_url,
+    story?.storycoverpath,
+    story?.thumbnail,
+    item.thumb,
+    item.storycoverpath,
+    ...(Array.isArray(item.thumbCandidates) ? item.thumbCandidates : []),
+    ...slugify(title)
+      .flatMap((slug) =>
+        ["jpg", "png", "webp"].flatMap((ext) =>
+          [`/img/contents/${slug}.${ext}`, `/img/detail/${slug}.${ext}`, level ? `/img/${level.toLowerCase()}/${slug}.${ext}` : null]
+        )
+      ),
+    fallbackImage,
+  ].filter(Boolean);
+
+  // 중복 제거 및 경로 정규화
+  const seen = new Set();
+  return candidates.filter((u) => {
+    const k = isAbs(u) ? u : norm(u);
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
 };
 
 // 북마크/읽은 책 이미지 후보 생성 최적화
 const buildImageCandidates = (item, story, fallbackImage) => {
   const title = story?.storytitle || item.storytitle;
   const level = story?.langlevel || item.langlevel;
-  
+
   const storyImages = [
     ...(Array.isArray(story?.cover_candidates) ? story.cover_candidates : []),
     story?.thumbnail_url,
     story?.storycoverpath,
     story?.thumbnail,
   ];
-  
+
   const itemImages = [
     item.thumb,
     item.storycoverpath,
-    ...(Array.isArray(item.thumbCandidates) ? item.thumbCandidates : [])
+    ...(Array.isArray(item.thumbCandidates) ? item.thumbCandidates : []),
   ];
-  
+
   const titleImages = imageUtils.slugifyTitle(title)
-    .flatMap(slug => 
-      ["jpg", "png", "webp"].flatMap(ext => 
+    .flatMap((slug) =>
+      ["jpg", "png", "webp"].flatMap((ext) =>
         [`${slug}.${ext}`, `${slug}_1.${ext}`]
       )
     )
-    .flatMap(name => imageUtils.getLocalPaths(name, level));
-  
+    .flatMap((name) => imageUtils.getLocalPaths(name, level));
+
   return imageUtils.deduplicate([
-    ...itemImages, 
-    ...storyImages, 
-    ...titleImages, 
-    fallbackImage
+    ...itemImages,
+    ...storyImages,
+    ...titleImages,
+    fallbackImage,
   ]);
 };
 
@@ -92,11 +92,11 @@ const BookCard = ({ item, type, onSelect }) => {
   const story = useMemo(() => {
     return new Map().get(String(item.storyid));
   }, [item.storyid]);
-  
+
   const imageUrl = useMemo(() => {
-    const candidates = buildImageCandidates(
-      item, 
-      story, 
+    const candidates = getImageCandidates(
+      item,
+      story,
       type === "bookmark" ? "/img/mypage/no_bookmark.png" : "/img/home/no_read.png"
     );
     return candidates[0] || "/img/mypage/no_bookmark.png";
@@ -121,13 +121,13 @@ const NoContent = ({ type }) => {
     bookmark: {
       image: "/img/mypage/no_bookmark.png",
       title: "아직 북마크한 책이 없어요",
-      subtitle: "좋아하는 이야기를 찾아보세요!"
+      subtitle: "좋아하는 이야기를 찾아보세요!",
     },
     read: {
-      image: "/img/home/no_read.png", 
+      image: "/img/home/no_read.png",
       title: "아직 읽은 책이 없어요",
-      subtitle: "새로운 이야기를 시작해보세요!"
-    }
+      subtitle: "새로운 이야기를 시작해보세요!",
+    },
   };
 
   const { image, title, subtitle } = config[type] || config.read;
@@ -145,7 +145,7 @@ export default function MyPage() {
   // ===== Hooks 및 Context =====
   const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
-  const { allStories } = useContext(StoryContext);
+  const { story } = useContext(StoryContext);
 
   // ===== State 관리 =====
   const [readBooks, setReadBooks] = useState([]);
@@ -162,11 +162,11 @@ export default function MyPage() {
   // ===== Memoized Values =====
   const storyMap = useMemo(() => {
     const map = new Map();
-    (allStories || []).forEach((story) => {
-      if (story?.storyid) map.set(String(story.storyid), story);
+    (story || []).forEach((s) => {
+      if (s?.storyid) map.set(String(s.storyid), s);
     });
     return map;
-  }, [allStories]);
+  }, [story]);
 
   useEffect(() => {
     const fetchReadBooks = async () => {
@@ -175,7 +175,7 @@ export default function MyPage() {
         return;
       }
       try {
-        const res = await api.get(`/notes/${user.userid}`);
+        const res = await api.get(`/note/${user.userid}`); 
         const data = Array.isArray(res.data?.data) ? res.data.data : [];
         const mapped = [];
         for (const n of data) {
@@ -242,7 +242,7 @@ export default function MyPage() {
 
     setIsWithdrawing(true);
     try {
-      const requestBody = user.oauthprovider 
+      const requestBody = user.oauthprovider
         ? {} // 소셜 로그인 사용자는 비밀번호 불필요
         : { password: withdrawPassword };
 
@@ -287,7 +287,8 @@ export default function MyPage() {
         <div className="MyPage-wrapper">
           <div className="profile-box">
             <p className="join-date">
-              가입일 : {user?.terms_agreed_at
+              가입일 :{" "}
+              {user?.terms_agreed_at
                 ? new Date(user.terms_agreed_at).toLocaleDateString()
                 : user?.createdat
                 ? new Date(user.createdat).toLocaleDateString()
@@ -310,7 +311,9 @@ export default function MyPage() {
                 style={{ cursor: "pointer", opacity: isUploading ? 0.5 : 1 }}
               />
               {isHovering && (
-                <div className="profile-img-overlay" onClick={handleProfileImageClick}>📷</div>
+                <div className="profile-img-overlay" onClick={handleProfileImageClick}>
+                  📷
+                </div>
               )}
               {isUploading && <div className="upload-loading">업로드 중...</div>}
             </div>
@@ -330,11 +333,17 @@ export default function MyPage() {
             <div className="profile-email">{user?.email}</div>
 
             <div className="button-container">
-              <button className="report-btn" onClick={() => navigate("/report")}>학습 정보</button>
-              <button className="plan-btn" onClick={() => navigate("/plan")}>구독 이력</button>
+              <button className="report-btn" onClick={() => navigate("/report")}>
+                학습 정보
+              </button>
+              <button className="plan-btn" onClick={() => navigate("/plan")}>
+                구독 이력
+              </button>
             </div>
 
-            <button className="exit" onClick={() => setShowWithdrawModal(true)}>회원 탈퇴</button>
+            <button className="exit" onClick={() => setShowWithdrawModal(true)}>
+              회원 탈퇴
+            </button>
           </div>
 
           <div className="contents-list-wrap">
@@ -342,7 +351,9 @@ export default function MyPage() {
             <div className="read-book">
               <div className="read-header">
                 <h2 className="read-title">내가 읽은 책들</h2>
-                <button className="more-btn" onClick={() => navigate("/history")}>더보기</button>
+                <button className="more-btn" onClick={() => navigate("/history")}>
+                  더보기
+                </button>
               </div>
               <hr />
               {loading ? (
@@ -379,16 +390,16 @@ export default function MyPage() {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>회원탈퇴</h3>
-              <button className="modal-close" onClick={() => setShowWithdrawModal(false)}>×</button>
+              <button className="modal-close" onClick={() => setShowWithdrawModal(false)}>
+                ×
+              </button>
             </div>
             <div className="modal-body">
               <p className="withdraw-warning">
                 ⚠️ 회원탈퇴 시 모든 데이터가 삭제되며, 복구할 수 없습니다.
               </p>
-              <p className="withdraw-info">
-                정말로 탈퇴하시겠습니까?
-              </p>
-              
+              <p className="withdraw-info">정말로 탈퇴하시겠습니까?</p>
+
               {/* 로컬 계정 사용자만 비밀번호 입력 */}
               {!user?.oauthprovider && (
                 <div className="password-input-group">
@@ -405,15 +416,15 @@ export default function MyPage() {
               )}
             </div>
             <div className="modal-footer">
-              <button 
-                className="cancel-btn" 
+              <button
+                className="cancel-btn"
                 onClick={() => setShowWithdrawModal(false)}
                 disabled={isWithdrawing}
               >
                 취소
               </button>
-              <button 
-                className="withdraw-btn" 
+              <button
+                className="withdraw-btn"
                 onClick={handleWithdraw}
                 disabled={isWithdrawing || (!user?.oauthprovider && !withdrawPassword.trim())}
               >
