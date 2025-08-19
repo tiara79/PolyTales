@@ -11,8 +11,6 @@ import "../style/Learn.css";
 import "../style/Note.css";
 import "../style/PolaChat.css";
 import "../style/StoryLearn.css";
-import pause from "../style/img/learn/button/pause.png";
-import play from "../style/img/learn/button/play.png";
 
 function Learn() {
   const navigate = useNavigate();
@@ -24,7 +22,6 @@ function Learn() {
 
   const [pages, setPages] = useState([]);
   const [pageNum, setPageNum] = useState(1);
-  // const [caption, setCaption] = useState("");
   const [lang, setLang] = useState("ko");
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -39,10 +36,16 @@ function Learn() {
   const currentStory = stories.find((s) => s.storyid === Number(storyid));
   const currentLangLevel = currentStory?.langlevel || "A1";
 
-  const handleCloseClick = () => navigate("/");
+  const handleCloseClick = () => navigate("/detail");
   const handleReadFromStart = () => setPageNum(1);
   const goPrev = () => setPageNum((p) => Math.max(1, p - 1));
   const goNext = () => setPageNum((p) => Math.min(p + 1, pages.length));
+
+  // formatCaption 함수 개선: \n → 줄바꿈 처리
+  function formatCaption(caption) {
+    if (!caption) return "";
+    return String(caption).replace(/\\n/g, '\n');
+  }
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/learn/${storyid}?lang=${lang}`)
@@ -50,9 +53,15 @@ function Learn() {
       .then((result) => {
         setPages(result.pages || []);
         setLanguageData(result.language || []);
+        // 자막 줄바꿈 처리
+        const current = (result.pages || [])[pageNum - 1];
+        if (current && current.caption) {
+          const cleanCaption = current.caption.replace(/\\n/g, '\n');
+          setCaption(cleanCaption);
+        }
       })
       .catch((e) => console.error("데이터 로딩 오류:", e));
-  }, [lang, storyid]);
+  }, [lang, storyid, pageNum]);
 
   const saveNote = async () => {
     const title = noteTitleRef.current?.value.trim();
@@ -125,11 +134,6 @@ function Learn() {
     return path.startsWith("/") ? path : `/${path}`;
   }
 
-  // formatCaption 함수 추가 (자막 포맷팅, 필요시 커스텀)
-  function formatCaption(caption) {
-    return caption || "";
-  }
-
   const togglePlay = useCallback(() => {
     const audioEl = document.querySelector("audio");
     if (audioEl) {
@@ -144,6 +148,7 @@ function Learn() {
   }, []);
 
   const currentPage = pages[pageNum - 1] || {};
+  
   const image =
     getValidPath(
       currentPage.image ||
@@ -159,7 +164,6 @@ function Learn() {
       currentPage.storyaudiopath,
       ""
     );
-  const caption = currentPage.caption || ""; // 자막 항상 표시
 
   return (
     <div className="parent">
@@ -182,7 +186,7 @@ function Learn() {
                 className="story-img"
                 onError={e => { e.currentTarget.src = "/img/home/no_image.png"; }}
               />
-              <div className="caption-text">{formatCaption(pages[pageNum - 1]?.caption)}</div>
+              <div className="caption-text">{formatCaption(caption)}</div>
               <div className="caption-box">
                 <div className="control-btns">
                   <button onClick={goPrev} disabled={pageNum === 1} className="btn Text">
@@ -190,7 +194,7 @@ function Learn() {
                     <span>이전 문장</span>
                   </button>
                   <button onClick={togglePlay} className="btn pause">
-                    <img src={isPlaying ? pause : play} alt="play/pause" />
+                    <img src={isPlaying ? "/img/learn/button/pause.png" : "/img/learn/button/play.png"} alt="play/pause" />
                   </button>
                   <button onClick={goNext} disabled={pageNum === pages.length} className="btn Text">
                     <span className="icon" />
@@ -256,12 +260,21 @@ function Learn() {
           <img src="/img/learn/disk_icon.png" alt="save" className="save-note" onClick={saveNote} />
         </div>
         <div className="note-title">
-          <label>Title: <input ref={noteTitleRef} type="text" className="note-input underline" /></label>
+          <label htmlFor="noteTitle" className="underline-note">Title :</label>
+          <input id="noteTitle" ref={noteTitleRef} type="text" className="note-input underline" />
         </div>
-        <textarea className="note-content" ref={noteContentRef} />
+        <textarea className="note-content" placeholder="" ref={noteContentRef} defaultValue="" />
       </div>
 
+
+      {/* 채팅 영역 */}
       <div className="div8">
+        <div>
+          <div className="tutor-lang-select">
+            <span className="tutor-info">채팅 내역은 저장되지 않습니다.</span>
+            <span className="tutor-info notelang">노트로 저장</span>
+          </div>
+        </div>
         <div className="chat-header">
           <div className="pola-badge">
             <span className="tutor-ai">AI tutor Pola</span>
@@ -275,8 +288,17 @@ function Learn() {
         </div>
 
         <div className="chat-input-box">
-          <textarea ref={chatInputRef} onKeyDown={handleChatKeyDown} className="chat-input" disabled={isChatLoading} />
-          <button className="chat-send" onClick={handleChatSend} disabled={isChatLoading}><img src="/img/learn/send.png" alt="send" /></button>
+          <textarea
+            ref={chatInputRef}
+            className="chat-input"
+            placeholder="comes up 예제 추가해 주세요."
+            onKeyDown={handleChatKeyDown}
+            disabled={isChatLoading}
+            defaultValue=""
+          />
+          <button className="chat-send" onClick={handleChatSend} disabled={isChatLoading}>
+            <img src="/img/learn/send.png" alt="send button" />
+          </button>
         </div>
       </div>
     </div>

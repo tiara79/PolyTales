@@ -11,7 +11,7 @@ const LEVEL_LABELS = { A1: "초급", A2: "초중급", B1: "중급", B2: "중고�
 const FALLBACK_CARD = {
   storyid: 1,
   storytitle: "Lily's happy day",
-  storycoverpath: "/img/contents/lilys_happy_day.jpg", // 경로가 올바르게 수정됨
+  storycoverpath: "/img/contents/lilys_happy_day.jpg", 
   langlevel: "A1",
   can_access: true
 };
