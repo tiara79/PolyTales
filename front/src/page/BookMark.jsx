@@ -1,8 +1,8 @@
-// src/page/BookMark.jsx
+// src/page/Bookmark.jsx
 import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
-import { BookMarkContext } from "../context/BookmarkContext";
+import { BookmarkContext } from "../context/BookmarkContext"; // 파일명 Bookmark.jsx와 일치
 import { StoryContext } from "../context/StoryContext";
 import "../style/Bookmark.css";
 import "../style/History.css"; // 헤더(뒤로가기/제목) 스타일 재사용
@@ -101,11 +101,10 @@ async function resolveAndGo(navigate, storyid, hintLevel, state) {
   window.alert("준비 중인 콘텐츠입니다.");
 }
 
-export default function BookMark() {
+export default function Bookmark() { // 컴포넌트명 Bookmark와 파일명 일치
   const navigate = useNavigate();
-  const { BookMarks } = useContext(BookMarkContext);
+  const { bookmarks } = useContext(BookmarkContext);
   const storyContext = useContext(StoryContext);
-  // stories → story
   const story = storyContext?.story;
   const byId = useMemo(() => {
     const arr = story || [];
@@ -117,9 +116,9 @@ export default function BookMark() {
   const [selected, setSelected] = useState("A1");
 
   const filtered = useMemo(() => {
-    const list = Array.isArray(BookMarks) ? BookMarks : [];
+    const list = Array.isArray(bookmarks) ? bookmarks : [];
     return selected ? list.filter((b) => (b.langlevel || "").toUpperCase() === selected) : list;
-  }, [BookMarks, selected]);
+  }, [bookmarks, selected]);
 
   return (
     <div className="history-container">

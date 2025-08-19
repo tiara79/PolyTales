@@ -17,6 +17,10 @@ const FALLBACK_CARD = {
   can_access: true
 };
 
+const OPEN_DETAIL_IDS = [1, 10, 15, 17, 19, 29, 30, 38];
+
+
+// story 모든 이미지 / 하위 피이지 관리
 export default function Home() {
   const navigate = useNavigate();
   const { token } = useContext(AuthContext) || {};
@@ -51,6 +55,11 @@ export default function Home() {
     fetchstory(selectedLangLevel);
   }, [selectedLangLevel, fetchstory]);
 
+  useEffect(() => {
+    // story 배열이 정상적으로 들어오는지 콘솔로 확인
+    console.log("[Home.jsx] story 리스트 개수:", story.length, story);
+  }, [story]);
+
   const onClickStory = (story) => {
     navigate(`/detail?storyid=${story.storyid}&langlevel=${selectedLangLevel}`);
   };
@@ -77,31 +86,41 @@ export default function Home() {
         {!loading && story.length === 0 && <div className="empty">해당 레벨의 스토리가 없습니다.</div>}
 
         <div className="image-grid">
-          {story.map((s) => (
-            <div
-              key={s.storyid}
-              className="image-box"
-              onClick={() => onClickStory(s)}
-              style={{ cursor: "pointer" }}
-            >
-              <img
-                className="story-image"
-                src={s.storycoverpath || "/img/home/no_image.png"}
-                alt={s.storytitle || "Story"}
-                onError={(e) => {
-                  e.currentTarget.src = "/img/home/no_image.png";
-                }}
-              />
-              <div className="image-title">{s.storytitle}</div>
-            </div>
-          ))}
+          {story.map((s) => {
+            const isOpen = OPEN_DETAIL_IDS.includes(Number(s.storyid));
+            return (
+              <div
+                key={s.storyid}
+                className={`image-box${isOpen ? "" : " locked-image"}`}
+                style={{ position: "relative", textAlign: "center", cursor: isOpen ? "pointer" : "not-allowed" }}
+                onClick={() => isOpen && onClickStory(s)}
+              >
+                <img
+                  className="story-image"
+                  src={s.storycoverpath || "/img/home/no_image.png"}
+                  alt={s.storytitle || "Story"}
+                  style={isOpen ? {} : { filter: "blur(2px)", pointerEvents: "none" }}
+                  onError={(e) => {
+                    e.currentTarget.src = "/img/home/no_image.png";
+                  }}
+                />
+                {!isOpen && (
+                  <>
+                    <div className="lock-icon">🔒</div>
+                    <div className="lock-tooltip">Premium Service</div>
+                  </>
+                )}
+                <div className="image-title">{s.storytitle}</div>
+              </div>
+            );
+          })}
         </div>
       </section>
-      <footer className="admin-icon">
+      <footer className="admin-icon-footer">
         <img
           src="/img/footer/admin.png"
           alt="Admin"
-          className="footer-admin-img"
+          className="admin-icon-img"
           style={{ cursor: "pointer" }}
           onClick={() => navigate('/admhome')}
           onError={(e) => { e.currentTarget.src = "/img/home/no_image.png"; }}

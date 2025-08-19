@@ -1,11 +1,8 @@
 // src/controllers/storyController.js
 
 const db = require("../models");
-
-// 필터링 및 정렬을 위한 함수
 const { getCover } = require("../util/coverResolver");
 
-// detail page list
 const OPEN_DETAIL_IDS = [1, 10, 15, 17, 19, 29, 30, 38];
 
 function decorate(v, page) {
@@ -20,21 +17,7 @@ function roleFromReq(req) {
   return 0;
 }
 
-const getstory = async (req, res) => {
-  try {
-    const { level, topic } = req.query;
-    const where = {};
-    if (level) where.langlevel = String(level).toUpperCase();
-    if (topic) where.topic = topic;
-
-    const rows = await db.Story.findAll({ where, order: [["storyid", "ASC"]] });
-    const data = rows.map((r) => decorate(r.get({ plain: true }), "home"));
-    res.status(200).json({ message: "Full Story View Success", count: data.length, data });
-  } catch (error) {
-    res.status(500).json({ message: "Internal server error", error: error.message });
-  }
-};
-
+// Home에서 전체 레벨 목록 조회 (A1,A2..)
 const getAllLevels = async (_req, res) => {
   try {
     const levels = await db.Story.findAll({
@@ -49,12 +32,37 @@ const getAllLevels = async (_req, res) => {
   }
 };
 
+// Home에서 스토리 목록 조회 (필터: langlevel, topic)
+// storycoverpath를 직접 반환하면 Home.jsx에서 이미지 path 사용가능
+const getstory = async (req, res) => {
+  try {
+    const { langlevel, topic } = req.query;
+    const where = {};
+    if (langlevel) where.langlevel = String(langlevel).toUpperCase();
+    if (topic) where.topic = topic;
+
+    const rows = await db.Story.findAll({ where, order: [["storyid", "ASC"]] });
+    console.log("[getstory] 반환되는 story 개수:", rows.length);
+    // storycoverpath를 그대로 반환
+    const data = rows.map((r) => {
+      const plain = r.get({ plain: true });
+      return {
+        ...plain,
+        image: plain.storycoverpath, // 프론트에서 image로 바로 사용 가능
+      };
+    });
+    res.status(200).json({ message: "Full Story View Success", count: data.length, data });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
 const getStoryByLevel = async (req, res) => {
   try {
-    const level = String(req.params.level || "").toUpperCase();
+    const langlevel = String(req.params.langlevel || "").toUpperCase(); // level → langlevel
 
     const rows = await db.Story.findAll({
-      where: { langlevel: level },
+      where: { langlevel },
       order: [
         [db.sequelize.literal(`CASE WHEN "storyid" IN (${OPEN_DETAIL_IDS.join(",")}) THEN 0 ELSE 1 END`), "ASC"],
         ["storyid", "ASC"],
@@ -62,7 +70,7 @@ const getStoryByLevel = async (req, res) => {
     });
 
     if (rows.length === 0) {
-      return res.status(404).json({ message: `${level} Level stories not found.`, count: 0, data: [] });
+      return res.status(404).json({ message: `${langlevel} Level stories not found.`, count: 0, data: [] });
     }
 
     const role = roleFromReq(req);
@@ -76,19 +84,20 @@ const getStoryByLevel = async (req, res) => {
       return { ...v, is_open_id, can_access };
     });
 
-    res.status(200).json({ message: `${level} Level stories retrieved successfully`, count: data.length, data });
+    res.status(200).json({ message: `${langlevel} Level stories retrieved successfully`, count: data.length, data });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
+// Detail에서 스토리 상세 조회 (langlevel + storyid)
 const getStoryById = async (req, res) => {
   try {
-    const level = String(req.params.level || "").toUpperCase();
+    const langlevel = String(req.params.langlevel || "").toUpperCase(); // level → langlevel
     const { id } = req.params;
 
-    const row = await db.Story.findOne({ where: { storyid: id, langlevel: level } });
-    if (!row) return res.status(404).json({ message: `${level} Level story not found.` });
+    const row = await db.Story.findOne({ where: { storyid: id, langlevel } });
+    if (!row) return res.status(404).json({ message: `${langlevel} Level story not found.` });
 
     const data = decorate(row.get({ plain: true }), "detail");
     res.status(200).json({ message: "Story detail retrieval successful", data });
@@ -97,6 +106,7 @@ const getStoryById = async (req, res) => {
   }
 };
 
+// admin page
 const createStory = async (req, res) => {
   try {
     const { storytitle, storycoverpath, thumbnail, movie, description, langlevel, langlevelko, nation, topic } = req.body;
@@ -123,6 +133,7 @@ const createStory = async (req, res) => {
   }
 };
 
+// 스토리 수정
 const updateStory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -144,20 +155,21 @@ const updateStory = async (req, res) => {
   }
 };
 
+// 스토리 삭제
 const deleteStory = async (req, res) => {
   try {
-    const level = String(req.params.level || "").toUpperCase();
+    const langlevel = String(req.params.langlevel || "").toUpperCase(); // level → langlevel
     const { id } = req.params;
 
-    const existing = await db.Story.findOne({ where: { storyid: id, langlevel: level } });
-    if (!existing) return res.status(404).json({ message: `The story ID ${id} at level ${level} was not found.` });
+    const existing = await db.Story.findOne({ where: { storyid: id, langlevel } });
+    if (!existing) return res.status(404).json({ message: `The story ID ${id} at level ${langlevel} was not found.` });
 
-    const cnt = await db.Story.destroy({ where: { storyid: id, langlevel: level } });
+    const cnt = await db.Story.destroy({ where: { storyid: id, langlevel } });
     if (cnt === 0) return res.status(400).json({ message: "Failed to delete story." });
 
     res.status(200).json({
       message: "Successful story deletion",
-      data: { deletedStoryId: id, deletedLevel: level, deletedTitle: existing.storytitle },
+      data: { deletedStoryId: id, deletedLevel: langlevel, deletedTitle: existing.storytitle },
     });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
