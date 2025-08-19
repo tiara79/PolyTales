@@ -2,9 +2,6 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
-import addbtn from '../img/admin/add_btn.png';
-import emptydata from '../img/admin/emptydata.png';
-import findglass from '../img/admin/findglass.png';
 import '../style/AdmHome.css';
 
 export default function Admin() {
@@ -241,11 +238,11 @@ export default function Admin() {
                                 placeholder="컨텐츠를 검색해 보세요"
                                 className='search-input'
                             />
-                            <img src={findglass} alt="Search" className='search-icon' />
+                            <img src="/img/admin/findglass.png" alt="Search" className='search-icon' />
                         </div>
                     </div>
                     <img
-                        src={addbtn}
+                        src="/img/admin/add_btn.png"
                         alt="Add-btn"
                         className='add-icon'
                         onClick={handleAddContent}
@@ -276,7 +273,7 @@ export default function Admin() {
                                 <tr>
                                     <td colSpan="8" className='empty-table-cell'>
                                         <div className='empty-state'>
-                                            <img src={emptydata} alt="No data" className='empty-icon' />
+                                            <img src="/img/admin/emptydata.png" alt="No data" className='empty-icon' />
                                             <p className='empty-message'>
                                                 {content.trim() ? '검색 결과가 없습니다.' : '아직 어떤 컨텐츠도 없습니다. 컨텐츠를 작성해 주세요.'}
                                             </p>
@@ -325,3 +322,4 @@ export default function Admin() {
         </div>
     );
 }
+
