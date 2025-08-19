@@ -150,8 +150,6 @@ function Learn() {
     }
   }, []);
 
-  const currentPage = pages[pageNum - 1] || {};
-  
   return (
     <div className="parent">
       <div className="div1" onClick={handleReadFromStart}><span className="read-start">처음부터 읽기</span></div>
