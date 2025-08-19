@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { BookmarkContext } from "../context/BookmarkContext"; // 파일명 Bookmark.jsx와 일치
 import { StoryContext } from "../context/StoryContext";
-import "../style/BookMark.css";
+import "../style/Bookmark.css";
 import "../style/History.css"; // 헤더(뒤로가기/제목) 스타일 재사용
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
@@ -101,7 +101,7 @@ async function resolveAndGo(navigate, storyid, hintLevel, state) {
   window.alert("준비 중인 콘텐츠입니다.");
 }
 
-export default function Bookmark() { // 컴포넌트명 Bookmark와 파일명 일치
+export default function BookMark() { // 컴포넌트명 Bookmark와 파일명 일치
   const navigate = useNavigate();
   const { bookmarks } = useContext(BookmarkContext);
   const storyContext = useContext(StoryContext);

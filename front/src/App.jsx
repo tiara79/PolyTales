@@ -3,16 +3,16 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { AuthProvider } from "./context/AuthContext";
-import { StoryProvider } from "./context/StoryContext";
+import { BookmarkProvider } from "./context/BookmarkContext";
 import { LevelsProvider } from "./context/LevelsContext";
-import { BookmarkProvider } from "./context/BookmarkContext"; 
 import { NoteProvider } from "./context/NoteContext";
+import { StoryProvider } from "./context/StoryContext";
 
 import AdmContAdd from "./page/AdmContAdd";
 import AdmContDetail from "./page/AdmContDetail";
 import AdmContEdit from "./page/AdmContEdit";
 import AdmHome from "./page/AdmHome";
-import BookMark from "./page/BookMark";
+import BookMark from "./page/Bookmark";
 import Detail from "./page/Detail";
 import History from "./page/History";
 import Home from "./page/Home";
@@ -22,10 +22,10 @@ import MyNotes from "./page/MyNotes";
 import MyPage from "./page/MyPage";
 import Plan from "./page/Plan";
 import Report from "./page/Report";
+import SignUpForm from "./page/SignUpForm";
 import DetailRouter from "./route/DetailRouter";
 import MainRouter from "./route/MainRouter";
 import NoRouter from "./route/NoRouter";
-import SignUpForm from "./page/SignUpForm";
 
 export default function App() {
   return (
