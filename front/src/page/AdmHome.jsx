@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext'; 
 
 import '../style/AdmHome.css';
 
 export default function Admin() {
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext); 
     const [content, setContent] = useState('');
     const [searchFilter, setSearchFilter] = useState('타이틀');
     const [currentPage, setCurrentPage] = useState(1);
@@ -23,38 +25,38 @@ export default function Admin() {
     ];
 
     // 테스트 데이터 배열
-    const testDataList = [
+    const testDataList = useMemo(() => [
         {
             storyId: '01',
             title: "Lily's Happy Day",
-            imagePath: 'http://cdn.polytales.kr/lilystory.png',
-            thumbnail: '썸네일1.jpg',
+            imagePath: 'https://gray-sea-0d11a5400.1.azurestaticapps.net/img/contents/lilys_happy_day.jpg',
+            thumbnail: 'lilys_happy_day.jpg',
             video: 'lilys_happy_day_video.mp4',
             description: '릴리의 행복한 하루를 따라가며, 친구들과 함께하는 즐거운 이야기',
             koreanLevel: '초급',
             topic: '일상'
         },
         {
-            storyId: '02',
-            title: 'Adventure Story',
-            imagePath: 'http://cdn.polytales.kr/adventure.png',
-            thumbnail: '썸네일2.jpg',
-            video: 'adventure_video.mp4',
-            description: '모험을 떠나는 친구들의 신나는 이야기',
+            storyId: '14',
+            title: 'Cute Wolf reads fairy tales',
+            imagePath: 'https://gray-sea-0d11a5400.1.azurestaticapps.net/img/contents/cute_wolf_reads_fairy_tales.jpg',
+            thumbnail: 'cute_wolf_reads_fairy_tales.jpg',
+            video: 'cute_wolf_reads_fairy_tales.mp4',
+            description: 'Cute Wolf reads fairy tales에 대한 이야기입니다.',
             koreanLevel: '중급',
-            topic: '모험'
+            topic: '동화'
         },
         {
-            storyId: '03',
-            title: 'Magic Forest',
-            imagePath: 'http://cdn.polytales.kr/forest.png',
+            storyId: '13',
+            title: 'Cinderella',
+            imagePath: 'https://gray-sea-0d11a5400.1.azurestaticapps.net/img/contents/cinderella.jpg',
             thumbnail: '썸네일3.jpg',
-            video: 'magic_forest_video.mp4',
-            description: '마법의 숲에서 벌어지는 환상적인 이야기',
-            koreanLevel: '초급',
-            topic: '판타지'
+            video: 'cinderella.jpg.mp4',
+            description: 'Cinderella에 대한 이야기',
+            koreanLevel: '초중급',
+            topic: '동화'
         }
-    ];
+    ], []);
 
 
     // localStorage에서 story_로 시작하는 데이터 읽어오기
@@ -161,10 +163,10 @@ export default function Admin() {
         };
     }, []);
 
-    // // role이 1이 아닌 경우 아무것도 렌더링하지 않음
-    // if (!user || user.role !== 1) {
-    //     return null;
-    // }
+    // role이 1이 아닌 경우 아무것도 렌더링하지 않음
+    if (!user || user.role !== 1) {
+        return null;
+    }
 
     // 컨텐츠 추가 페이지로 이동
     const handleAddContent = () => {
