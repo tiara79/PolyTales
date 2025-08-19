@@ -100,7 +100,7 @@ export default function Home() {
       </section>
       <footer className="home-footer">
         <img
-          src="/style/img/footer/admin.png"
+          src="/img/footer/admin.png"
           alt="Admin"
           className="footer-admin-img"
           style={{ cursor: "pointer" }}

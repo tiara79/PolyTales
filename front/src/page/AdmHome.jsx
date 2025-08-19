@@ -1,10 +1,10 @@
-import React, { useState, useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
-import addbtn from '../style/img/admin/addbtn.png';
-import emptydata from '../style/img/admin/emptydata.png';
-import findglass from '../style/img/admin/findglass.png';
+import addbtn from '../img/admin/add_btn.png';
+import emptydata from '../img/admin/emptydata.png';
+import findglass from '../img/admin/findglass.png';
 import '../style/AdmHome.css';
 
 export default function Admin() {

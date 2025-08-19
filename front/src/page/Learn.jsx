@@ -1,5 +1,5 @@
 // src/pages/Learn.jsx
-import { useContext, useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { StoryContext } from "../context/StoryContext";
@@ -46,7 +46,6 @@ function Learn() {
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/learn/${storyid}?lang=${lang}`)
-    // fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/learn/${storyid}?lang=${lang}`)
       .then((res) => res.json())
       .then((result) => {
         setPages(result.pages || []);
@@ -73,7 +72,6 @@ function Learn() {
       const headers = { "Content-Type": "application/json" };
       if (token) headers.Authorization = `Bearer ${token}`;
       const res = await fetch(`${process.env.REACT_APP_API_URL}/notes`, {
-      // const res = await fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/notes`, {
         method: "POST",
         headers,
         body: JSON.stringify(noteData),
@@ -99,7 +97,6 @@ function Learn() {
     try {
       const headers = { "Content-Type": "application/json" };
       if (token) headers.Authorization = `Bearer ${token}`;
-      // const res = await fetch(`${process.env.REACT_APP_API_URL || "http://localhost:3000"}/tutor/chat`, {
       const res = await fetch(`${process.env.REACT_APP_API_URL}/tutor/chat`, {
         method: "POST",
         headers,
@@ -169,7 +166,9 @@ function Learn() {
       <div className="div1" onClick={handleReadFromStart}><span className="read-start">처음부터 읽기</span></div>
       <div className="div2">
         <h2 className="story-title">{currentStory?.storytitle || "제목 없음"}</h2>
-        <button className="close-button" onClick={handleCloseClick}><img src="/img/learn/close.png" alt="close" /></button>
+        <button className="close-button" onClick={handleCloseClick}>
+          <img src="/img/learn/close.png" alt="close" />
+        </button>
       </div>
 
       {/* 이미지 및 자막 영역 */}
