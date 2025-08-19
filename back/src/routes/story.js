@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const storyController = require('../controllers/storyController');
 const auth = require('../middlewares/auth');
+const { Story } = require('../models'); // Story 테이블
 
 const required = auth.required || auth.authRequired || auth.authenticate || ((req, _res, next) => next());
 
@@ -17,7 +18,11 @@ const softAuth = (req, _res, next) => {
   next();
 };
 
-router.get('/', storyController.getStories);
+router.get('/story', async (req, res) => {
+  // ...story 테이블 사용...
+});
+
+router.get('/', storyController.getstory);
 router.get('/level/:level', softAuth, storyController.getStoryByLevel);
 router.get('/levels', storyController.getAllLevels);
 router.get('/:level/detail/:id', storyController.getStoryById);

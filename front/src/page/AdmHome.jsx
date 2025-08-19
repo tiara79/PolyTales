@@ -163,8 +163,8 @@ export default function Admin() {
         };
     }, []);
 
-    // role이 1이 아닌 경우 아무것도 렌더링하지 않음
-    if (!user || user.role !== 1) {
+    // role이 1 또는 2가 아닌 경우 아무것도 렌더링하지 않음
+    if (!user || (user.role !== 1 && user.role !== 2)) {
         return null;
     }
 

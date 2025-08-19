@@ -31,10 +31,10 @@ function Learn() {
   const [isChatLoading, setIsChatLoading] = useState(false);
 
   const { user, token } = useContext(AuthContext);
-  const { stories } = useContext(StoryContext);
+  const { story } = useContext(StoryContext); // stories → story
 
   const storyid = searchParams.get("storyid") || 1;
-  const currentStory = stories.find((s) => s.storyid === Number(storyid));
+  const currentStory = story.find((s) => s.storyid === Number(storyid));
   const currentLangLevel = currentStory?.langlevel || "A1";
 
   // const handleCloseClick = () => navigate("/detail");
@@ -51,7 +51,7 @@ function Learn() {
   }
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/learn/${storyid}?lang=${lang}`)
+    fetch(`${process.env.REACT_APP_API_URL}/storylearn/${storyid}?lang=${lang}`) // /learn → /storylearn
       .then((res) => res.json())
       .then((result) => {
         setPages(result.pages || []);

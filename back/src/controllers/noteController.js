@@ -78,15 +78,15 @@ const updateNote = async (req, res) => {
   try {
     if (!req.user?.userid) return res.status(401).json({ message: "unauthorized" });
 
-    const noteId = Number(req.params.noteid);
+    const noteid = Number(req.params.noteid); // 변수명도 noteid로 변경
     const { title, content } = req.body || {};
     if (!title || !content) return res.status(400).json({ message: "Both title and content are required." });
 
-    const note = await Note.findByPk(noteId);
+    const note = await Note.findByPk(noteid);
     if (!note) return res.status(404).json({ message: "Note not found." });
     if (note.userid !== req.user.userid && req.user.role !== 1) return res.status(403).json({ message: "forbidden" });
 
-    await Note.update({ title, content }, { where: { noteid: noteId } });
+    await Note.update({ title, content }, { where: { noteid } });
     res.json({ message: "ok" });
   } catch (err) {
     console.error("Update note error:", err);
@@ -99,12 +99,12 @@ const deleteNote = async (req, res) => {
   try {
     if (!req.user?.userid) return res.status(401).json({ message: "unauthorized" });
 
-    const noteId = Number(req.params.noteid);
-    const note = await Note.findByPk(noteId);
+    const noteid = Number(req.params.noteid); // 변수명도 noteid로 변경
+    const note = await Note.findByPk(noteid);
     if (!note) return res.status(404).json({ message: "Note not found." });
     if (note.userid !== req.user.userid && req.user.role !== 1) return res.status(403).json({ message: "forbidden" });
 
-    await Note.destroy({ where: { noteid: noteId } });
+    await Note.destroy({ where: { noteid } });
     res.json({ message: "ok" });
   } catch (err) {
     console.error("Delete note error:", err);

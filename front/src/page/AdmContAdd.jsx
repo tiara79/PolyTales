@@ -69,7 +69,7 @@ export default function AdmContAdd() {
         const newId = (maxId + 1).toString().padStart(2, '0');
         const newContent = { ...form, storyId: newId };
         localStorage.setItem(`story_${newId}`, JSON.stringify(newContent));
-        navigate(`/admcontdetail/${newId}`);
+        navigate(`/admcontdetail/${newId}`); // storyId → storyid (newId는 그대로 사용)
     };
 
     return (
@@ -114,7 +114,7 @@ export default function AdmContAdd() {
                                             name="imagePath"
                                             value={form.imagePath}
                                             onChange={handleChange}
-                                            placeholder="이미지 URL"
+                                            placeholder="예: /img/contents/파일명.jpg"
                                             style={{ width: '80%' }}
                                         />
                                         <button
@@ -150,7 +150,7 @@ export default function AdmContAdd() {
                                             name="thumbnail"
                                             value={form.thumbnail}
                                             onChange={handleChange}
-                                            placeholder="썸네일 파일명"
+                                            placeholder="예: /img/contents/썸네일.jpg"
                                             style={{ width: '80%' }}
                                         />
                                         <button

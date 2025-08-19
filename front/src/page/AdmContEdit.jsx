@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import '../style/AdmContEdit.css';
 
 export default function AdmContEdit() {
-    const { storyId } = useParams(); // URL에서 storyId 파라미터 받기
+    const { storyid } = useParams(); // storyId → storyid
     const navigate = useNavigate();
     const goBack = () => navigate(-1);
 
@@ -15,7 +15,7 @@ export default function AdmContEdit() {
 
     useEffect(() => {
         // localStorage에 저장된 데이터 우선 사용
-        const localData = localStorage.getItem(`story_${storyId}`);
+        const localData = localStorage.getItem(`story_${storyid}`);
         if (localData) {
             setContentData(JSON.parse(localData));
             setLoading(false);
@@ -54,14 +54,14 @@ export default function AdmContEdit() {
                 topic: '판타지'
             }
         ];
-        const foundContent = testDataList.find(item => item.storyId === storyId);
+        const foundContent = testDataList.find(item => item.storyId === storyid);
         if (foundContent) {
             setContentData(foundContent);
         } else {
             navigate('/admhome');
         }
         setLoading(false);
-    }, [storyId, navigate]);
+    }, [storyid, navigate]);
 
     if (loading) {
         return <div>로딩 중...</div>;
@@ -99,8 +99,8 @@ export default function AdmContEdit() {
 
     //삭제 버튼 클릭 시
     const handleDelete = () => {
-        // localStorage에서 해당 storyId 삭제
-        localStorage.removeItem(`story_${storyId}`);
+        // localStorage에서 해당 storyid 삭제
+        localStorage.removeItem(`story_${storyid}`);
         // 삭제 후 홈으로 이동 및 새로고침(반영)
         navigate('/admhome');
         window.location.reload();
@@ -109,9 +109,9 @@ export default function AdmContEdit() {
 
     // 저장 버튼 클릭 시
     const handleSave = () => {
-        // localStorage에 storyId별로 저장
-        localStorage.setItem(`story_${storyId}`, JSON.stringify(contentData));
-        navigate(`/admcontdetail/${storyId}`);
+        // localStorage에 storyid별로 저장
+        localStorage.setItem(`story_${storyid}`, JSON.stringify(contentData));
+        navigate(`/admcontdetail/${storyid}`);
     };
 
     // 라디오(한국어 레벨) 변경
@@ -197,6 +197,7 @@ export default function AdmContEdit() {
                                             type="text"
                                             value={editValues['imagePath'] ?? contentData.imagePath}
                                             onChange={e => setEditValues((prev) => ({ ...prev, imagePath: e.target.value }))}
+                                            placeholder="예: /img/contents/파일명.jpg"
                                             style={{ width: '80%' }}
                                         />
                                         <button
@@ -231,6 +232,7 @@ export default function AdmContEdit() {
                                             type="text"
                                             value={editValues['thumbnail'] ?? contentData.thumbnail}
                                             onChange={e => setEditValues((prev) => ({ ...prev, thumbnail: e.target.value }))}
+                                            placeholder="예: /img/contents/썸네일.jpg"
                                             style={{ width: '80%' }}
                                         />
                                         <button

@@ -11,7 +11,7 @@ async function googleAuth(req, res) {
   try {
     const { oauthprovider, oauthid, email, nickname, profimg } = req.body || {};
     if (!oauthprovider || !oauthid) {
-      return res.status(400).json({ message: 'oauthprovider/oauthid required' });
+      return res.redirect(`${process.env.CLIENT_URL}/login?error=oauthprovider/oauthid required`);
     }
 
     let user = await User.findOne({ where: { oauthprovider, oauthid } });
@@ -20,7 +20,7 @@ async function googleAuth(req, res) {
       if (email) {
         const sameEmail = await User.findOne({ where: { email } });
         if (sameEmail && sameEmail.oauthprovider !== 'google') {
-          return res.status(409).json({ message: `Email already used by ${sameEmail.oauthprovider}` });
+          return res.redirect(`${process.env.CLIENT_URL}/login?error=Email already used by ${sameEmail.oauthprovider}`);
         }
       }
       user = await User.create({
@@ -44,14 +44,14 @@ async function googleAuth(req, res) {
     }
 
     if ([3, 4].includes(user.status)) {
-      return res.status(403).json({ message: 'Account disabled' });
+      return res.redirect(`${process.env.CLIENT_URL}/login?error=Account disabled`);
     }
 
     const token = generateAccessToken(user);
-    return res.json({ token, user: toSafe(user) });
+    return res.redirect(`${process.env.CLIENT_URL}/login?google=success&token=${token}`);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ message: 'Social login error' });
+    return res.redirect(`${process.env.CLIENT_URL}/login?error=Social login error`);
   }
 }
 
@@ -59,7 +59,7 @@ async function googleAuth(req, res) {
 async function naverCallback(req, res) {
   try {
     const { code, state } = req.query;
-    if (!code || !state) return res.status(400).send('Missing code or state');
+    if (!code || !state) return res.redirect(`${process.env.CLIENT_URL}/login?error=Missing code or state`);
 
     // 1. 네이버 토큰 요청
     const tokenRes = await axios.get('https://nid.naver.com/oauth2.0/token', {
@@ -72,14 +72,14 @@ async function naverCallback(req, res) {
       },
     });
     const access_token = tokenRes.data.access_token;
-    if (!access_token) return res.status(400).send('No access_token from Naver');
+    if (!access_token) return res.redirect(`${process.env.CLIENT_URL}/login?error=No access_token from Naver`);
 
     // 2. 네이버 사용자 정보 요청
     const profileRes = await axios.get('https://openapi.naver.com/v1/nid/me', {
       headers: { Authorization: `Bearer ${access_token}` },
     });
     const naverUser = profileRes.data.response;
-    if (!naverUser) return res.status(400).send('No user info from Naver');
+    if (!naverUser) return res.redirect(`${process.env.CLIENT_URL}/login?error=No user info from Naver`);
 
     // 3. DB 저장/갱신
     let user = await User.findOne({ where: { oauthprovider: 'naver', oauthid: naverUser.id } });
@@ -110,13 +110,12 @@ async function naverCallback(req, res) {
 
     // 4. JWT 발급 및 프론트엔드로 리디렉션 (토큰 쿼리로 전달, access_token도 함께)
     const token = generateAccessToken(user);
-    return res.redirect(`${process.env.CLIENT_URL || 'http://localhost:3001'}/login?naver=success&token=${token}&access_token=${access_token}`);
+    return res.redirect(`${process.env.CLIENT_URL}/login?naver=success&token=${token}&access_token=${access_token}`);
   } catch (e) {
     console.error(e);
-    return res.status(500).send('Naver login error');
+    return res.redirect(`${process.env.CLIENT_URL}/login?error=Naver login error`);
   }
 }
-
 
 // Naver OAuth
 async function naverAuth(req, res) {
@@ -209,7 +208,7 @@ async function naverUnlink(req, res) {
 async function kakaoCallback(req, res) {
   try {
     const { code } = req.query;
-    if (!code) return res.status(400).send('Missing code');
+    if (!code) return res.redirect(`${process.env.CLIENT_URL}/login?error=Missing code`);
 
     // 1. 카카오 토큰 요청
     const tokenRes = await axios.post('https://kauth.kakao.com/oauth/token', {
@@ -223,14 +222,14 @@ async function kakaoCallback(req, res) {
     });
     
     const access_token = tokenRes.data.access_token;
-    if (!access_token) return res.status(400).send('No access_token from Kakao');
+    if (!access_token) return res.redirect(`${process.env.CLIENT_URL}/login?error=No access_token from Kakao`);
 
     // 2. 카카오 사용자 정보 요청
     const profileRes = await axios.get('https://kapi.kakao.com/v2/user/me', {
       headers: { Authorization: `Bearer ${access_token}` },
     });
     const kakaoUser = profileRes.data;
-    if (!kakaoUser || !kakaoUser.id) return res.status(400).send('No user info from Kakao');
+    if (!kakaoUser || !kakaoUser.id) return res.redirect(`${process.env.CLIENT_URL}/login?error=No user info from Kakao`);
 
     // 3. DB 저장/갱신
     let user = await User.findOne({ where: { oauthprovider: 'kakao', oauthid: String(kakaoUser.id) } });
@@ -262,10 +261,10 @@ async function kakaoCallback(req, res) {
 
     // 4. JWT 발급 및 프론트엔드로 리디렉션
     const token = generateAccessToken(user);
-    return res.redirect(`${process.env.CLIENT_URL || 'http://localhost:3001'}/login?kakao=success&token=${token}`);
+    return res.redirect(`${process.env.CLIENT_URL}/login?kakao=success&token=${token}`);
   } catch (e) {
     console.error(e);
-    return res.status(500).send('Kakao login error');
+    return res.redirect(`${process.env.CLIENT_URL}/login?error=Kakao login error`);
   }
 }
 
@@ -382,4 +381,5 @@ async function me(req, res) {
   return res.json({ user: toSafe(user) });
 }
 
+module.exports = { googleAuth, naverAuth, naverCallback, kakaoAuth, kakaoCallback, register, login, me, naverUnlink };
 module.exports = { googleAuth, naverAuth, naverCallback, kakaoAuth, kakaoCallback, register, login, me, naverUnlink };

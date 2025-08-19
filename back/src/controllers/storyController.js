@@ -18,7 +18,7 @@ function roleFromReq(req) {
   return 0;
 }
 
-const getStories = async (req, res) => {
+const getstory = async (req, res) => {
   try {
     const { level, topic } = req.query;
     const where = {};
@@ -163,7 +163,7 @@ const deleteStory = async (req, res) => {
 };
 
 module.exports = {
-  getStories,
+  getstory,
   getAllLevels,
   getStoryByLevel,
   getStoryById,

@@ -4,16 +4,16 @@ import '../style/AdmContDetail.css'; // 스타일 파일 임포트
  // 수정 버튼 이미지 임포트
 
 export default function AdmContDetail() {
-    const { storyId } = useParams(); // URL에서 storyId 파라미터 받기
+    const { storyid } = useParams(); // storyId → storyid
     const navigate = useNavigate();
-    const goBack = () => navigate(storyId ? "/admhome" : -1);
+    const goBack = () => navigate(storyid ? "/admhome" : -1);
 
     const [contentData, setContentData] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // localStorage에 저장된 데이터 우선 사용
-        const localData = localStorage.getItem(`story_${storyId}`);
+        const localData = localStorage.getItem(`story_${storyid}`);
         if (localData) {
             setContentData(JSON.parse(localData));
             setLoading(false);
@@ -24,8 +24,8 @@ export default function AdmContDetail() {
             {
                 storyId: '01',
                 title: "Lily's Happy Day",
-                imagePath: 'http://cdn.polytales.kr/lilystory.png',
-                thumbnail: '썸네일1.jpg',
+                imagePath: '/img/contents/lilys_happy_day.jpg',
+                thumbnail: 'lilys_happy_day.jpg',
                 video: 'lilys_happy_day_video.mp4',
                 description: '릴리의 행복한 하루를 따라가며, 친구들과 함께하는 즐거운 이야기',
                 koreanLevel: '초급',
@@ -33,33 +33,33 @@ export default function AdmContDetail() {
             },
             {
                 storyId: '02',
-                title: 'Adventure Story',
-                imagePath: 'http://cdn.polytales.kr/adventure.png',
-                thumbnail: '썸네일2.jpg',
-                video: 'adventure_video.mp4',
-                description: '모험을 떠나는 친구들의 신나는 이야기',
+                title: 'Cute Wolf reads fairy tales',
+                imagePath: '/img/contents/cute_wolf_reads_fairy_tales.jpg',
+                thumbnail: 'cute_wolf_reads_fairy_tales.jpg',
+                video: 'cute_wolf_reads_fairy_tales.mp4',
+                description: 'Cute Wolf reads fairy tales에 대한 이야기입니다.',
                 koreanLevel: '중급',
-                topic: '모험'
+                topic: '동화'
             },
             {
                 storyId: '03',
-                title: 'Magic Forest',
-                imagePath: 'http://cdn.polytales.kr/forest.png',
-                thumbnail: '썸네일3.jpg',
-                video: 'magic_forest_video.mp4',
-                description: '마법의 숲에서 벌어지는 환상적인 이야기',
-                koreanLevel: '초급',
-                topic: '판타지'
+                title: 'Cinderella',
+                imagePath: '/img/contents/cinderella.jpg',
+                thumbnail: 'cinderella.jpg',
+                video: 'cinderella.mp4',
+                description: 'Cinderella에 대한 이야기',
+                koreanLevel: '초중급',
+                topic: '동화'
             }
         ];
-        const foundContent = testDataList.find(item => item.storyId === storyId);
+        const foundContent = testDataList.find(item => item.storyId === storyid);
         if (foundContent) {
             setContentData(foundContent);
         } else {
             navigate('/admhome');
         }
         setLoading(false);
-    }, [storyId, navigate]);
+    }, [storyid, navigate]);
 
     if (loading) {
         return <div>로딩 중...</div>;
@@ -82,7 +82,7 @@ export default function AdmContDetail() {
                 <div className='detail-content-body'>
                     <div className="edit-btn-container">
                         {/* 수정하기 버튼 */}
-                        <button className="edit-btn" onClick={() => navigate(`/admcontedit/${storyId}`)}>
+                        <button className="edit-btn" onClick={() => navigate(`/admcontedit/${storyid}`)}>
                             <img  src="/img/admin/edit_btn.png" alt="수정하기" />
                         </button>
 

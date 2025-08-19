@@ -300,12 +300,12 @@ export default function MyPage() {
               onMouseLeave={() => setIsHovering(false)}
             >
               <img
-                src={getProfileImageUrl(user?.profimg, "/img/login/prof_img.png")}
+                src={getProfileImageUrl(user?.profimg, "/profile/prof_img.png")}
                 alt="profile-image"
                 className="profile-img-big"
                 onClick={handleProfileImageClick}
                 onError={(e) => {
-                  e.currentTarget.src = "/img/login/prof_img.png";
+                  e.currentTarget.src = "/profile/prof_img.png";
                 }}
                 style={{ cursor: "pointer", opacity: isUploading ? 0.5 : 1 }}
               />
