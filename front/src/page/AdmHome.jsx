@@ -1,11 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
 
 import '../style/AdmHome.css';
 
 export default function Admin() {
-    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [content, setContent] = useState('');
     const [searchFilter, setSearchFilter] = useState('타이틀');
@@ -86,7 +84,7 @@ export default function Admin() {
             }
         });
         setContentList(merged);
-    }, [showTestData]);
+    }, [showTestData, testDataList]);
 
     // 검색 필터링 로직
     const getFilteredData = () => {
@@ -162,15 +160,6 @@ export default function Admin() {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
-
-    // 어드민 접근 자격(role=1) 검증
-    // useEffect(() => {
-    //     // 로그인하지 않았거나 role이 1이 아닌 경우
-    //     if (!user || user.role !== 1) {
-    //         toast.error('관리자 외 진입 불가합니다.');
-    //         navigate('/'); // 랜딩페이지로 리다이렉트
-    //     }
-    // }, [user, navigate]);
 
     // // role이 1이 아닌 경우 아무것도 렌더링하지 않음
     // if (!user || user.role !== 1) {
@@ -322,4 +311,3 @@ export default function Admin() {
         </div>
     );
 }
-

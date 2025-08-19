@@ -131,12 +131,6 @@ function Learn() {
     }
   };
 
-  // 이미지/오디오 경로 최적화
-  function getValidPath(path, fallback) {
-    if (!path) return fallback;
-    return path.startsWith("/") ? path : `/${path}`;
-  }
-
   const togglePlay = useCallback(() => {
     const audioEl = document.querySelector("audio");
     if (audioEl) {
