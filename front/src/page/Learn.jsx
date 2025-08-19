@@ -24,6 +24,7 @@ function Learn() {
   const [pageNum, setPageNum] = useState(1);
   const [lang, setLang] = useState("ko");
   const [isPlaying, setIsPlaying] = useState(false);
+  const [caption, setCaption] = useState(""); // 자막 상태 추가
 
   const [languageData, setLanguageData] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
@@ -36,7 +37,9 @@ function Learn() {
   const currentStory = stories.find((s) => s.storyid === Number(storyid));
   const currentLangLevel = currentStory?.langlevel || "A1";
 
-  const handleCloseClick = () => navigate("/detail");
+  // const handleCloseClick = () => navigate("/detail");
+  const handleCloseClick = () => navigate("/");
+  
   const handleReadFromStart = () => setPageNum(1);
   const goPrev = () => setPageNum((p) => Math.max(1, p - 1));
   const goNext = () => setPageNum((p) => Math.min(p + 1, pages.length));
