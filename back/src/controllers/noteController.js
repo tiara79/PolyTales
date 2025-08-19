@@ -1,8 +1,8 @@
 // back/src/controllers/noteController.js
 const db = require("../models");
-const Note = db.Note || db.note; // 어떤 키로 export됐든 대응
+const Note = db.Note || db.note; // 단수형 Note
 
-// POST /notes (인증 필수)
+// POST /note (인증 필수)
 const createNote = async (req, res) => {
   try {
     if (!req.user?.userid) return res.status(401).json({ message: "unauthorized" });
@@ -14,7 +14,7 @@ const createNote = async (req, res) => {
       lang = null,
       title,
       content,
-      istutor = false, // ← 반드시 구조분해에 포함
+      istutor = false,
     } = req.body || {};
 
     if (!storyid || !title || !content) {
@@ -38,8 +38,8 @@ const createNote = async (req, res) => {
   }
 };
 
-// GET /notes (관리자 전용; 필요 없으면 라우터에서 제외)
-const getAllNotes = async (req, res) => {
+// GET /note (관리자 전용; 필요 없으면 라우터에서 제외)
+const getAllNote = async (req, res) => {
   try {
     if (req.user?.role !== 1) return res.status(403).json({ message: "forbidden" });
 
@@ -51,8 +51,8 @@ const getAllNotes = async (req, res) => {
   }
 };
 
-// GET /notes/:userid (본인 + 관리자)
-const getNotes = async (req, res) => {
+// GET /note/:userid (본인 + 관리자)
+const getNote = async (req, res) => {
   try {
     if (!req.user?.userid) return res.status(401).json({ message: "unauthorized" });
 
@@ -73,7 +73,7 @@ const getNotes = async (req, res) => {
   }
 };
 
-// PUT /notes/:noteid
+// PUT /note/:noteid
 const updateNote = async (req, res) => {
   try {
     if (!req.user?.userid) return res.status(401).json({ message: "unauthorized" });
@@ -94,7 +94,7 @@ const updateNote = async (req, res) => {
   }
 };
 
-// DELETE /notes/:noteid
+// DELETE /note/:noteid
 const deleteNote = async (req, res) => {
   try {
     if (!req.user?.userid) return res.status(401).json({ message: "unauthorized" });
@@ -112,4 +112,4 @@ const deleteNote = async (req, res) => {
   }
 };
 
-module.exports = { createNote, getNotes, getAllNotes, updateNote, deleteNote };
+module.exports = { createNote, getNote, getAllNote, updateNote, deleteNote };

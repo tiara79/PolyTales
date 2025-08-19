@@ -1,14 +1,14 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
 import api from "../api/axios";
-import "../style/Note.css";
+import { AuthContext } from "../context/AuthContext";
 import "../style/History.css"; // 헤더 스타일 재사용
+import "../style/Note.css";
 
 export default function MyNotes() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const [notes, setNotes] = useState([]);
+  const [note, setNote] = useState([]); // notes → note
   const [loading, setLoading] = useState(true);
 
   // 목록 로딩
@@ -19,14 +19,14 @@ export default function MyNotes() {
     }
     (async () => {
       try {
-        // 백엔드 규약에 맞춰 주세요. (예: GET /notes/:userid)
-        const res = await api.get(`/notes/${user.userid}`);
+        // GET /note/:userid
+        const res = await api.get(`/note/${user.userid}`);
         const list = Array.isArray(res.data?.data) ? res.data.data : [];
         // 날짜 내림차순
         list.sort((a, b) => new Date(b.createdat) - new Date(a.createdat));
-        setNotes(list);
+        setNote(list);
       } catch (e) {
-        setNotes([]);
+        setNote([]);
       } finally {
         setLoading(false);
       }
@@ -35,13 +35,13 @@ export default function MyNotes() {
 
   const byDay = useMemo(() => {
     const map = new Map();
-    for (const n of notes) {
+    for (const n of note) {
       const day = new Date(n.createdat).toISOString().slice(0, 10); // YYYY-MM-DD
       if (!map.has(day)) map.set(day, []);
       map.get(day).push(n);
     }
     return Array.from(map.entries()).sort((a, b) => (a[0] < b[0] ? 1 : -1));
-  }, [notes]);
+  }, [note]);
 
   if (!user) {
     navigate("/login");
@@ -58,7 +58,7 @@ export default function MyNotes() {
 
         {loading ? (
           <div className="notes-empty">로딩 중...</div>
-        ) : notes.length === 0 ? (
+        ) : note.length === 0 ? (
           <div className="notes-empty">저장된 노트가 없습니다.</div>
         ) : (
           byDay.map(([day, arr]) => (

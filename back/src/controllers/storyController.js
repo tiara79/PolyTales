@@ -2,8 +2,10 @@
 
 const db = require("../models");
 
+// 필터링 및 정렬을 위한 함수
 const { getCover } = require("../util/coverResolver");
 
+// detail page list
 const OPEN_DETAIL_IDS = [1, 10, 15, 17, 19, 29, 30, 38];
 
 function decorate(v, page) {

@@ -1,11 +1,11 @@
 // src/context/NoteContext.jsx
 import {
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useMemo,
-    useState,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
 } from "react";
 import { API_URL } from "../config/AppConfig";
 import { AuthContext } from "./AuthContext";
@@ -20,34 +20,34 @@ import { AuthContext } from "./AuthContext";
 */
 
 export const NoteContext = createContext({
-  notes: [],
+  note: [], // notes → note
   loading: false,
   error: null,
-  loadNotes: async () => {},
+  loadNote: async () => {},
   addNote: async () => {},
   updateNote: async () => {},
   deleteNote: async () => {},
   getNote: () => undefined,
-  clearNotes: () => {},
+  clearNote: () => {},
 });
 
 export function NoteProvider({ children }) {
   const { user, token } = useContext(AuthContext);
 
-  const [notes, setNotes] = useState([]);
+  const [note, setNote] = useState([]); // notes → note
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // API 엔드포인트
-  const NOTES_URL = `${API_URL}/notes`;
+  const NOTE_URL = `${API_URL}/note`; // notes → note
 
   // 사용자 식별자 통일
-  const userId = user?.userid ?? user?.userId ?? null;
+  const userid = user?.userid ?? null; // userId → userid
 
   // 사용자별 로컬 캐시 키
   const cacheKey = useMemo(
-    () => (userId ? `notes:${String(userId)}` : null),
-    [userId]
+    () => (userid ? `note:${String(userid)}` : null), // notes: → note:
+    [userid]
   );
 
   // 공통 헤더
@@ -89,54 +89,54 @@ export function NoteProvider({ children }) {
   );
 
   // 목록 로드
-  const loadNotes = useCallback(
+  const loadNote = useCallback(
     async (params = {}) => {
-      if (!userId) {
-        setNotes([]);
+      if (!userid) {
+        setNote([]);
         return;
       }
       setLoading(true);
       setError(null);
       try {
         const q = new URLSearchParams({
-          userid: String(userId),
+          userid: String(userid),
           ...Object.fromEntries(Object.entries(params).filter(([, v]) => v != null)),
         }).toString();
 
-        const res = await fetch(`${NOTES_URL}?${q}`, { headers: authHeaders });
+        const res = await fetch(`${NOTE_URL}?${q}`, { headers: authHeaders });
         if (!res.ok) throw new Error(`LOAD_FAILED_${res.status}`);
         const data = await res.json();
         const rows = Array.isArray(data) ? data : data?.rows ?? [];
-        setNotes(rows);
+        setNote(rows);
         writeCache(rows);
       } catch (e) {
         setError(e);
         // 네트워크 실패 시 사용자별 로컬 캐시 복구
-        setNotes(readCache());
+        setNote(readCache());
       } finally {
         setLoading(false);
       }
     },
-    [NOTES_URL, authHeaders, userId, readCache, writeCache]
+    [NOTE_URL, authHeaders, userid, readCache, writeCache]
   );
 
   // 사용자 전환 시 자동 로드
   useEffect(() => {
-    if (userId) loadNotes();
-    else setNotes([]);
-  }, [userId, loadNotes]);
+    if (userid) loadNote();
+    else setNote([]);
+  }, [userid, loadNote]);
 
-  // notes 변경 시 캐시 반영
+  // note 변경 시 캐시 반영
   useEffect(() => {
-    if (!userId) return;
-    writeCache(notes);
-  }, [notes, writeCache, userId]);
+    if (!userid) return;
+    writeCache(note);
+  }, [note, writeCache, userid]);
 
   // 다른 탭에서 동일 사용자 캐시 변경 시 동기화
   useEffect(() => {
     const onStorage = (e) => {
       if (!cacheKey || e.key !== cacheKey) return;
-      setNotes(e.newValue ? safeParse(e.newValue) : []);
+      setNote(e.newValue ? safeParse(e.newValue) : []);
     };
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
@@ -144,13 +144,13 @@ export function NoteProvider({ children }) {
 
   const addNote = useCallback(
     async ({ title, content, storyid, page, extra = {} }) => {
-      if (!userId) throw new Error("UNAUTHORIZED");
+      if (!userid) throw new Error("UNAUTHORIZED");
       const body = {
         title,
         content,
         storyid,
         page,
-        userid: userId,
+        userid,
         ...extra,
       };
 
@@ -160,105 +160,105 @@ export function NoteProvider({ children }) {
         ...body,
         createdat: new Date().toISOString(),
       };
-      setNotes((prev) => [optimistic, ...prev]);
+      setNote((prev) => [optimistic, ...prev]);
 
       try {
-        const res = await fetch(NOTES_URL, {
+        const res = await fetch(NOTE_URL, {
           method: "POST",
           headers: authHeaders,
           body: JSON.stringify(body),
         });
         if (!res.ok) throw new Error(`CREATE_FAILED_${res.status}`);
         const saved = await res.json();
-        setNotes((prev) =>
+        setNote((prev) =>
           prev.map((n) => (n.noteid === tempId ? saved : n))
         );
         return saved;
       } catch (e) {
-        setNotes((prev) => prev.filter((n) => n.noteid !== tempId));
+        setNote((prev) => prev.filter((n) => n.noteid !== tempId));
         setError(e);
         throw e;
       }
     },
-    [NOTES_URL, authHeaders, userId]
+    [NOTE_URL, authHeaders, userid]
   );
 
   const updateNote = useCallback(
     async (noteid, patch) => {
-      const original = notes.find((n) => n.noteid === noteid);
+      const original = note.find((n) => n.noteid === noteid);
       if (!original) return;
 
-      setNotes((prev) =>
+      setNote((prev) =>
         prev.map((n) => (n.noteid === noteid ? { ...n, ...patch } : n))
       );
 
       try {
-        const res = await fetch(`${NOTES_URL}/${noteid}`, {
+        const res = await fetch(`${NOTE_URL}/${noteid}`, {
           method: "PUT", // 서버가 부분 수정을 기대하면 PATCH로 교체
           headers: authHeaders,
           body: JSON.stringify(patch),
         });
         if (!res.ok) throw new Error(`UPDATE_FAILED_${res.status}`);
         const saved = await res.json();
-        setNotes((prev) =>
+        setNote((prev) =>
           prev.map((n) => (n.noteid === noteid ? saved : n))
         );
         return saved;
       } catch (e) {
-        setNotes((prev) =>
+        setNote((prev) =>
           prev.map((n) => (n.noteid === noteid ? original : n))
         );
         setError(e);
         throw e;
       }
     },
-    [NOTES_URL, authHeaders, notes]
+    [NOTE_URL, authHeaders, note]
   );
 
   // 삭제 (낙관적 업데이트 + 롤백)
   const deleteNote = useCallback(
     async (noteid) => {
-      const backup = notes.slice();
-      setNotes((prev) => prev.filter((n) => n.noteid !== noteid));
+      const backup = note.slice();
+      setNote((prev) => prev.filter((n) => n.noteid !== noteid));
       try {
-        const res = await fetch(`${NOTES_URL}/${noteid}`, {
+        const res = await fetch(`${NOTE_URL}/${noteid}`, {
           method: "DELETE",
           headers: authHeaders,
         });
         if (!res.ok) throw new Error(`DELETE_FAILED_${res.status}`);
         return true;
       } catch (e) {
-        setNotes(backup);
+        setNote(backup);
         setError(e);
         throw e;
       }
     },
-    [NOTES_URL, authHeaders, notes]
+    [NOTE_URL, authHeaders, note]
   );
 
   const getNote = useCallback(
-    (noteid) => notes.find((n) => n.noteid === noteid),
-    [notes]
+    (noteid) => note.find((n) => n.noteid === noteid),
+    [note]
   );
 
-  const clearNotes = useCallback(() => setNotes([]), []);
+  const clearNote = useCallback(() => setNote([]), []);
 
   const value = useMemo(
     () => ({
-      notes,
+      note,
       loading,
       error,
-      loadNotes,
+      loadNote,
       addNote,
       updateNote,
       deleteNote,
       getNote,
-      clearNotes,
+      clearNote,
     }),
-    [notes, loading, error, loadNotes, addNote, updateNote, deleteNote, getNote, clearNotes]
+    [note, loading, error, loadNote, addNote, updateNote, deleteNote, getNote, clearNote]
   );
 
   return <NoteContext.Provider value={value}>{children}</NoteContext.Provider>;
 }
 
-export const useNotes = () => useContext(NoteContext);
+export const useNote = () => useContext(NoteContext);

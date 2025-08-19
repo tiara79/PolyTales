@@ -97,7 +97,7 @@ export default function Home() {
           ))}
         </div>
       </section>
-      <footer className="home-footer">
+      <footer className="admin-icon">
         <img
           src="/img/footer/admin.png"
           alt="Admin"
@@ -110,6 +110,3 @@ export default function Home() {
     </>
   );
 }
-  );
-}
-

@@ -1,8 +1,12 @@
 // back/src/controllers/learnController.js
 const { learn } = require('../models');
 
-//  GET /learn/:storyid?lang=en
-// - DB 원본 컬럼(imagepath/audiopath 등) 그대로 두되, 전역 normalizeMedia 미들웨어가 image/audio alias까지 채워 줌
+
+// img : img\a1\lily
+// audio : audio\a1\lily
+// 자막 : storylearn 테이블 caption 
+// 언어 : storylearn 테이블 nation
+
 const getLearnpage = async (req, res) => {
   const { storyid } = req.params;
   const { lang } = req.query;

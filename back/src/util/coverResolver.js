@@ -1,4 +1,3 @@
-
 // src/util/coverResolver.js
 // home, detail, learn, BookMark 등 스토리 테이블의 이미지 필드·경로가 제각각” 문제를 서버에서 표준화하도록 정리
 
@@ -101,9 +100,39 @@ function buildCoverCandidates(story = {}, page = "home") {
 }
 
 function getCover(story = {}, page = "home") {
-  const cover_candidates = buildCoverCandidates(story, page);
-  const thumbnail_url = cover_candidates[0] || "/img/home/no_image.png";
-  return { thumbnail_url, cover_candidates };
+  // 1. 우선순위: storycoverpath → thumbnail → thumbnail_url
+  const candidates = [
+    story?.storycoverpath,
+    story?.thumbnail,
+    story?.thumbnail_url,
+  ].filter(Boolean);
+
+  // 2. 경로가 /img/로 시작하지 않으면 /img/contents/로 보정
+  const normalized = candidates.map((p) => {
+    if (!p) return null;
+    if (/^https?:\/\//i.test(p)) return p;
+    if (p.startsWith("/img/")) return p.replace(/\\/g, "/");
+    return `/img/contents/${p.replace(/\\/g, "/").replace(/^\/?img\/contents\//, "")}`;
+  }).filter(Boolean);
+
+  // 3. 타이틀 기반 후보 추가 (간단화)
+  if (story?.storytitle) {
+    const slug = String(story.storytitle).toLowerCase().replace(/[^a-z0-9]+/g, "_");
+    ["jpg", "png", "webp"].forEach((ext) => {
+      normalized.push(`/img/contents/${slug}.${ext}`);
+    });
+  }
+
+  // 4. 마지막 폴백
+  normalized.push("/img/home/no_image.png");
+
+  // 중복 제거
+  const uniq = Array.from(new Set(normalized));
+
+  return {
+    thumbnail_url: uniq[0],
+    cover_candidates: uniq,
+  };
 }
 
-module.exports = { getCover, buildCoverCandidates };
+module.exports = { getCover };
