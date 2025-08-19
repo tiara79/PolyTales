@@ -35,7 +35,6 @@ function Learn() {
   const storyid = searchParams.get("storyid") || 1;
   const currentStory = stories.find((s) => s.storyid === Number(storyid));
   const currentLangLevel = currentStory?.langlevel || "A1";
-  // 
 
   const handleCloseClick = () => navigate("/");
   const handleReadFromStart = () => setPageNum(1);
