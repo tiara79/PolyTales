@@ -152,22 +152,6 @@ function Learn() {
 
   const currentPage = pages[pageNum - 1] || {};
   
-  const image =
-    getValidPath(
-      currentPage.image ||
-      currentPage.imagepath ||
-      currentPage.storycoverpath ||
-      currentPage.thumbnail_url,
-      "/img/home/no_image.png"
-    );
-  const audio =
-    getValidPath(
-      currentPage.audio ||
-      currentPage.audiopath ||
-      currentPage.storyaudiopath,
-      ""
-    );
-
   return (
     <div className="parent">
       <div className="div1" onClick={handleReadFromStart}><span className="read-start">처음부터 읽기</span></div>
