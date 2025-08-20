@@ -35,4 +35,5 @@ api.interceptors.response.use(
   }
 );
 
+export const API_URL = process.env.REACT_APP_API_URL || "https://polytales.azurewebsites.net/api";
 export default api;
