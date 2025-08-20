@@ -1,10 +1,10 @@
 import { useContext, useState } from 'react';
-import { BookmarkProvider } from "../context/BookmarkContext"; 
+import { BookmarkContext } from "../context/BookmarkContext"; 
 import { LevelsContext } from '../context/LevelsContext';
 import '../style/History.css';
 
 export default function History() {
-  const { BookMarks } = useContext(BookmarkProvider);
+  const { bookmarks } = useContext(BookmarkContext);
   const levelsContext = useContext(LevelsContext);
   const levels = levelsContext?.levels || [];
   const levelLabelsKo = levelsContext?.levelLabelsKo || {};
@@ -39,10 +39,10 @@ export default function History() {
           </div>
 
         <div className="image-grid">
-          {BookMarks.length === 0 ? (
+          {bookmarks.length === 0 ? (
             <div className="loading">찜한 책이 없습니다.</div>
           ) : (
-            BookMarks.map((book) => {
+            bookmarks.map((book) => {
               const imageBaseUrl = process.env.REACT_APP_IMAGE_BASE_URL || 'http://localhost:3000/img/contents';
               const imageUrl = book.thumbnail ? `${imageBaseUrl}/${book.thumbnail}` : '/img/home/no_image.png';
               return (

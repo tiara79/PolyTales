@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from "re
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/axios";
 
-import { BookMarkContext } from "../context/BookmarkContext";
+import { BookmarkContext } from "../context/BookmarkContext";
 import "../style/Detail.css";
 
 const isAbs = (u) => /^https?:\/\//i.test(String(u || ""));
@@ -84,7 +84,7 @@ export default function Detail() {
     };
 
 
-  const { addBookMark, removeBookMark, BookMarks } = useContext(BookMarkContext);
+  const { addBookmark, removeBookmark, bookmarks } = useContext(BookmarkContext);
 
   useEffect(() => {
     const storyid = searchParams.get("storyid") || 1;
@@ -144,14 +144,14 @@ export default function Detail() {
   }, [location.state, story]);
 
   const isBookMarked =
-    story && BookMarks?.some((b) => String(b.storyid) === String(story.storyid));
+    story && bookmarks?.some((b) => String(b.storyid) === String(story.storyid));
 
   const toggleBookMark = () => {
     if (!story) return;
     if (isBookMarked) {
-      removeBookMark(story.storyid);
+      removeBookmark(story.storyid);
     } else {
-      addBookMark({
+      addBookmark({
         storyid: story.storyid,
         storytitle: story.storytitle,
         langlevel: story.langlevel,
