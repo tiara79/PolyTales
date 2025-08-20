@@ -9,6 +9,7 @@ import "../style/History.css";
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 const LEVEL_LABELS = { A1: "초급", A2: "초중급", B1: "중급", B2: "중고급", C1: "고급", C2: "최고급" };
+const AZURE_BLOB_BASE_URL = "https://polytales.blob.core.windows.net/img/contents";
 
 // ---- 이미지 폴백 유틸 ----
 const isAbs = (u) => /^https?:\/\//i.test(String(u || ""));
@@ -60,7 +61,13 @@ const buildCandidates = (bm, story) => {
 
 function FallbackImage({ candidates, alt }) {
   const [i, setI] = useState(0);
-  const src = candidates[i] || "/img/home/no_image.png";
+  // Blob Storage 이미지 경로 생성
+  const getBlobUrl = (url) => {
+    if (!url) return "/img/home/no_image.png";
+    if (/^https?:\/\//.test(url)) return url;
+    return `${AZURE_BLOB_BASE_URL}/${String(url).replace(/^\/?img\/contents\//, "")}`;
+  };
+  const src = getBlobUrl(candidates[i]);
   return (
     <img
       className="story-image"

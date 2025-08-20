@@ -12,6 +12,8 @@ import "../style/Note.css";
 import "../style/PolaChat.css";
 import "../style/StoryLearn.css";
 
+const AZURE_BLOB_BASE_URL = "https://polytales.blob.core.windows.net/img/contents";
+
 function Learn() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -188,7 +190,11 @@ function Learn() {
         <div className="story-image-container">
           {/* 항상 이미지/자막/오디오/진행바 출력 */}
           <img
-            src={pages[pageNum - 1]?.imagepath || "/img/home/no_image.png"}
+            src={
+              pages[pageNum - 1]?.imagepath
+                ? `${AZURE_BLOB_BASE_URL}/${String(pages[pageNum - 1].imagepath).replace(/^\/?img\/contents\//, "")}`
+                : "/img/home/no_image.png"
+            }
             alt={`Page ${pageNum}`}
             className="story-img"
             onError={e => { e.currentTarget.src = "/img/home/no_image.png"; }}

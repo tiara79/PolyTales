@@ -17,6 +17,7 @@ const FALLBACK_CARD = {
 };
 
 const OPEN_DETAIL_IDS = [1, 10, 15, 17, 19, 29, 30, 38];
+const AZURE_BLOB_BASE_URL = "https://polytales.blob.core.windows.net/img/contents"; // 실제 Blob Storage 주소로 변경
 
 
 // story 모든 이미지 / 하위 페이지 관리
@@ -82,6 +83,10 @@ export default function Home() {
         <div className="image-grid">
           {filteredStories.map((s) => {
             const isOpen = OPEN_DETAIL_IDS.includes(Number(s.storyid));
+            // Blob Storage 이미지 경로 생성
+            const imageUrl = s.storycoverpath
+              ? `${AZURE_BLOB_BASE_URL}/${s.storycoverpath.replace(/^\/?img\/contents\//, "")}`
+              : "/img/home/no_image.png";
             return (
               <div
                 key={s.storyid}
@@ -91,7 +96,7 @@ export default function Home() {
               >
                 <img
                   className="story-image"
-                  src={s.storycoverpath || "/img/home/no_image.png"}
+                  src={imageUrl}
                   alt={s.storytitle || "Story"}
                   style={isOpen ? {} : { filter: "blur(2px)", pointerEvents: "none" }}
                   onError={(e) => {

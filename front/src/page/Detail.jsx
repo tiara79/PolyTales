@@ -5,6 +5,8 @@ import api from "../api/axios";
 import { BookmarkContext } from "../context/BookmarkContext";
 import "../style/Detail.css";
 
+const AZURE_BLOB_BASE_URL = "https://polytales.blob.core.windows.net/img/contents";
+
 const isAbs = (u) => /^https?:\/\//i.test(String(u || ""));
 const norm = (p = "") => String(p).replace(/\\/g, "/").replace(/([^:]\/)\/+/g, "$1");
 
@@ -26,7 +28,13 @@ const dedupe = (arr) => {
 
 function FallbackImage({ candidates, alt }) {
   const [idx, setIdx] = useState(0);
-  const src = candidates[idx] || "/img/home/no_image.png";
+  // Blob Storage 이미지 경로 생성
+  const getBlobUrl = (url) => {
+    if (!url) return "/img/home/no_image.png";
+    if (/^https?:\/\//.test(url)) return url;
+    return `${AZURE_BLOB_BASE_URL}/${String(url).replace(/^\/?img\/contents\//, "")}`;
+  };
+  const src = getBlobUrl(candidates[idx]);
 
   const handleImageError = useCallback(() => {
     const nextIdx = idx + 1;
