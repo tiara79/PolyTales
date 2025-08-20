@@ -71,7 +71,7 @@ export default function Home() {
               className={`level-btn ${langlevel} ${selectedLangLevel === langlevel ? "active" : ""}`}
               onClick={() => setSelectedLangLevel(langlevel)}
             >
-              <span className="lv-en">{langlevel}</span>
+              <span className="lv-en">{langlevel}</span> 
               <br />
               <span className="lv-ko">{LANGLEVEL_LABELS[langlevel]}</span>
             </button>
