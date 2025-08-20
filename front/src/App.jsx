@@ -12,7 +12,7 @@ import AdmContAdd from "./page/AdmContAdd";
 import AdmContDetail from "./page/AdmContDetail";
 import AdmContEdit from "./page/AdmContEdit";
 import AdmHome from "./page/AdmHome";
-import BookMark from "./page/Bookmark";
+import Bookmark from "./page/Bookmark";
 import Detail from "./page/Detail";
 import History from "./page/History";
 import Home from "./page/Home";
@@ -54,7 +54,7 @@ export default function App() {
                     <Route path="/mynotes" element={<MyNotes />} />
                     <Route path="/mynotes/:storyid" element={<MyNotes />} />
                     <Route path="/history" element={<History />} />
-                    <Route path="/bookmark" element={<BookMark />} />
+                    <Route path="/bookmark" element={<Bookmark />} />
                     <Route path="/plan" element={<Plan />} />
                     <Route path="/report" element={<Report />} />
                   </Route>

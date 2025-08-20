@@ -1,4 +1,4 @@
-// src/context/BookMarkContext.jsx
+// src/context/BookmarkContext.jsx
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 
 export const BookMarkContext = createContext({
