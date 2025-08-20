@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { BookmarkContext } from "../context/BookmarkContext"; 
+import { BookmarkContext } from "../context/BookmarkContext";
 import { LevelsContext } from '../context/LevelsContext';
 import '../style/History.css';
 

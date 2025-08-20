@@ -53,40 +53,6 @@ const getImageCandidates = (item, story, fallbackImage) => {
   });
 };
 
-// 북마크/읽은 책 이미지 후보 생성 최적화
-const buildImageCandidates = (item, story, fallbackImage) => {
-  const title = story?.storytitle || item.storytitle;
-  const level = story?.langlevel || item.langlevel;
-
-  const storyImages = [
-    ...(Array.isArray(story?.cover_candidates) ? story.cover_candidates : []),
-    story?.thumbnail_url,
-    story?.storycoverpath,
-    story?.thumbnail,
-  ];
-
-  const itemImages = [
-    item.thumb,
-    item.storycoverpath,
-    ...(Array.isArray(item.thumbCandidates) ? item.thumbCandidates : []),
-  ];
-
-  const titleImages = imageUtils.slugifyTitle(title)
-    .flatMap((slug) =>
-      ["jpg", "png", "webp"].flatMap((ext) =>
-        [`${slug}.${ext}`, `${slug}_1.${ext}`]
-      )
-    )
-    .flatMap((name) => imageUtils.getLocalPaths(name, level));
-
-  return imageUtils.deduplicate([
-    ...itemImages,
-    ...storyImages,
-    ...titleImages,
-    fallbackImage,
-  ]);
-};
-
 // ===== 최적화된 컴포넌트들 =====
 const BookCard = ({ item, type, onSelect }) => {
   const story = useMemo(() => {
@@ -368,7 +334,7 @@ export default function MyPage() {
                       onSelect={(item) => {
                         const story = storyMap.get(String(item.storyid));
                         const level = (story?.langlevel || item.langlevel || "A1").toUpperCase();
-                        const candidates = buildImageCandidates(item, story, "/img/home/no_read.png");
+                        const candidates = getImageCandidates(item, story, "/img/home/no_read.png");
                         navigate(`/detail?storyid=${item.storyid}&level=${level}`, {
                           state: { thumb: candidates[0], thumbCandidates: candidates },
                         });
@@ -437,3 +403,4 @@ export default function MyPage() {
     </div>
   );
 }
+        
