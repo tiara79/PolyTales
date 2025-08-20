@@ -23,7 +23,7 @@ const OPEN_DETAIL_IDS = [1, 10, 15, 17, 19, 29, 30, 38];
 // story 모든 이미지 / 하위 피이지 관리
 export default function Home() {
   const navigate = useNavigate();
-  const { token } = useContext(AuthContext) || {};
+  const { token } = useContext(AuthContext) || {}; // token 미사용이므로 삭제
   const [story, setstory] = useState([]); 
   const [selectedLangLevel, setSelectedLangLevel] = useState("A1");
   const [loading, setLoading] = useState(false);
