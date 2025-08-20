@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom";
-
 import "../style/Footer.css";
 
 export default function Footer() {
-  // useNavigate는 함수 컴포넌트 내부에서만 호출해야 합니다.
   const navigate = useNavigate();
 
   return (
@@ -15,6 +13,7 @@ export default function Footer() {
           서비스 약관
         </span>
       </div>
+      {/* 오른쪽에 어드민 아이콘만 위치 */}
       <div className="footer-right">
         <img  
           src="/img/footer/admin.png" 
