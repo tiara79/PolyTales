@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from 'react-toastify';
+import { API_URL } from "../api/axios";
 import { sendEmailVerification, sendPhoneVerification, verifyEmailCode, verifyPhoneCode } from "../api/verification";
-import { API_URL } from "../config/AppConfig";
 import "../style/SignUpForm.css";
 
 

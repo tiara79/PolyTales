@@ -1,6 +1,7 @@
 // src/page/Bookmark.jsx
 import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 import { BookmarkContext } from "../context/BookmarkContext";
 import { StoryContext } from "../context/StoryContext";
 import "../style/Bookmark.css";
