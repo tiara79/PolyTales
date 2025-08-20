@@ -215,7 +215,7 @@
 .admin-icon-footer {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: right;
   padding: 1.5rem 0;
   background: transparent;
 }

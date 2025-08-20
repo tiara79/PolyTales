@@ -1,7 +1,7 @@
 // Home.jsx
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
+// import api from "../api/axios"; // 불필요하므로 삭제
 // import { StoryContext } from "../context/StoryContext";
 import "../style/Home.css";
 
@@ -26,36 +26,32 @@ export default function Home() {
   const [selectedLangLevel, setSelectedLangLevel] = useState("A1");
   const [loading, setLoading] = useState(false);
 
-  const fetchstory = useCallback(
-    async (langlevel) => {
-      setLoading(true);
-      try {
-        const L = String(langlevel || "A1").toUpperCase();
-        // 로그인 여부와 상관없이 헤더 없이 요청
-        const res = await api.get(`/story/langlevel/${L}`);
-        let list = Array.isArray(res.data?.data) ? res.data.data : (Array.isArray(res.data) ? res.data : []);
-        if (!list || list.length === 0) {
-          setstory([FALLBACK_CARD]);
-        } else {
-          setstory(list);
-        }
-      } catch {
-        setstory([FALLBACK_CARD]);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [] // headers 제거
-  );
+  // 전체 리스트 한번에 가져오기
+  const fetchAllStories = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/data/story_all.json");
+      const list = await res.json();
+      setstory(Array.isArray(list) ? list : []);
+    } catch {
+      setstory([FALLBACK_CARD]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    fetchstory(selectedLangLevel);
-  }, [selectedLangLevel, fetchstory]);
+    fetchAllStories();
+  }, [fetchAllStories]);
 
   useEffect(() => {
-    // story 배열이 정상적으로 들어오는지 콘솔로 확인
-    console.log("[Home.jsx] story 리스트 개수:", story.length, story);
+    console.log("[Home.jsx] 전체 story 리스트 개수:", story.length, story);
   }, [story]);
+
+  // 선택된 레벨에 따라 필터링
+  const filteredStories = story.filter(
+    (s) => (s.langlevel || "A1").toUpperCase() === selectedLangLevel
+  );
 
   const onClickStory = (story) => {
     navigate(`/detail?storyid=${story.storyid}&langlevel=${selectedLangLevel}`);
@@ -66,11 +62,12 @@ export default function Home() {
       {/* 헤더는 App.jsx에서 관리, Home에서는 section부터 시작 */}
       <section className="recommend-section">
         <h2>언어레벨에 따라 언어를 공부해보세요!</h2>
+        {/* .level-btns로 가로 출력 */}
         <div className="level-btn">
           {LANGLEVELS.map((langlevel) => (
             <button
               key={langlevel}
-              className={`level-btn ${selectedLangLevel === langlevel ? "active" : ""}`}
+              className={`level-btn ${langlevel} ${selectedLangLevel === langlevel ? "active" : ""}`}
               onClick={() => setSelectedLangLevel(langlevel)}
             >
               <span className="lv-en">{langlevel}</span>
@@ -81,9 +78,9 @@ export default function Home() {
         </div>
 
         {loading && <div className="loading">불러오는 중…</div>}
-        {!loading && story.length === 0 && <div className="empty">해당 레벨의 스토리가 없습니다.</div>}
+        {!loading && filteredStories.length === 0 && <div className="empty">해당 레벨의 스토리가 없습니다.</div>}
         <div className="image-grid">
-          {story.map((s) => {
+          {filteredStories.map((s) => {
             const isOpen = OPEN_DETAIL_IDS.includes(Number(s.storyid));
             return (
               <div
