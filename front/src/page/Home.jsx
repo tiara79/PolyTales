@@ -1,8 +1,7 @@
 // Home.jsx
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
-import { AuthContext } from "../context/AuthContext";
 // import { StoryContext } from "../context/StoryContext";
 import "../style/Home.css";
 
@@ -20,10 +19,9 @@ const FALLBACK_CARD = {
 const OPEN_DETAIL_IDS = [1, 10, 15, 17, 19, 29, 30, 38];
 
 
-// story 모든 이미지 / 하위 피이지 관리
+// story 모든 이미지 / 하위 페이지 관리
 export default function Home() {
   const navigate = useNavigate();
-  const { token } = useContext(AuthContext) || {}; // token 미사용이므로 삭제
   const [story, setstory] = useState([]); 
   const [selectedLangLevel, setSelectedLangLevel] = useState("A1");
   const [loading, setLoading] = useState(false);
@@ -65,9 +63,9 @@ export default function Home() {
 
   return (
     <>
+      {/* 헤더는 App.jsx에서 관리, Home에서는 section부터 시작 */}
       <section className="recommend-section">
         <h2>언어레벨에 따라 언어를 공부해보세요!</h2>
-        {/* .level-btn 리스트는 에러와 상관없이 항상 출력 */}
         <div className="level-btn">
           {LANGLEVELS.map((langlevel) => (
             <button
@@ -115,6 +113,7 @@ export default function Home() {
           })}
         </div>
       </section>
+      {/* 푸터는 항상 렌더링 */}
       <footer className="admin-icon-footer">
         <img
           src="/img/footer/admin.png"

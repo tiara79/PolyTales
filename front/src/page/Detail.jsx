@@ -97,7 +97,7 @@ export default function Detail() {
           endpoint: `/stories/${level}/detail/${storyid}`,
           fullURL: `${api.defaults.baseURL}/stories/${level}/detail/${storyid}`
         });
-        const res = await api.get(`/stories/${level}/detail/${storyid}`);
+        const res = await api.get(`/stories/${level}/detail/${storyid}`); // 인증 헤더 없이 요청
         // DEBUG: Detail API 응답
         console.log("[Detail.jsx] API 응답:", {
           status: res.status,

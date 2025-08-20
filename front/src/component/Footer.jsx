@@ -3,12 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "../style/Footer.css";
 
 export default function Footer() {
+  // useNavigate는 함수 컴포넌트 내부에서만 호출해야 합니다.
   const navigate = useNavigate();
-
-  // 관리자 페이지로 이동
-  const handleAdminClick = () => {
-    navigate("/admhome");
-  };
 
   return (
     <footer className="footer">
@@ -24,9 +20,8 @@ export default function Footer() {
           src="/img/footer/admin.png" 
           alt="Admin" 
           className="admin-icon" 
-          onClick={handleAdminClick}
+          onClick={() => navigate("/admhome")}
           onError={(e) => {
-            // 관리자 아이콘 로드 실패시 기본 관리자 아이콘으로 재설정
             e.target.onerror = null;
             e.target.src = "/img/footer/admin.png";
           }}
