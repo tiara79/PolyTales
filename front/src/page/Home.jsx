@@ -1,13 +1,14 @@
 // Home.jsx
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import api from "../api/axios"; // 불필요하므로 삭제
+import api from "../api/axios"; // axios 사용
 // import { StoryContext } from "../context/StoryContext";
 import "../style/Home.css";
 
 const LANGLEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 const LANGLEVEL_LABELS = { A1: "초급", A2: "초중급", B1: "중급", B2: "중고급", C1: "고급", C2: "최고급" };
 
+// 여러 개의 FALLBACK_CARDS 배열로 변경
 const FALLBACK_CARDS = [
   {
     storyid: 1,
@@ -43,13 +44,14 @@ export default function Home() {
   const [selectedLangLevel, setSelectedLangLevel] = useState("A1");
   const [loading, setLoading] = useState(false);
 
-  // 전체 리스트 한번에 가져오기
+  // 전체 리스트 한번에 가져오기 (axios + 백엔드 API 사용)
   const fetchAllStories = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/data/story_all.json");
-      const list = await res.json();
-      setstory(Array.isArray(list) ? list : []);
+      // 백엔드에서 전체 리스트 가져오기
+      const res = await api.get("/story/all");
+      const list = Array.isArray(res.data?.data) ? res.data.data : (Array.isArray(res.data) ? res.data : []);
+      setstory(list.length ? list : FALLBACK_CARDS);
     } catch {
       setstory(FALLBACK_CARDS); // 에러 시 여러 개의 카드 보여주기
     } finally {
@@ -74,12 +76,12 @@ export default function Home() {
     navigate(`/detail?storyid=${story.storyid}&langlevel=${selectedLangLevel}`);
   };
 
+  // 버튼 래퍼 className을 .level-btns로 변경
   return (
     <>
       {/* 헤더는 App.jsx에서 관리, Home에서는 section부터 시작 */}
       <section className="recommend-section">
         <h2>언어레벨에 따라 언어를 공부해보세요!</h2>
-        {/* 버튼 래퍼를 .level-btns로 변경 */}
         <div className="level-btns">
           {LANGLEVELS.map((langlevel) => (
             <button
