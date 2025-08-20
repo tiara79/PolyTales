@@ -1,11 +1,8 @@
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
 
 import "../style/Footer.css";
 
 export default function Footer() {
-  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   // 관리자 페이지로 이동

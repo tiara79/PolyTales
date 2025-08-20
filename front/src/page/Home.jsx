@@ -1,5 +1,5 @@
 // Home.jsx
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
@@ -27,8 +27,6 @@ export default function Home() {
   const [story, setstory] = useState([]); 
   const [selectedLangLevel, setSelectedLangLevel] = useState("A1");
   const [loading, setLoading] = useState(false);
-
-  const headers = useMemo(() => (token ? { Authorization: `Bearer ${token}` } : undefined), [token]);
 
   const fetchstory = useCallback(
     async (langlevel) => {
@@ -129,5 +127,7 @@ export default function Home() {
         />
       </footer>
     </>
+  );
+}
   );
 }
