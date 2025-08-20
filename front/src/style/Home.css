@@ -28,18 +28,21 @@
 }
 
 .level-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 120px;
   height: 55px;
   border-radius: 40px;
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   background-color: #eee;
-  color: #89837b;
   border: none;
   cursor: pointer;
   transition: all 0.25s ease-in-out;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-  transform: translateY(0);
+  margin: 0 0.5rem 0.5rem 0;
 }
 
 .level-btn:hover {

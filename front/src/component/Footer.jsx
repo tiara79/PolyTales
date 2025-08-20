@@ -23,18 +23,17 @@ export default function Footer() {
         </span>
       </div>
       <div className="footer-right">
-        {user?.role === 1 ? (
-          <img  
-            src="/img/footer/admin.png" 
-            alt="Admin" 
-            className="admin-icon" 
-            onClick={handleAdminClick}
-            onError={(e) => {
-              // 관리자 아이콘 로드 실패시 header_logo.png로 대체
-              e.target.src = "/img/home/no_img.png";
-            }}
-          />
-        ) : null}
+        <img  
+          src="/img/footer/admin.png" 
+          alt="Admin" 
+          className="admin-icon" 
+          onClick={handleAdminClick}
+          onError={(e) => {
+            // 관리자 아이콘 로드 실패시 기본 관리자 아이콘으로 재설정
+            e.target.onerror = null;
+            e.target.src = "/img/footer/admin.png";
+          }}
+        />
       </div>
     </footer>
   );

@@ -20,12 +20,17 @@ function Learn() {
   const noteContentRef = useRef(null);
   const chatInputRef = useRef(null);
 
-  const [pages, setPages] = useState([]);
+  const [pages, setPages] = useState([
+    {
+      imagepath: "/img/home/no_image.png",
+      caption: "", // 안내 문구 주석 처리
+      audio: "",
+    },
+  ]);
   const [pageNum, setPageNum] = useState(1);
   const [lang, setLang] = useState("ko");
   const [isPlaying, setIsPlaying] = useState(false);
   const [caption, setCaption] = useState(""); // 자막 상태 추가
-
   const [languageData, setLanguageData] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
   const [isChatLoading, setIsChatLoading] = useState(false);
@@ -51,19 +56,44 @@ function Learn() {
   }
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/storylearn/${storyid}?nation=${lang}`) // lang → nation
+    fetch(`${process.env.REACT_APP_API_URL}/storylearn/${storyid}?nation=${lang}`)
       .then((res) => res.json())
       .then((result) => {
-        setPages(result.pages || []);
-        setLanguageData(result.language || []);
-        // 자막 줄바꿈 처리
-        const current = (result.pages || [])[pageNum - 1];
-        if (current && current.caption) {
-          const cleanCaption = current.caption.replace(/\\n/g, '\n');
-          setCaption(cleanCaption);
+        const pagesData = Array.isArray(result.pages) ? result.pages : [];
+        const languageDataArr = Array.isArray(result.language) ? result.language : [];
+        // fallback: 에러나 빈 데이터일 때 기본값
+        if (!pagesData.length) {
+          setPages([
+            {
+              imagepath: "/img/home/no_image.png",
+              caption: "", // 안내 문구 없이 빈 자막
+              audio: "",
+            },
+          ]);
+          setCaption(""); // 자막도 빈 값
+        } else {
+          setPages(pagesData);
+          const current = pagesData[pageNum - 1];
+          if (current && current.caption) {
+            const cleanCaption = current.caption.replace(/\\n/g, '\n');
+            setCaption(cleanCaption);
+          }
         }
+        setLanguageData(languageDataArr);
       })
-      .catch((e) => console.error("데이터 로딩 오류:", e));
+      .catch((e) => {
+        // 에러 발생 시에도 모든 UI가 동작하도록 fallback
+        setPages([
+          {
+            imagepath: "/img/home/no_image.png",
+            caption: "",
+            audio: "",
+          },
+        ]);
+        setLanguageData([]);
+        setCaption("");
+        console.error("데이터 로딩 오류:", e);
+      });
   }, [lang, storyid, pageNum]);
 
   const saveNote = async () => {
@@ -156,46 +186,42 @@ function Learn() {
       {/* 이미지 및 자막 영역 */}
       <div className="div3">
         <div className="story-image-container">
-          {pages.length > 0 && (
-            <>
-              <img
-                src={pages[pageNum - 1]?.imagepath || "/img/home/no_image.png"}
-                alt={`Page ${pageNum}`}
-                className="story-img"
-                onError={e => { e.currentTarget.src = "/img/home/no_image.png"; }}
-              />
-              <div className="caption-text">{formatCaption(caption)}</div>
-              <div className="caption-box">
-                <div className="control-btns">
-                  <button onClick={goPrev} disabled={pageNum === 1} className="btn Text">
-                    <span className="icon" />
-                    <span>이전 문장</span>
-                  </button>
-                  <button onClick={togglePlay} className="btn pause">
-                    <img src={isPlaying ? "/img/learn/button/pause.png" : "/img/learn/button/play.png"} alt="play/pause" />
-                  </button>
-                  <button onClick={goNext} disabled={pageNum === pages.length} className="btn Text">
-                    <span className="icon" />
-                    <span>다음 문장</span>
-                  </button>
-                </div>
-              </div>
-              <div className="progress-bar">
-                <div className="progress" style={{ width: `${(pageNum / pages.length) * 100}%` }} />
-              </div>
-              {/* 오디오 태그는 숨김 처리 또는 필요시 추가 */}
-              <audio
-                src={pages[pageNum - 1]?.audio || ""}
-                style={{ display: "none" }}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-              />
-            </>
-          )}
+          {/* 항상 이미지/자막/오디오/진행바 출력 */}
+          <img
+            src={pages[pageNum - 1]?.imagepath || "/img/home/no_image.png"}
+            alt={`Page ${pageNum}`}
+            className="story-img"
+            onError={e => { e.currentTarget.src = "/img/home/no_image.png"; }}
+          />
+          <div className="caption-text">{formatCaption(caption)}</div>
+          <div className="caption-box">
+            <div className="control-btns">
+              <button onClick={goPrev} disabled={pageNum === 1} className="btn Text">
+                <span className="icon" />
+                <span>이전 문장</span>
+              </button>
+              <button onClick={togglePlay} className="btn pause">
+                <img src={isPlaying ? "/img/learn/button/pause.png" : "/img/learn/button/play.png"} alt="play/pause" />
+              </button>
+              <button onClick={goNext} disabled={pageNum === pages.length} className="btn Text">
+                <span className="icon" />
+                <span>다음 문장</span>
+              </button>
+            </div>
+          </div>
+          <div className="progress-bar">
+            <div className="progress" style={{ width: `${(pageNum / pages.length) * 100}%` }} />
+          </div>
+          <audio
+            src={pages[pageNum - 1]?.audio || ""}
+            style={{ display: "none" }}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+          />
         </div>
       </div>
 
-         {/* 문법/단어 영역 */}
+      {/* 문법/단어 영역 */}
       <div className="div4 grammar">
         <h4>문법</h4>
         <div className="grammar-list">
@@ -233,6 +259,7 @@ function Learn() {
       </div>
 
       <div className="div7 note-box">
+        {/* 노트 저장 UI 항상 출력 */}
         <div className="note-head">
           <strong>Note</strong>
           <img src="/img/learn/disk_icon.png" alt="save" className="save-note" onClick={saveNote} />
@@ -244,9 +271,9 @@ function Learn() {
         <textarea className="note-content" placeholder="" ref={noteContentRef} defaultValue="" />
       </div>
 
-
       {/* 채팅 영역 */}
       <div className="div8">
+        {/* 튜터 채팅 UI 항상 출력 */}
         <div>
           <div className="tutor-lang-select">
             <span className="tutor-info">채팅 내역은 저장되지 않습니다.</span>

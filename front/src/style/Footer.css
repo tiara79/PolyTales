@@ -34,9 +34,10 @@
 }
 
 .footer-right {
-  margin-left: auto;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  min-width: 80px;
   height: 100%;
 }
 
@@ -77,7 +78,15 @@ p {
   padding: 0;
 }
 .admin-icon {
-  width: 30px; /* 아이콘 크기 조정 */
-  height: 30px;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.admin-icon:hover {
+  transform: scale(1.08);
 }

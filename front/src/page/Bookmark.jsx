@@ -129,17 +129,17 @@ export default function Bookmark() {
         </div>
 
         <div className="level-buttons">
-          {LEVELS.map((lv) => {
-            const isSel = selected === lv;
+          {LEVELS.map((langlevel) => {
+            const isSel = selected === langlevel;
             return (
               <button
-                key={lv}
-                onClick={() => setSelected(isSel ? null : lv)}
-                className={`level-btn ${lv} ${isSel ? `selected ${lv}` : ""}`}
+                key={langlevel}
+                onClick={() => setSelected(isSel ? null : langlevel)}
+                className={`level-btn ${langlevel} ${isSel ? `selected ${langlevel}` : ""}`}
               >
-                <strong>{lv}</strong>
+                <strong>{langlevel}</strong>
                 <br />
-                <span>{LEVEL_LABELS[lv]}</span>
+                <span>{LEVEL_LABELS[langlevel]}</span>
               </button>
             );
           })}

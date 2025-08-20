@@ -35,7 +35,8 @@ export default function Home() {
       setLoading(true);
       try {
         const L = String(langlevel || "A1").toUpperCase();
-        const res = await api.get(`/story/langlevel/${L}`, { headers }); // 경로가 실제 백엔드와 일치해야 정상 동작
+        // 로그인 여부와 상관없이 헤더 없이 요청
+        const res = await api.get(`/story/langlevel/${L}`);
         let list = Array.isArray(res.data?.data) ? res.data.data : (Array.isArray(res.data) ? res.data : []);
         if (!list || list.length === 0) {
           setstory([FALLBACK_CARD]);
@@ -48,7 +49,7 @@ export default function Home() {
         setLoading(false);
       }
     },
-    [headers]
+    [] // headers 제거
   );
 
   useEffect(() => {
@@ -69,20 +70,21 @@ export default function Home() {
       <section className="recommend-section">
         <h2>언어레벨에 따라 언어를 공부해보세요!</h2>
         <div className="level-btn">
-          {LANGLEVELS.map((lv) => (
+          {LANGLEVELS.map((langlevel) => (
             <button
-              key={lv}
-              className={`level-btn ${selectedLangLevel === lv ? "active" : ""}`}
-              onClick={() => setSelectedLangLevel(lv)}
+              key={langlevel}
+              className={`level-btn ${selectedLangLevel === langlevel ? "active" : ""}`}
+              onClick={() => setSelectedLangLevel(langlevel)}
             >
-              <span className="lv-en">{lv}</span>
+              <span className="lv-en">{langlevel}</span>
               <br />
-              <span className="lv-ko">{LANGLEVEL_LABELS[lv]}</span>
+              <span className="lv-ko">{LANGLEVEL_LABELS[langlevel]}</span>
             </button>
           ))}
         </div>
 
         {loading && <div className="loading">불러오는 중…</div>}
+        {/* 에러나 빈 리스트일 때도 FALLBACK_CARD로 langlevel별 리스트가 항상 보임 */}
         {!loading && story.length === 0 && <div className="empty">해당 레벨의 스토리가 없습니다.</div>}
 
         <div className="image-grid">

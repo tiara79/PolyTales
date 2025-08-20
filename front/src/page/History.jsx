@@ -8,7 +8,6 @@ export default function History() {
   const levelsContext = useContext(LevelsContext);
   const levels = levelsContext?.levels || [];
   const levelLabelsKo = levelsContext?.levelLabelsKo || {};
-  
   const [selected, setSelected] = useState(levels[0] || 'A1');
    // myNotes와 동일한 back 버튼 핸들러
   const goBack = () => window.history.length > 1 ? window.history.back() : null;
@@ -26,14 +25,14 @@ export default function History() {
 
         {/*  level buttons 영역 */}
         <div className="level-buttons">
-            {levels.map(level => (
+            {levels.map(langlevel => (
               <button
-                key={level}
-                onClick={() => setSelected(level)}
-                className={`level-btn ${level} ${selected === level ? `selected ${level}` : ''}`}
+                key={langlevel}
+                onClick={() => setSelected(langlevel)}
+                className={`level-btn ${langlevel} ${selected === langlevel ? `selected ${langlevel}` : ''}`}
               >
-                <strong>{level}</strong><br />
-                <span>{levelLabelsKo[level]}</span>
+                <strong>{langlevel}</strong><br />
+                <span>{levelLabelsKo[langlevel]}</span>
               </button>
             ))}
           </div>

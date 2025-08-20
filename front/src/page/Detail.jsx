@@ -87,7 +87,7 @@ export default function Detail() {
 
   useEffect(() => {
     const storyid = searchParams.get("storyid") || 1;
-    const level = String(searchParams.get("level") || "A1").toUpperCase();
+    const level = String(searchParams.get("level") || "A1").toUpperCase(); // 쿼리 파라미터는 level, 실제 데이터는 langlevel
     (async () => {
       try {
         // DEBUG: Detail API 호출 정보
