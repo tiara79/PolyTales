@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "https://polytales.azurewebsites.net/api",
+  baseURL: process.env.REACT_APP_API_BACK_URL || "https://polytales.azurewebsites.net/api",
   withCredentials: true,
   timeout: 10000,
 });

@@ -19,6 +19,14 @@
   margin-bottom: 2rem;
 }
 
+.level-btns {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
 .level-buttons {
   display: flex;
   flex-wrap: wrap;
