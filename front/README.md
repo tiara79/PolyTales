@@ -131,3 +131,17 @@ cd polytales-be
 # node_modules와 빌드 캐시를 정리
 rm -rf node_modules package-lock.json && npm install
 npm run build
+
+
+# 파일명 대소문자 변경 (윈도우/리눅스/CI 환경 모두 호환)
+# 1. 실제 파일 경로와 확장자를 확인하세요. 예시: src/page/BookMark.jsx
+
+# 2. 임시 이름으로 변경
+git mv src/page/BookMark.jsx src/page/tempFile.jsx
+
+# 3. 원하는 이름으로 다시 변경 (대소문자 포함)
+git mv src/page/tempFile.jsx src/page/Bookmark.jsx
+
+# 4. 변경 사항 커밋 및 푸시
+git commit -am "Fix filename case from BookMark to Bookmark"
+git push
