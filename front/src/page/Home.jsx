@@ -35,7 +35,7 @@ export default function Home() {
       setLoading(true);
       try {
         const L = String(langlevel || "A1").toUpperCase();
-        const res = await api.get(`/story/langlevel/${L}`, { headers }); // /stories → /story
+        const res = await api.get(`/story/langlevel/${L}`, { headers }); // 경로가 실제 백엔드와 일치해야 정상 동작
         let list = Array.isArray(res.data?.data) ? res.data.data : (Array.isArray(res.data) ? res.data : []);
         if (!list || list.length === 0) {
           setstory([FALLBACK_CARD]);
@@ -126,19 +126,6 @@ export default function Home() {
           onError={(e) => { e.currentTarget.src = "/img/home/no_image.png"; }}
         />
       </footer>
-      {/* Home.jsx에서 사용하는 API 주소는 아래와 같이 구성됩니다:
-      예시: /story/langlevel/:langlevel
-      실제로 상세페이지(Detail)로 이동할 때는 아래와 같이 주소를 만듭니다:
-      navigate(`/detail?storyid=${story.storyid}&langlevel=${selectedLangLevel}`);
-
-      그리고 Detail.jsx에서 API 호출 시 아래와 같이 사용합니다:
-      api.get(`/stories/${level}/detail/${storyid}`)
-      → 이때 실제 호출되는 주소는
-      https://polytales.azurewebsites.net/api/stories/A1/detail/1
-      (api.defaults.baseURL이 https://polytales.azurewebsites.net/api로 설정되어 있음)
-
-      즉, Home.jsx에서는 상세페이지로 이동만 하고,
-      실제 상세 데이터 API 호출은 Detail.jsx에서 이루어집니다. */}
     </>
   );
 }
