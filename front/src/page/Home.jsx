@@ -67,6 +67,7 @@ export default function Home() {
     <>
       <section className="recommend-section">
         <h2>언어레벨에 따라 언어를 공부해보세요!</h2>
+        {/* .level-btn 리스트는 에러와 상관없이 항상 출력 */}
         <div className="level-btn">
           {LANGLEVELS.map((langlevel) => (
             <button
@@ -82,9 +83,7 @@ export default function Home() {
         </div>
 
         {loading && <div className="loading">불러오는 중…</div>}
-        {/* 에러나 빈 리스트일 때도 FALLBACK_CARD로 langlevel별 리스트가 항상 보임 */}
         {!loading && story.length === 0 && <div className="empty">해당 레벨의 스토리가 없습니다.</div>}
-
         <div className="image-grid">
           {story.map((s) => {
             const isOpen = OPEN_DETAIL_IDS.includes(Number(s.storyid));
@@ -129,5 +128,4 @@ export default function Home() {
     </>
   );
 }
-  );
-}
+
