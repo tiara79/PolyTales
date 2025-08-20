@@ -2,9 +2,9 @@
 import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
-import { BookMarkContext } from "../context/BookmarkContext"; // BookMarkContext로 통일
+import { BookmarkContext } from "../context/BookmarkContext";
 import { StoryContext } from "../context/StoryContext";
-import "../style/Bookmark.css"; // Bookmark.css로 통일
+import "../style/Bookmark.css";
 import "../style/History.css"; // 헤더(뒤로가기/제목) 스타일 재사용
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
@@ -101,9 +101,9 @@ async function resolveAndGo(navigate, storyid, hintLevel, state) {
   window.alert("준비 중인 콘텐츠입니다.");
 }
 
-export default function Bookmark() { // 컴포넌트명 Bookmark로 통일
+export default function Bookmark() {
   const navigate = useNavigate();
-  const { BookMarks } = useContext(BookMarkContext); // BookMarks로 통일
+  const { bookmarks } = useContext(BookmarkContext);
   const storyContext = useContext(StoryContext);
   const story = storyContext?.story;
   const byId = useMemo(() => {
@@ -116,9 +116,9 @@ export default function Bookmark() { // 컴포넌트명 Bookmark로 통일
   const [selected, setSelected] = useState("A1");
 
   const filtered = useMemo(() => {
-    const list = Array.isArray(BookMarks) ? BookMarks : [];
+    const list = Array.isArray(bookmarks) ? bookmarks : [];
     return selected ? list.filter((b) => (b.langlevel || "").toUpperCase() === selected) : list;
-  }, [BookMarks, selected]);
+  }, [bookmarks, selected]);
 
   return (
     <div className="history-container">
@@ -177,4 +177,9 @@ export default function Bookmark() { // 컴포넌트명 Bookmark로 통일
     </div>
   );
 }
+
+// 파일명, 컴포넌트명, context명 모두 Bookmark로 통일되어 있으므로 빌드 에러가 없어야 정상입니다.
+// 만약 빌드 에러가 난다면, 실제 파일 위치와 import 경로, 대소문자가 모두 일치하는지 다시 확인하세요.
+// 예시: import Bookmark from './page/Bookmark'; (App.jsx, index.js 등에서)
+// 파일명: Bookmark.jsx (src/page/Bookmark.jsx)
 

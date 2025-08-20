@@ -1,47 +1,47 @@
 // src/context/BookmarkContext.jsx
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 
-export const BookMarkContext = createContext({
-  BookMarks: [],
-  addBookMark: () => {},
-  removeBookMark: () => {},
-  isBookMarked: () => false,
+export const BookmarkContext = createContext({
+  bookmarks: [],
+  addBookmark: () => {},
+  removeBookmark: () => {},
+  isBookmarked: () => false,
 });
 
 export function BookmarkProvider({ children }) {
-  const [BookMarks, setBookMarks] = useState([]);
+  const [bookmarks, setBookmarks] = useState([]);
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem("BookMarks");
+      const raw = localStorage.getItem("bookmarks");
       if (!raw) return;
       const parsed = JSON.parse(raw);
-      setBookMarks(Array.isArray(parsed) ? parsed : []);
+      setBookmarks(Array.isArray(parsed) ? parsed : []);
     } catch {
-      setBookMarks([]);
+      setBookmarks([]);
     }
   }, []);
 
   useEffect(() => {
     try {
-      localStorage.setItem("BookMarks", JSON.stringify(BookMarks));
+      localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
     } catch {}
-  }, [BookMarks]);
+  }, [bookmarks]);
 
   useEffect(() => {
     const onStorage = (e) => {
-      if (e.key !== "BookMarks") return;
+      if (e.key !== "bookmarks") return;
       try {
         const next = e.newValue ? JSON.parse(e.newValue) : [];
-        setBookMarks(Array.isArray(next) ? next : []);
+        setBookmarks(Array.isArray(next) ? next : []);
       } catch {}
     };
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  const addBookMark = useCallback((story) => {
-    setBookMarks((prev) => {
+  const addBookmark = useCallback((story) => {
+    setBookmarks((prev) => {
       const id = story?.storyid ?? story?.storyId ?? story?.id;
       if (id === undefined || id === null) return prev;
       const key = String(id);
@@ -52,20 +52,20 @@ export function BookmarkProvider({ children }) {
     });
   }, []);
 
-  const removeBookMark = useCallback((storyid) => {
+  const removeBookmark = useCallback((storyid) => {
     const key = String(storyid);
-    setBookMarks((prev) => prev.filter((b) => String(b.storyid) !== key));
+    setBookmarks((prev) => prev.filter((b) => String(b.storyid) !== key));
   }, []);
 
-  const isBookMarked = useCallback(
-    (storyid) => BookMarks.some((b) => String(b.storyid) === String(storyid)),
-    [BookMarks]
+  const isBookmarked = useCallback(
+    (storyid) => bookmarks.some((b) => String(b.storyid) === String(storyid)),
+    [bookmarks]
   );
 
   const value = useMemo(
-    () => ({ BookMarks, addBookMark, removeBookMark, isBookMarked }),
-    [BookMarks, addBookMark, removeBookMark, isBookMarked]
+    () => ({ bookmarks, addBookmark, removeBookmark, isBookmarked }),
+    [bookmarks, addBookmark, removeBookmark, isBookmarked]
   );
 
-  return <BookMarkContext.Provider value={value}>{children}</BookMarkContext.Provider>;
+  return <BookmarkContext.Provider value={value}>{children}</BookmarkContext.Provider>;
 }
