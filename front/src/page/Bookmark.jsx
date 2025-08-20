@@ -1,11 +1,10 @@
 // src/page/Bookmark.jsx
 import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
 import { BookmarkContext } from "../context/BookmarkContext";
 import { StoryContext } from "../context/StoryContext";
 import "../style/Bookmark.css";
-import "../style/History.css"; // 헤더(뒤로가기/제목) 스타일 재사용
+import "../style/History.css";
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 const LEVEL_LABELS = { A1: "초급", A2: "초중급", B1: "중급", B2: "중고급", C1: "고급", C2: "최고급" };

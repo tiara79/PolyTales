@@ -1,8 +1,7 @@
 // src/page/Detail.jsx
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import api from "../api/axios";
-
+import api from "../api/axios"; // 실제 파일이 src/api/axios.js에 있어야 함
 import { BookmarkContext } from "../context/BookmarkContext";
 import "../style/Detail.css";
 
@@ -218,3 +217,4 @@ export default function Detail() {
     </div>
   );
 }
+

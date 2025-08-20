@@ -1,20 +1,18 @@
 // src/api/axios.js
 import axios from "axios";
-import { API_URL } from "../config/AppConfig";
 
-const instance = axios.create({
-  baseURL: `${API_URL}/api`,
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || "https://polytales.azurewebsites.net/api",
+  withCredentials: true,
   timeout: 10000,
-  maxContentLength: Infinity,
-  maxBodyLength: Infinity,
 });
 
 // 기본 헤더
-instance.defaults.headers.common["Accept"] = "application/json";
-instance.defaults.headers.common["Content-Type"] = "application/json";
+api.defaults.headers.common["Accept"] = "application/json";
+api.defaults.headers.common["Content-Type"] = "application/json";
 
 // 요청 인터셉터: 토큰 자동 부착
-instance.interceptors.request.use(
+api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
     if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -27,7 +25,7 @@ instance.interceptors.request.use(
 );
 
 // 응답 인터셉터: 공통 에러 처리
-instance.interceptors.response.use(
+api.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 431) {
@@ -37,5 +35,4 @@ instance.interceptors.response.use(
   }
 );
 
-export default instance;
-export { API_URL }; // (원하면 화면에 표시/디버그용으로 사용)
+export default api;

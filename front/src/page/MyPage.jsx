@@ -12,11 +12,6 @@ import { getProfileImageUrl } from "../util/imageUtil";
 const getImageCandidates = (item, story, fallbackImage) => {
   const isAbs = (u) => /^https?:\/\//i.test(String(u || ""));
   const norm = (p = "") => String(p).replace(/\\/g, "/").replace(/([^:]\/)\/+/g, "$1");
-  const baseName = (p = "") => {
-    const s = norm(String(p));
-    const i = s.lastIndexOf("/");
-    return i >= 0 ? s.slice(i + 1) : s;
-  };
   const slugify = (title = "") => {
     const s = String(title).toLowerCase().replace(/'/g, "").replace(/&/g, "and").replace(/[^a-z0-9]+/g, " ").trim();
     return Array.from(new Set([s.replace(/\s+/g, "_"), s.replace(/\s+/g, "-")]));
@@ -403,4 +398,4 @@ export default function MyPage() {
     </div>
   );
 }
-        
+

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import '../style/AdmContDetail.css'; // 스타일 파일 임포트
- // 수정 버튼 이미지 임포트
+import '../style/AdmContDetail.css';
 
 export default function AdmContDetail() {
     const { storyid } = useParams();

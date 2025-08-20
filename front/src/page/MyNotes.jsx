@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
-import "../style/History.css"; // 헤더 스타일 재사용
+import "../style/History.css";
 import "../style/Note.css";
 
 export default function MyNotes() {
@@ -20,7 +20,7 @@ export default function MyNotes() {
     (async () => {
       try {
         // GET /note/:userid
-        const res = await api.get(`/note/${user.userid}`); 
+        const res = await api.get(`/note/${user.userid}`);
         const list = Array.isArray(res.data?.data) ? res.data.data : [];
         // 날짜 내림차순
         list.sort((a, b) => new Date(b.createdat) - new Date(a.createdat));
@@ -52,7 +52,9 @@ export default function MyNotes() {
     <div className="history-container">
       <div className="mynotes-container">
         <div className="back-button-wrapper">
-          <button className="back-button" onClick={() => navigate(-1)}>🔙</button>
+          <button className="back-button" onClick={() => navigate(-1)}>
+            🔙
+          </button>
           <h1 className="page-title">마이 노트</h1>
         </div>
 
