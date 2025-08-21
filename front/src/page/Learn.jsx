@@ -142,7 +142,7 @@ function Learn() {
       .join("\n");
 
     try {
-      const res = await fetch("/api/notes", {
+      const res = await fetch("/api/route", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,264 +1,218 @@
-// src/context/NoteContext.jsx
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { API_URL } from "../config/AppConfig";
-import { AuthContext } from "./AuthContext";
+// front/src/pages/Learn.jsx
+import { useEffect, useRef, useState, useContext } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-/*
-  NoteContext
-  - 노트 목록/상태 전역 관리
-  - 로그인 사용자별 로컬 캐시(localStorage) 키 분리
-  - 서버 호출 실패 시 사용자별 캐시로 복구
-  - 낙관적 업데이트 적용(추가/수정/삭제)
-  - 탭 간 동기화(storage 이벤트)
-*/
+import { AuthContext } from "../context/AuthContext";
+import { StoryContext } from "../context/StoryContext";
+import AudioPlayer from "../component/AudioPlayer";
 
-export const NoteContext = createContext({
-  note: [], // notes → note
-  loading: false,
-  error: null,
-  loadNote: async () => {},
-  addNote: async () => {},
-  updateNote: async () => {},
-  deleteNote: async () => {},
-  getNote: () => undefined,
-  clearNote: () => {},
-});
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '../style/StoryLearn.css';
+import '../style/Learn.css';
+import '../style/Note.css';
+import '../style/PolaChat.css';
 
-export function NoteProvider({ children }) {
-  const { user, token } = useContext(AuthContext);
+function Learn() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const noteTitleRef = useRef(null);
+  const noteContentRef = useRef(null);
+  const chatInputRef = useRef(null);
+  const [pages, setPages] = useState([]);
+  const [pageNum, setPageNum] = useState(1);
+  const [caption, setCaption] = useState('');
+  const [nation, setNation] = useState('en');
+  const [languageData, setLanguageData] = useState([]);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [chatInput, setChatInput] = useState("");
+  const [isChatLoading, setIsChatLoading] = useState(false);
 
-  const [note, setNote] = useState([]); // notes → note
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const storyid = searchParams.get('storyid') || 1;
+  const langLabel = { ko: '한국어', fr: '프랑스어', ja: '일본어', en: '영어', es: '스페인어', de: '독일어' };
 
-  // API 엔드포인트
-  const NOTE_URL = `${API_URL}/note`; // notes → note
+  const { user } = useContext(AuthContext);
+  const storyContext = useContext(StoryContext);
+  const story = storyContext?.story || [];
+  const currentStoryId = pages[pageNum - 1]?.storyid || pages[0]?.storyid || storyid;
+  const currentStoryObj = story?.find(s => s.storyid === Number(currentStoryId));
 
-  // 사용자 식별자 통일
-  const userid = user?.userid ?? null; // userId → userid
+  const goPrev = () => setPageNum(p => Math.max(p - 1, 1));
+  const goNext = () => setPageNum(prev => Math.min(prev + 1, pages.length));
+  const handleReadFromStart = () => setPageNum(1);
+  const handleCloseClick = () => navigate(-1);
 
-  // 사용자별 로컬 캐시 키
-  const cacheKey = useMemo(
-    () => (userid ? `note:${String(userid)}` : null), // notes: → note:
-    [userid]
-  );
+  useEffect(() => {
+    fetch(`/learn/${storyid}?nation=${nation}`)
+      .then(res => res.json())
+      .then(result => {
+        setPages(result.pages || []);
+        setLanguageData(result.language || []);
+        if (result.pages?.[0]?.caption) setCaption(result.pages[0].caption);
+      })
+      .catch(() => {
+        const dummyPages = [
+          {
+            pageid: 1,
+            storyid: Number(storyid),
+            pagenumber: 1,
+            nation: nation,
+            imagepath: 'img/learn/lily_1.png',
+            audiopath: 'audio/lily_1_' + nation + '.mp3',
+            caption: `Lily is a little girl. She wakes up when the sun comes up.\nShe opens her eyes and smiles. \"Good morning!\" she says.\nToday will be a happy day!`
+          },
+          {
+            pageid: 2,
+            storyid: Number(storyid),
+            pagenumber: 2,
+            nation: nation,
+            imagepath: 'img/learn/lily_1.png',
+            audiopath: 'audio/lily_2_' + nation + '.mp3',
+            caption: `Lily gets out of bed. She goes to the bathroom.\nShe brushes her teeth with her blue toothbrush. Then she washes her face.\nShe feels fresh and ready.`
+          }
+        ];
+        setPages(dummyPages);
+        setCaption(dummyPages[0].caption);
+        setLanguageData([
+          { grammar: "Be동사 + 명사 : ~이다", voca: "Lily : (명사) 사람 이름 , little : (형용사) 작은/어린 , girl : (명사) 소녀" },
+          { grammar: "일반동사(wake up) + when절 : ~할 때 / and로 동사 연결", voca: "wakes up : (동사) 일어나다 , sun : (명사) 해 , comes up : (동사구) 떠오르다" },
+          { grammar: "and로 동사 연결", voca: "opens : (동사) 열다 , her eyes : (대명사+명사) 그녀의 눈 , smiles : (동사) 미소짓다" },
+          { grammar: "감탄문, 인사 표현", voca: "Good morning : (인사) 좋은 아침 , says : (동사) 말하다" }
+        ]);
+      });
+  }, [nation, storyid]);
 
-  // 공통 헤더
-  const authHeaders = useMemo(
-    () => ({
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    }),
-    [token]
-  );
+  useEffect(() => {
+    const newCaption = pages[pageNum - 1]?.caption;
+    if (newCaption) setCaption(newCaption);
+  }, [pages, pageNum]);
 
-  const safeParse = (raw) => {
+  const formatCaption = text => text?.split('\n').filter(Boolean).map((line, i) => <p key={i}>{line.trim()}</p>);
+  const getCorrectImagePath = (path) => path || 'img/learn/placeholder.png';
+
+  const handleSendChat = async () => {
+    const input = chatInput.trim();
+    if (!input) return;
+
+    const newMessages = [...chatMessages, { type: "user", content: input }];
+    setChatMessages(newMessages);
+    setChatInput("");
+    setIsChatLoading(true);
     try {
-      const v = JSON.parse(raw);
-      return Array.isArray(v) ? v : [];
-    } catch {
-      return [];
+      const res = await fetch("/api/tutor/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`
+        },
+        body: JSON.stringify({ messages: newMessages })
+      });
+      const data = await res.json();
+      if (res.ok && data?.content) {
+        setChatMessages((prev) => [...prev, { type: "tutor", content: data.content }]);
+      } else {
+        toast.error("GPT 응답 실패");
+      }
+    } catch (e) {
+      toast.error("서버 오류");
+    } finally {
+      setIsChatLoading(false);
     }
   };
 
-  const readCache = useCallback(() => {
-    if (!cacheKey) return [];
-    try {
-      const raw = localStorage.getItem(cacheKey);
-      return safeParse(raw);
-    } catch {
-      return [];
+  const handleChatKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendChat();
     }
-  }, [cacheKey]);
+  };
 
-  const writeCache = useCallback(
-    (data) => {
-      if (!cacheKey) return;
-      try {
-        localStorage.setItem(cacheKey, JSON.stringify(data ?? []));
-      } catch {}
-    },
-    [cacheKey]
-  );
+  const handleSaveChatToNote = async () => {
+    if (!user) return toast.error("로그인이 필요합니다.");
+    if (chatMessages.length === 0) return toast.warn("대화가 없습니다.");
 
-  // 목록 로드
-  const loadNote = useCallback(
-    async (params = {}) => {
-      if (!userid) {
-        setNote([]);
-        return;
+    const filteredMessages = chatMessages.filter(
+      (m) => m.content && !m.content.includes("AI tutor Pola에게")
+    );
+    if (filteredMessages.length === 0) return toast.warn("대화가 없습니다.");
+
+    const title = `[튜터노트] ${new Date().toLocaleString()}`;
+    const content = filteredMessages
+      .map((m) => (m.type === "user" ? `🙋 ${m.content}` : `🤖 ${m.content}`))
+      .join("\n");
+
+    try {
+      const res = await fetch("/api/notes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`
+        },
+        body: JSON.stringify({
+          storyid: currentStoryId,
+          nation,
+          title,
+          content
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success("채팅 내용이 노트로 저장되었습니다.");
+        setChatMessages([]);
+      } else {
+        toast.error(data.message || "노트 저장 실패");
       }
-      setLoading(true);
-      setError(null);
-      try {
-        const q = new URLSearchParams({
-          userid: String(userid),
-          ...Object.fromEntries(Object.entries(params).filter(([, v]) => v != null)),
-        }).toString();
+    } catch (err) {
+      toast.error("서버 오류: 저장 실패");
+    }
+  };
 
-        const res = await fetch(`${NOTE_URL}?${q}`, { headers: authHeaders });
-        if (!res.ok) throw new Error(`LOAD_FAILED_${res.status}`);
-        const data = await res.json();
-        const rows = Array.isArray(data) ? data : data?.rows ?? [];
-        setNote(rows);
-        writeCache(rows);
-      } catch (e) {
-        setError(e);
-        // 네트워크 실패 시 사용자별 로컬 캐시 복구
-        setNote(readCache());
-      } finally {
-        setLoading(false);
-      }
-    },
-    [NOTE_URL, authHeaders, userid, readCache, writeCache]
+  return (
+    <div className="parent">
+      {/* 생략된 div1 ~ div6 ... */}
+
+      <div className="div8">
+        <div>
+          <div className="tutor-lang-select">
+            <span className="tutor-info">채팅 내역은 저장되지 않습니다.</span>
+            <span className="tutor-info notelang" onClick={handleSaveChatToNote}>노트로 저장</span>
+          </div>  
+        </div>
+        <div className="chat-header">
+          <div className="pola-badge">
+            <span className="tutor-ai">AI tutor Pola</span>
+            <img src="/img/learn/pola.png" alt="pola" className="tutor-icon" />
+          </div>
+        </div>
+        <div className="chat-messages">
+          {chatMessages.map((msg, index) => (
+            <div key={index} className={`message ${msg.type}`}>
+              {msg.content}
+            </div>
+          ))}
+          {isChatLoading && (
+            <div className="message tutor">
+              <span>응답을 생성하고 있습니다...</span>
+            </div>
+          )}
+        </div>
+        <div className="chat-input-box">
+          <textarea 
+            ref={chatInputRef}
+            className="chat-input" 
+            placeholder="comes up 예제 추가해 주세요." 
+            disabled={isChatLoading}
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            onKeyDown={handleChatKeyDown}
+          />
+          <button className="chat-send" onClick={handleSendChat} disabled={isChatLoading || !chatInput.trim()}>
+            <img src="/img/learn/send.png" alt="send button" />
+          </button>
+        </div>
+      </div>
+    </div>
   );
-
-  // 사용자 전환 시 자동 로드
-  useEffect(() => {
-    if (userid) loadNote();
-    else setNote([]);
-  }, [userid, loadNote]);
-
-  // note 변경 시 캐시 반영
-  useEffect(() => {
-    if (!userid) return;
-    writeCache(note);
-  }, [note, writeCache, userid]);
-
-  // 다른 탭에서 동일 사용자 캐시 변경 시 동기화
-  useEffect(() => {
-    const onStorage = (e) => {
-      if (!cacheKey || e.key !== cacheKey) return;
-      setNote(e.newValue ? safeParse(e.newValue) : []);
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, [cacheKey]);
-
-  const addNote = useCallback(
-    async ({ title, content, storyid, page, extra = {} }) => {
-      if (!userid) throw new Error("UNAUTHORIZED");
-      const body = {
-        title,
-        content,
-        storyid,
-        page,
-        userid,
-        ...extra,
-      };
-
-      const tempId = `tmp_${Date.now()}`;
-      const optimistic = {
-        noteid: tempId,
-        ...body,
-        createdat: new Date().toISOString(),
-      };
-      setNote((prev) => [optimistic, ...prev]);
-
-      try {
-        const res = await fetch(NOTE_URL, {
-          method: "POST",
-          headers: authHeaders,
-          body: JSON.stringify(body),
-        });
-        if (!res.ok) throw new Error(`CREATE_FAILED_${res.status}`);
-        const saved = await res.json();
-        setNote((prev) =>
-          prev.map((n) => (n.noteid === tempId ? saved : n))
-        );
-        return saved;
-      } catch (e) {
-        setNote((prev) => prev.filter((n) => n.noteid !== tempId));
-        setError(e);
-        throw e;
-      }
-    },
-    [NOTE_URL, authHeaders, userid]
-  );
-
-  const updateNote = useCallback(
-    async (noteid, patch) => {
-      const original = note.find((n) => n.noteid === noteid);
-      if (!original) return;
-
-      setNote((prev) =>
-        prev.map((n) => (n.noteid === noteid ? { ...n, ...patch } : n))
-      );
-
-      try {
-        const res = await fetch(`${NOTE_URL}/${noteid}`, {
-          method: "PUT", // 서버가 부분 수정을 기대하면 PATCH로 교체
-          headers: authHeaders,
-          body: JSON.stringify(patch),
-        });
-        if (!res.ok) throw new Error(`UPDATE_FAILED_${res.status}`);
-        const saved = await res.json();
-        setNote((prev) =>
-          prev.map((n) => (n.noteid === noteid ? saved : n))
-        );
-        return saved;
-      } catch (e) {
-        setNote((prev) =>
-          prev.map((n) => (n.noteid === noteid ? original : n))
-        );
-        setError(e);
-        throw e;
-      }
-    },
-    [NOTE_URL, authHeaders, note]
-  );
-
-  // 삭제 (낙관적 업데이트 + 롤백)
-  const deleteNote = useCallback(
-    async (noteid) => {
-      const backup = note.slice();
-      setNote((prev) => prev.filter((n) => n.noteid !== noteid));
-      try {
-        const res = await fetch(`${NOTE_URL}/${noteid}`, {
-          method: "DELETE",
-          headers: authHeaders,
-        });
-        if (!res.ok) throw new Error(`DELETE_FAILED_${res.status}`);
-        return true;
-      } catch (e) {
-        setNote(backup);
-        setError(e);
-        throw e;
-      }
-    },
-    [NOTE_URL, authHeaders, note]
-  );
-
-  const getNote = useCallback(
-    (noteid) => note.find((n) => n.noteid === noteid),
-    [note]
-  );
-
-  const clearNote = useCallback(() => setNote([]), []);
-
-  const value = useMemo(
-    () => ({
-      note,
-      loading,
-      error,
-      loadNote,
-      addNote,
-      updateNote,
-      deleteNote,
-      getNote,
-      clearNote,
-    }),
-    [note, loading, error, loadNote, addNote, updateNote, deleteNote, getNote, clearNote]
-  );
-
-  return <NoteContext.Provider value={value}>{children}</NoteContext.Provider>;
 }
 
-export const useNote = () => useContext(NoteContext);
+export default Learn;
