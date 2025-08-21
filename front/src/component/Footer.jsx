@@ -1,8 +1,17 @@
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+
 import "../style/Footer.css";
 
 export default function Footer() {
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  // 관리자 페이지로 이동
+  const handleAdminClick = () => {
+    navigate("/admhome");
+  };
 
   return (
     <footer className="footer">
@@ -13,18 +22,20 @@ export default function Footer() {
           서비스 약관
         </span>
       </div>
-      {/* 오른쪽에 어드민 아이콘만 위치 */}
       <div className="footer-right">
-        <img  
-          src="/img/footer/admin.png" 
-          alt="Admin" 
-          className="admin-icon" 
-          onClick={() => navigate("/admhome")}
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = "/img/footer/admin.png";
-          }}
-        />
+        {console.log("user.role:", user?.role)}
+        {true ? (
+          <img  
+            src="/img/footer/admin.png" 
+            alt="Admin" 
+            className="admin-icon" 
+            onClick={handleAdminClick}
+            onError={(e) => {
+              // 관리자 아이콘 로드 실패시 header_logo.png로 대체
+              e.target.src = "/img/home/header_logo.png";
+            }}
+          />
+        ) : null}
       </div>
     </footer>
   );

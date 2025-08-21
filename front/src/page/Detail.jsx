@@ -1,17 +1,14 @@
-// src/page/Detail.jsx
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import api from "../api/axios";
+import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import React, { useState, useContext, useMemo, useEffect } from "react";
 import { BookmarkContext } from "../context/BookmarkContext";
+import api from "../api/axios";
 import "../style/Detail.css";
-
-const AZURE_BLOB_BASE_URL = "https://polytales.blob.core.windows.net/img/contents";
 
 const isAbs = (u) => /^https?:\/\//i.test(String(u || ""));
 const norm = (p = "") => String(p).replace(/\\/g, "/").replace(/([^:]\/)\/+/g, "$1");
 
-// 상세페이지 제공 리스트
-const OPEN_DETAIL_IDS = [ 10, 15, 17, 19, 29, 30, 38];
+// 디테일 콘텐츠가 제공되는 ID
+const OPEN_DETAIL_IDS = [10, 15, 17, 19, 29, 30, 38];
 
 const dedupe = (arr) => {
   const seen = new Set();
@@ -28,44 +25,14 @@ const dedupe = (arr) => {
 
 function FallbackImage({ candidates, alt }) {
   const [idx, setIdx] = useState(0);
-  // Blob Storage 이미지 경로 생성
-  const getBlobUrl = (url) => {
-    if (!url) return "/img/home/no_image.png";
-    if (/^https?:\/\//.test(url)) return url;
-    return `${AZURE_BLOB_BASE_URL}/${String(url).replace(/^\/?img\/contents\//, "")}`;
-  };
-  const src = getBlobUrl(candidates[idx]);
-
-  const handleImageError = useCallback(() => {
-    const nextIdx = idx + 1;
-    // DEBUG: 이미지 로딩 실패
-    console.warn("[Detail FallbackImage] 이미지 로딩 실패:", {
-      failedSrc: src,
-      currentIndex: idx,
-      nextIndex: nextIdx,
-      hasNextCandidate: nextIdx < candidates.length,
-      remainingCandidates: candidates.slice(nextIdx)
-    });
-    if (nextIdx < candidates.length) {
-      setIdx(nextIdx);
-    }
-  }, [idx, candidates, src]);
-
-  const handleImageLoad = useCallback(() => {
-    // DEBUG: 이미지 로딩 성공
-    console.log("[Detail FallbackImage] 이미지 로딩 성공:", {
-      successSrc: src,
-      index: idx,
-      triedCandidates: candidates.slice(0, idx + 1)
-    });
-  }, [src, idx, candidates]);
-
+  const src = candidates[idx] || "/img/home/no_image.png";
   return (
     <img
       src={src}
       alt={alt}
-      onError={handleImageError}
-      onLoad={handleImageLoad}
+      onError={() => {
+        if (idx < candidates.length - 1) setIdx(idx + 1);
+      }}
     />
   );
 }
@@ -75,59 +42,47 @@ export default function Detail() {
   const [searchParams] = useSearchParams();
   const location = useLocation();
 
-  const [story, setStory] = useState(null);
+  // 더미 데이터 
+  const [story, setStory] = useState({
+    storyid: 1,
+    storytitle: "Lily's Happy Day",
+    langlevel: "A1",
+    langlevelko: "초급",
+    topic: "동화",
+    description: `릴리와 함께 아침을 맞이하고, 작지만 특별한 하루를 만나보세요!
+작은 소녀의 행복한 하루를 따라가는 사랑스러운 이야기
+— 이제 막 읽기를 시작하는 아이들에게 딱 맞는 동화입니다.
+햇살 가득한 아침부터 포근한 잠자리까지, 릴리의 발자취는 하루 속으로 떠나보세요!`,
+    thumbnail_url: "/img/detail/lilys_happy_day.jpg"
+  });
 
-
-  // 현재 스토리가 공개된 ID인지 확인 
-    const isOpenId = story ? OPEN_DETAIL_IDS.includes(Number(story.storyid)) : false;
-
-  // 상세페이지 제공 리스트에 해당 되지 않을 경우 예외 처리
-    const handleReadClick = () => {
-      if (isOpenId) {
-        window.alert("이 콘텐츠는 준비 중입니다.");
-        return;
-      }
-      navigate("/learn");
-    };
-
-
-  const { addBookmark, removeBookmark, bookmarks } = useContext(BookmarkContext);
-
+  // Azure API 연동 시 사용할 코드 
+  /*
   useEffect(() => {
     const storyid = searchParams.get("storyid") || 1;
-    const level = String(searchParams.get("level") || "A1").toUpperCase(); // 쿼리 파라미터는 level, 실제 데이터는 langlevel
+    const level = String(searchParams.get("langlevel") || "A1").toUpperCase();
     (async () => {
       try {
-        // DEBUG: Detail API 호출 정보
-        console.log("[Detail.jsx] API 호출 시작:", {
-          storyid,
-          level,
-          endpoint: `/stories/${level}/detail/${storyid}`,
-          fullURL: `${api.defaults.baseURL}/stories/${level}/detail/${storyid}`
-        });
-        const res = await api.get(`/stories/${level}/detail/${storyid}`); // 인증 헤더 없이 요청
-        // DEBUG: Detail API 응답
-        console.log("[Detail.jsx] API 응답:", {
-          status: res.status,
-          data: res.data?.data,
-          rawResponse: res.data
-        });
+        const res = await api.get(`/stories/${level}/detail/${storyid}`);
         setStory(res.data?.data || null);
-      } catch (error) {
-        // DEBUG: Detail API 에러
-        console.error("[Detail.jsx] API 호출 실패:", {
-          error: error.message,
-          status: error.response?.status,
-          statusText: error.response?.statusText,
-          responseData: error.response?.data,
-          requestURL: error.config?.url,
-          requestMethod: error.config?.method,
-          requestBaseURL: error.config?.baseURL
-        });
+      } catch {
         setStory(null);
       }
     })();
   }, [searchParams]);
+  */
+
+  const isOpenId = story ? OPEN_DETAIL_IDS.includes(Number(story.storyid)) : false;
+
+  const handleReadClick = () => {
+    if (isOpenId) {
+      window.alert("이 콘텐츠는 준비 중입니다.");
+      return;
+    }
+    navigate("/learn");
+  };
+
+  const { addBookmark, removeBookmark, bookmarks } = useContext(BookmarkContext);
 
   const candidates = useMemo(() => {
     const fromHome = (() => {
@@ -150,12 +105,12 @@ export default function Detail() {
     return dedupe([...fromHome, ...fromApi, ...fallback]);
   }, [location.state, story]);
 
-  const isBookMarked =
+  const isBookmarked =
     story && bookmarks?.some((b) => String(b.storyid) === String(story.storyid));
 
-  const toggleBookMark = () => {
+  const toggleBookmark = () => {
     if (!story) return;
-    if (isBookMarked) {
+    if (isBookmarked) {
       removeBookmark(story.storyid);
     } else {
       addBookmark({
@@ -192,10 +147,10 @@ export default function Detail() {
             <h2 className="detail-title">
               {story.storytitle}
               <img
-                src={isBookMarked ? "/img/detail/next_btn.png" : "/img/detail/pre_btn.png"}
-                alt="BookMark"
-                className="BookMark-icon"
-                onClick={toggleBookMark}
+                src={isBookmarked ? "/img/detail/next_btn.png" : "/img/detail/pre_btn.png"}
+                alt="bookmark"
+                className="bookmark-icon"
+                onClick={toggleBookmark}
               />
             </h2>
           </div>
@@ -219,10 +174,11 @@ export default function Detail() {
             </p>
           </div>
 
-          <button className="read-button" onClick={handleReadClick} disabled={isOpenId}> 읽기 </button>
+          <button className="read-button" onClick={handleReadClick} disabled={isOpenId}>
+            읽기
+          </button>
         </div>
       </div>
     </div>
   );
 }
-

@@ -11,7 +11,7 @@ export default function Header() {
 
   const handleLogoClick = () => navigate("/");
   const handleStartClick = () => navigate("/login");
-  
+
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -25,13 +25,13 @@ export default function Header() {
         className="header-logo"
         onClick={handleLogoClick}
       />
-      
+
       <div className="header-right">
         {user ? (
           <ProfileMenu
-            username={user.nickName || user.username}
+            username={user.nickname || user.username}
             userId={user.userid}
-            userProfileImg={user.profImg}
+            profimg={user.profimg}
             onLogout={handleLogout}
           />
         ) : (

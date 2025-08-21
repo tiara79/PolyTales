@@ -1,13 +1,19 @@
 // back/src/routes/tutor.js
+
 const router = require('express').Router();
-const auth = require('../middlewares/auth');
+
+const router = express.Router();
 const tutor = require('../controllers/tutorController');
 
-const required = auth.required || auth.authRequired || auth.authenticate || ((req, _res, next) => next());
+router.post("/chat", tutorController.createChat);
 
-router.post('/chat', required, tutor.createChat);
 
 // 필요 시 아래도 정책에 맞춰 해제
+// const auth = require('../middlewares/auth');
+// const required = auth.required || auth.authRequired || auth.authenticate || ((req, _res, next) => next());
+
+// router.post('/chat', required, tutor.createChat);
+
 // router.post('/messages', required, tutor.createMessage);
 // router.get('/messages/:storyid', required, tutor.getMessagesByStory);
 // router.delete('/messages/:id', required, tutor.deleteMessage);

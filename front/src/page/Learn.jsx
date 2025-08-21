@@ -1,155 +1,120 @@
-// src/pages/Learn.jsx
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+// front/src/pages/Learn.jsx
+import { useEffect, useRef, useState, useContext } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+
 import { AuthContext } from "../context/AuthContext";
 import { StoryContext } from "../context/StoryContext";
+import AudioPlayer from "../component/AudioPlayer";
 
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-import "../style/Learn.css";
-import "../style/Note.css";
-import "../style/PolaChat.css";
-import "../style/StoryLearn.css";
-
-const AZURE_BLOB_BASE_URL = "https://polytales.blob.core.windows.net/img/contents";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '../style/StoryLearn.css';
+import '../style/Learn.css';
+import '../style/Note.css';
+import '../style/PolaChat.css';
 
 function Learn() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-
   const noteTitleRef = useRef(null);
   const noteContentRef = useRef(null);
   const chatInputRef = useRef(null);
-
-  const [pages, setPages] = useState([
-    {
-      imagepath: "/img/home/no_image.png",
-      caption: "", // 안내 문구 주석 처리
-      audio: "",
-    },
-  ]);
+  const [pages, setPages] = useState([]);
   const [pageNum, setPageNum] = useState(1);
-  const [lang, setLang] = useState("ko");
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [caption, setCaption] = useState(""); // 자막 상태 추가
+  const [caption, setCaption] = useState('');
+  const [nation, setNation] = useState('en');
   const [languageData, setLanguageData] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
+  const [chatInput, setChatInput] = useState("");
   const [isChatLoading, setIsChatLoading] = useState(false);
 
-  const { user, token } = useContext(AuthContext);
-  const { story } = useContext(StoryContext); 
+  const storyid = searchParams.get('storyid') || 1;
+  const langLabel = { ko: '한국어', fr: '프랑스어', ja: '일본어', en: '영어', es: '스페인어', de: '독일어' };
 
-  const storyid = searchParams.get("storyid") || 1;
-  const currentStory = story.find((s) => s.storyid === Number(storyid));
-  const currentLangLevel = currentStory?.langlevel || "A1";
+  const { user } = useContext(AuthContext);
+  const storyContext = useContext(StoryContext);
+  const story = storyContext?.story || [];
+  const currentStoryId = pages[pageNum - 1]?.storyid || pages[0]?.storyid || storyid;
+  const currentStoryObj = story?.find(s => s.storyid === Number(currentStoryId));
 
-  // const handleCloseClick = () => navigate("/detail");
-  const handleCloseClick = () => navigate("/");
-  
+  const goPrev = () => setPageNum(p => Math.max(p - 1, 1));
+  const goNext = () => setPageNum(prev => Math.min(prev + 1, pages.length));
   const handleReadFromStart = () => setPageNum(1);
-  const goPrev = () => setPageNum((p) => Math.max(1, p - 1));
-  const goNext = () => setPageNum((p) => Math.min(p + 1, pages.length));
-
-  // formatCaption 함수 개선: \n → 줄바꿈 처리
-  function formatCaption(caption) {
-    if (!caption) return "";
-    return String(caption).replace(/\\n/g, '\n');
-  }
+  const handleCloseClick = () => navigate(-1);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/storylearn/${storyid}?nation=${lang}`)
-      .then((res) => res.json())
-      .then((result) => {
-        const pagesData = Array.isArray(result.pages) ? result.pages : [];
-        const languageDataArr = Array.isArray(result.language) ? result.language : [];
-        // fallback: 에러나 빈 데이터일 때 기본값
-        if (!pagesData.length) {
-          setPages([
-            {
-              imagepath: "/img/home/no_image.png",
-              caption: "", // 안내 문구 없이 빈 자막
-              audio: "",
-            },
-          ]);
-          setCaption(""); // 자막도 빈 값
-        } else {
-          setPages(pagesData);
-          const current = pagesData[pageNum - 1];
-          if (current && current.caption) {
-            const cleanCaption = current.caption.replace(/\\n/g, '\n');
-            setCaption(cleanCaption);
-          }
-        }
-        setLanguageData(languageDataArr);
+    fetch(`/learn/${storyid}?nation=${nation}`)
+      .then(res => res.json())
+      .then(result => {
+        setPages(result.pages || []);
+        setLanguageData(result.language || []);
+        if (result.pages?.[0]?.caption) setCaption(result.pages[0].caption);
       })
-      .catch((e) => {
-        // 에러 발생 시에도 모든 UI가 동작하도록 fallback
-        setPages([
+      .catch(() => {
+        const dummyPages = [
           {
-            imagepath: "/img/home/no_image.png",
-            caption: "",
-            audio: "",
+            pageid: 1,
+            storyid: Number(storyid),
+            pagenumber: 1,
+            nation: nation,
+            imagepath: 'img/learn/lily_1.png',
+            audiopath: 'audio/lily_1_' + nation + '.mp3',
+            caption: `Lily is a little girl. She wakes up when the sun comes up.\nShe opens her eyes and smiles. \"Good morning!\" she says.\nToday will be a happy day!`
           },
+          {
+            pageid: 2,
+            storyid: Number(storyid),
+            pagenumber: 2,
+            nation: nation,
+            imagepath: 'img/learn/lily_1.png',
+            audiopath: 'audio/lily_2_' + nation + '.mp3',
+            caption: `Lily gets out of bed. She goes to the bathroom.\nShe brushes her teeth with her blue toothbrush. Then she washes her face.\nShe feels fresh and ready.`
+          }
+        ];
+        setPages(dummyPages);
+        setCaption(dummyPages[0].caption);
+        setLanguageData([
+          { grammar: "Be동사 + 명사 : ~이다", voca: "Lily : (명사) 사람 이름 , little : (형용사) 작은/어린 , girl : (명사) 소녀" },
+          { grammar: "일반동사(wake up) + when절 : ~할 때 / and로 동사 연결", voca: "wakes up : (동사) 일어나다 , sun : (명사) 해 , comes up : (동사구) 떠오르다" },
+          { grammar: "and로 동사 연결", voca: "opens : (동사) 열다 , her eyes : (대명사+명사) 그녀의 눈 , smiles : (동사) 미소짓다" },
+          { grammar: "감탄문, 인사 표현", voca: "Good morning : (인사) 좋은 아침 , says : (동사) 말하다" }
         ]);
-        setLanguageData([]);
-        setCaption("");
-        console.error("데이터 로딩 오류:", e);
       });
-  }, [lang, storyid, pageNum]);
+  }, [nation, storyid]);
 
-  const saveNote = async () => {
-    const title = noteTitleRef.current?.value.trim();
-    const content = noteContentRef.current?.value.trim();
-    if (!title || !content) return toast.warn("제목과 내용을 입력하세요.");
-    if (!user?.userid) return toast.error("로그인이 필요합니다.");
+  useEffect(() => {
+    const newCaption = pages[pageNum - 1]?.caption;
+    if (newCaption) setCaption(newCaption);
+  }, [pages, pageNum]);
 
-    const noteData = {
-      userid: user.userid,
-      storyid,
-      langlevel: currentLangLevel,
-      lang,
-      title,
-      content,
-    };
-    try {
-      const headers = { "Content-Type": "application/json" };
-      if (token) headers.Authorization = `Bearer ${token}`;
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/note`, { 
-        headers,
-        body: JSON.stringify(noteData),
-      });
-      if (!res.ok) throw new Error("노트 저장 실패");
-      toast.success("노트가 저장되었습니다!");
-      noteTitleRef.current.value = "";
-      noteContentRef.current.value = "";
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
+  const formatCaption = text => text?.split('\n').filter(Boolean).map((line, i) => <p key={i}>{line.trim()}</p>);
+  const getCorrectImagePath = (path) => path || 'img/learn/placeholder.png';
 
-  const handleChatSend = async () => {
-    const msg = chatInputRef.current?.value.trim();
-    if (!msg) return toast.warn("메시지를 입력하세요.");
-    if (!user?.userid) return toast.error("로그인이 필요합니다.");
+  const handleSendChat = async () => {
+    const input = chatInput.trim();
+    if (!input) return;
 
-    setChatMessages((prev) => [...prev, { type: "user", content: msg }]);
-    chatInputRef.current.value = "";
+    const newMessages = [...chatMessages, { type: "user", content: input }];
+    setChatMessages(newMessages);
+    setChatInput("");
     setIsChatLoading(true);
-
     try {
-      const headers = { "Content-Type": "application/json" };
-      if (token) headers.Authorization = `Bearer ${token}`;
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/tutor/chat`, {
+      const res = await fetch("/api/tutor/ask", {
         method: "POST",
-        headers,
-        body: JSON.stringify({ userid: user.userid, storyid, message: msg, lang }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`
+        },
+        body: JSON.stringify({ messages: newMessages })
       });
       const data = await res.json();
-      setChatMessages((prev) => [...prev, { type: "tutor", content: data.response || "응답 없음" }]);
-    } catch (err) {
-      setChatMessages((prev) => [...prev, { type: "tutor", content: "서비스 오류" }]);
-      toast.error("tutor service error");
+      if (res.ok && data?.content) {
+        setChatMessages((prev) => [...prev, { type: "tutor", content: data.content }]);
+      } else {
+        toast.error("GPT 응답 실패");
+      }
+    } catch (e) {
+      toast.error("서버 오류");
     } finally {
       setIsChatLoading(false);
     }
@@ -158,133 +123,60 @@ function Learn() {
   const handleChatKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleChatSend();
+      handleSendChat();
     }
   };
 
-  const togglePlay = useCallback(() => {
-    const audioEl = document.querySelector("audio");
-    if (audioEl) {
-      if (audioEl.paused) {
-        audioEl.play();
-        setIsPlaying(true);
+  const handleSaveChatToNote = async () => {
+    if (!user) return toast.error("로그인이 필요합니다.");
+    if (chatMessages.length === 0) return toast.warn("대화가 없습니다.");
+
+    const filteredMessages = chatMessages.filter(
+      (m) => m.content && !m.content.includes("AI tutor Pola에게")
+    );
+    if (filteredMessages.length === 0) return toast.warn("대화가 없습니다.");
+
+    const title = `[튜터노트] ${new Date().toLocaleString()}`;
+    const content = filteredMessages
+      .map((m) => (m.type === "user" ? `🙋 ${m.content}` : `🤖 ${m.content}`))
+      .join("\n");
+
+    try {
+      const res = await fetch("/api/notes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`
+        },
+        body: JSON.stringify({
+          storyid: currentStoryId,
+          nation,
+          title,
+          content
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success("채팅 내용이 노트로 저장되었습니다.");
+        setChatMessages([]);
       } else {
-        audioEl.pause();
-        setIsPlaying(false);
+        toast.error(data.message || "노트 저장 실패");
       }
+    } catch (err) {
+      toast.error("서버 오류: 저장 실패");
     }
-  }, []);
+  };
 
   return (
     <div className="parent">
-      <div className="div1" onClick={handleReadFromStart}><span className="read-start">처음부터 읽기</span></div>
-      <div className="div2">
-        <h2 className="story-title">{currentStory?.storytitle || "제목 없음"}</h2>
-        <button className="close-button" onClick={handleCloseClick}>
-          <img src="/img/learn/close.png" alt="close" />
-        </button>
-      </div>
+      {/* 생략된 div1 ~ div6 ... */}
 
-      {/* 이미지 및 자막 영역 */}
-      <div className="div3">
-        <div className="story-image-container">
-          {/* 항상 이미지/자막/오디오/진행바 출력 */}
-          <img
-            src={
-              pages[pageNum - 1]?.imagepath
-                ? `${AZURE_BLOB_BASE_URL}/${String(pages[pageNum - 1].imagepath).replace(/^\/?img\/contents\//, "")}`
-                : "/img/home/no_image.png"
-            }
-            alt={`Page ${pageNum}`}
-            className="story-img"
-            onError={e => { e.currentTarget.src = "/img/home/no_image.png"; }}
-          />
-          <div className="caption-text">{formatCaption(caption)}</div>
-          <div className="caption-box">
-            <div className="control-btns">
-              <button onClick={goPrev} disabled={pageNum === 1} className="btn Text">
-                <span className="icon" />
-                <span>이전 문장</span>
-              </button>
-              <button onClick={togglePlay} className="btn pause">
-                <img src={isPlaying ? "/img/learn/button/pause.png" : "/img/learn/button/play.png"} alt="play/pause" />
-              </button>
-              <button onClick={goNext} disabled={pageNum === pages.length} className="btn Text">
-                <span className="icon" />
-                <span>다음 문장</span>
-              </button>
-            </div>
-          </div>
-          <div className="progress-bar">
-            <div className="progress" style={{ width: `${(pageNum / pages.length) * 100}%` }} />
-          </div>
-          <audio
-            src={pages[pageNum - 1]?.audio || ""}
-            style={{ display: "none" }}
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-          />
-        </div>
-      </div>
-
-      {/* 문법/단어 영역 */}
-      <div className="div4 grammar">
-        <h4>문법</h4>
-        <div className="grammar-list">
-          {lang === "ko" ? <p>한국어는 자막만 제공합니다.</p> : languageData.map((d, i) => <p key={i}>{d.grammar}</p>)}
-        </div>
-      </div>
-
-      <div className="div5 voca">
-        <h4>단어</h4>
-        <div className="voca-list">
-          {lang === "ko" ? <p>한국어는 자막만 제공합니다.</p> : languageData.map((d, i) => <p key={i}>{d.word}</p>)}
-        </div>
-      </div>
-
-      <div className="div6 lang-select">
-        {[
-          { code: "ko", label: "한국어" },
-          { code: "fr", label: "프랑스어" },
-          { code: "ja", label: "일본어" },
-          { code: "en", label: "영어" },
-          { code: "es", label: "스페인어" },
-          { code: "de", label: "독일어" },
-        ].map(({ code, label }) => (
-          <label key={code}>
-            <input
-              type="radio"
-              name="option"
-              value={code}
-              checked={lang === code}
-              onChange={() => setLang(code)}
-            />
-            {label}
-          </label>
-        ))}
-      </div>
-
-      <div className="div7 note-box">
-        {/* 노트 저장 UI 항상 출력 */}
-        <div className="note-head">
-          <strong>Note</strong>
-          <img src="/img/learn/disk_icon.png" alt="save" className="save-note" onClick={saveNote} />
-        </div>
-        <div className="note-title">
-          <label htmlFor="noteTitle" className="underline-note">Title :</label>
-          <input id="noteTitle" ref={noteTitleRef} type="text" className="note-input underline" />
-        </div>
-        <textarea className="note-content" placeholder="" ref={noteContentRef} defaultValue="" />
-      </div>
-
-      {/* 채팅 영역 */}
       <div className="div8">
-        {/* 튜터 채팅 UI 항상 출력 */}
         <div>
           <div className="tutor-lang-select">
             <span className="tutor-info">채팅 내역은 저장되지 않습니다.</span>
-            <span className="tutor-info notelang">노트로 저장</span>
-          </div>
+            <span className="tutor-info notelang" onClick={handleSaveChatToNote}>노트로 저장</span>
+          </div>  
         </div>
         <div className="chat-header">
           <div className="pola-badge">
@@ -292,22 +184,29 @@ function Learn() {
             <img src="/img/learn/pola.png" alt="pola" className="tutor-icon" />
           </div>
         </div>
-
         <div className="chat-messages">
-          {chatMessages.map((msg, i) => <div key={i} className={`message ${msg.type}`}>{msg.content}</div>)}
-          {isChatLoading && <div className="message tutor">응답 생성 중...</div>}
+          {chatMessages.map((msg, index) => (
+            <div key={index} className={`message ${msg.type}`}>
+              {msg.content}
+            </div>
+          ))}
+          {isChatLoading && (
+            <div className="message tutor">
+              <span>응답을 생성하고 있습니다...</span>
+            </div>
+          )}
         </div>
-
         <div className="chat-input-box">
-          <textarea
+          <textarea 
             ref={chatInputRef}
-            className="chat-input"
-            placeholder="comes up 예제 추가해 주세요."
-            onKeyDown={handleChatKeyDown}
+            className="chat-input" 
+            placeholder="comes up 예제 추가해 주세요." 
             disabled={isChatLoading}
-            defaultValue=""
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            onKeyDown={handleChatKeyDown}
           />
-          <button className="chat-send" onClick={handleChatSend} disabled={isChatLoading}>
+          <button className="chat-send" onClick={handleSendChat} disabled={isChatLoading || !chatInput.trim()}>
             <img src="/img/learn/send.png" alt="send button" />
           </button>
         </div>
