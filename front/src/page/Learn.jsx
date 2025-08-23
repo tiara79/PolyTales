@@ -169,45 +169,201 @@ function Learn() {
 
   return (
     <div className="parent">
-      {/* 생략된 div1 ~ div6 ... */}
+  <div className="div1" onClick={handleReadFromStart}>
+        <span className="read-start">처음부터 읽기</span>
+      </div>
 
+      <div className="div2">
+        <h2 className="story-title">Lily's happy day</h2>
+        <button className="close-button" onClick={handleCloseClick}>
+          <img src={close} alt="close" />
+        </button>
+      </div>
+
+      {/* 이미지 및 자막 영역 */}
+      <div className="div3">
+        <div className="story-image-container">
+          {pages.length > 0 ? (
+            <>
+              <img
+                src={pages[pageNum - 1]?.image || "/img/learn/lily_1.png"}
+                alt={`Page ${pageNum}`}
+                className="story-img"
+              />
+              <div className="caption-text">
+                {pages[pageNum - 1]?.caption || "자막이 없습니다"}
+              </div>
+              <div className="caption-box">
+                <div className="control-btns">
+                  <button
+                    onClick={goPrev}
+                    disabled={pageNum === 1}
+                    className="btn Text"
+                  >
+                    <span className="icon" />
+                    <span>이전 문장</span>
+                  </button>
+                  <button onClick={togglePlay} className="btn pause">
+                    <img
+                      src={
+                        isPlaying
+                          ? pause
+                          : "/img/learn/play.png"
+                      }
+                      alt="play/pause"
+                    />
+                  </button>
+                  <button
+                    onClick={goNext}
+                    disabled={pageNum === pages.length}
+                    className="btn Text"
+                  >
+                    <span className="icon" />
+                    <span>다음 문장</span>
+                  </button>
+                </div>
+              </div>
+              <div className="progress-bar">
+                <div
+                  className="progress"
+                  style={{ width: `${(pageNum / pages.length) * 100}%` }}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <img
+                src="/img/learn/lily_1.png"
+                alt="이미지 없음"
+                className="story-img"
+              />
+              <div className="caption-text">이미지를 불러올 수 없습니다</div>
+            </>
+          )}
+        </div>
+      </div>
+
+
+      {/* 문법 영역 */}
+      {languageData.length > 0 && (
+        <div className="div4 grammar">
+          <h4>문법</h4>
+          <div className="grammar-list">
+            {languageData
+              .slice((pageNum - 1) * 5, pageNum * 5)
+              .map((item, idx) => (
+                <p key={idx}>{item.grammar}</p>
+              ))}
+          </div>
+        </div>
+      )}
+
+      {/* 단어 영역 */}
+      {languageData.length > 0 && (
+        <div className="div5 voca">
+          <h4>단어</h4>
+          <div className="voca-list">
+            {languageData
+              .slice((pageNum - 1) * 5, pageNum * 5)
+              .map((item, idx) => (
+                <p key={idx}>{item.voca}</p>
+              ))}
+          </div>
+        </div>
+      )}
+
+      {/* 언어 선택 영역 */}
+      <div className="div6 lang-select">
+        {Object.entries(langLabel).map(([code, label]) => (
+          <label key={code}>
+            <input
+              type="radio"
+              name="option"
+              value={code}
+              checked={lang === code}
+              onChange={() => setLang(code)}
+            />
+            {label}
+          </label>
+        ))}
+      </div>
+
+      {/* 노트 영역 */}
+      <div className="div7 note-box">
+        <div className="note-head">
+          <strong>Note</strong>
+          <img src={diskIcon} className="save-note" onClick={handleSaveNote} />
+        </div>
+        <div className="note-title">
+          <label htmlFor="noteTitle" className="underline-note">
+            Title :
+          </label>
+          <input
+            id="noteTitle"
+            ref={noteTitleRef}
+            type="text"
+            className="note-input underline"
+          />
+        </div>
+        <textarea
+          className="note-content"
+          placeholder=""
+          ref={noteContentRef}
+          defaultValue=""
+        />
+      </div>
+
+      {/* 채팅 영역 */}
       <div className="div8">
         <div>
           <div className="tutor-lang-select">
             <span className="tutor-info">채팅 내역은 저장되지 않습니다.</span>
-            <span className="tutor-info notelang" onClick={handleSaveChatToNote}>노트로 저장</span>
-          </div>  
+            <span className="tutor-info notelang">노트로 저장</span>
+          </div>
         </div>
         <div className="chat-header">
           <div className="pola-badge">
             <span className="tutor-ai">AI tutor Pola</span>
-            <img src="/img/learn/pola.png" alt="pola" className="tutor-icon" />
+            <img src={pola} alt="pola" className="tutor-icon" />
           </div>
         </div>
         <div className="chat-messages">
-          {chatMessages.map((msg, index) => (
-            <div key={index} className={`message ${msg.type}`}>
+          {chatMessages.length === 0 && (
+            <div className="message tutor" style={{ color: "#aaa" }}>
+              AI tutor Pola에게 궁금한 영어 표현, 문법, 예문 등을 물어보세요!
+            </div>
+          )}
+          {chatMessages.map((msg, idx) => (
+            <div
+              key={idx}
+              className={`message ${msg.role === "user" ? "user" : "tutor"}`}
+              style={{ whiteSpace: "pre-line" }}
+            >
               {msg.content}
             </div>
           ))}
-          {isChatLoading && (
-            <div className="message tutor">
-              <span>응답을 생성하고 있습니다...</span>
+          {chatLoading && (
+            <div className="message tutor" style={{ opacity: 0.7 }}>
+              ...Pola가 답변 중입니다
             </div>
           )}
         </div>
         <div className="chat-input-box">
-          <textarea 
-            ref={chatInputRef}
-            className="chat-input" 
-            placeholder="comes up 예제 추가해 주세요." 
-            disabled={isChatLoading}
+          <textarea
+            className="chat-input"
+            placeholder="컨텐츠에서 궁금한점을 물어보세요"
             value={chatInput}
             onChange={(e) => setChatInput(e.target.value)}
             onKeyDown={handleChatKeyDown}
+            ref={chatInputRef}
+            disabled={chatLoading}
           />
-          <button className="chat-send" onClick={handleSendChat} disabled={isChatLoading || !chatInput.trim()}>
-            <img src="/img/learn/send.png" alt="send button" />
+          <button
+            className="chat-send"
+            onClick={handleSendChat}
+            disabled={chatLoading || !chatInput.trim()}
+          >
+            <img src={send} alt="send button" />
           </button>
         </div>
       </div>
